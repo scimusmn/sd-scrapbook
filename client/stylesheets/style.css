@@ -1,0 +1,19 @@
+@import "_colors.import.less";
+@import "_sizes.import.less";
+
+body {
+  background: @wetlands-blue;
+}
+
+.container,
+.container-map {
+  width: @screen-width;
+  max-width: @screen-width;
+  height: @screen-height;
+  padding: 0;
+  background: lighten(@background-tan, 10%);
+}
+
+.map-base {
+  background-image: url("/images/map-base.jpg");
+}
