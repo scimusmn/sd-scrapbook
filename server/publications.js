@@ -2,18 +2,18 @@
 
 ## Publications ##
 
-All publications-related code. 
+All publications-related code.
 
 /+ ---------------------------------------------------- */
 
-// Publish all items
+// Publish all Locations
 
-Meteor.publish('allItems', function() {
-  return Items.find();
+Meteor.publish('allLocations', function() {
+  return Locations.find();
 });
 
-// Publish a single item
+// Publish a single location
 
-Meteor.publish('singleItem', function(id) {
-  return Items.find(id);
+Meteor.publish('singleLocation', function(id) {
+  return Location.find(id);
 });

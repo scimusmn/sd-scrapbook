@@ -1,0 +1,10 @@
+<template name="location">
+  <a href="{{pathFor 'locations'}}">← Back</a>
+  {{#with location}}
+    <div class="location">
+      <h3>{{title}}</h3>
+      <p>{{body}}</p>
+      <h5><a href="#" class="delete">Delete</a></h5>
+    </div>
+  {{/with}}
+</template>

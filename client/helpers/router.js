@@ -31,33 +31,33 @@ var filters = {
 
 }
 
-Router.onBeforeAction(filters.myFilter, {only: ['items']});
+Router.onBeforeAction(filters.myFilter, {only: ['locations']});
 
 // Routes
 
 Router.map(function() {
 
-  // Items
+  // Locations
 
-  this.route('items', {
+  this.route('locations', {
     waitOn: function () {
-      return Meteor.subscribe('allItems');
+      return Meteor.subscribe('allLocations');
     },
     data: function () {
       return {
-        items: Items.find()
+        locations: Locations.find()
       }
     }
   });
 
-  this.route('item', {
-    path: '/items/:_id',
+  this.route('location', {
+    path: '/location/:_id',
     waitOn: function () {
-      return Meteor.subscribe('singleItem', this.params._id);
+      return Meteor.subscribe('singleLocation', this.params._id);
     },
     data: function () {
       return {
-        item: Items.findOne(this.params._id)
+        location: Location.findOne(this.params._id)
       }
     }
   });
