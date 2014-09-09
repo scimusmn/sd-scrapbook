@@ -15,5 +15,5 @@ Meteor.publish('allLocations', function() {
 // Publish a single location
 
 Meteor.publish('singleLocation', function(id) {
-  return Location.find(id);
+  return Locations.find(id);
 });
