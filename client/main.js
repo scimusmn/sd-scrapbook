@@ -2,8 +2,6 @@
 
 ## Main ##
 
-Global client-side code. Loads last. 
+Global client-side code. Loads last.
 
 /+ ---------------------------------------------------- */
-
-//
