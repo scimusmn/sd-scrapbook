@@ -21,6 +21,13 @@ Template.locations.rendered = function () {
         data(dataset).
         enter().
         append("p").
+        style("color", function(d) {
+            if (d > 15) {   //Threshold of 15
+                return "red";
+            } else {
+                return "black";
+            }
+        }).
         text(function(d) { return d; });
 };
 
