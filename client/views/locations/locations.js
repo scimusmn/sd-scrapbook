@@ -15,7 +15,7 @@ Template.locations.helpers({
 });
 
 Template.locations.rendered = function () {
-  //
+    d3.select("body").append("p").text("New paragraph!");
 };
 
 Template.locations.events({
