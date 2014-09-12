@@ -1,13 +1,10 @@
 <template name="locations">
   <div class="container container-map map-base">
-    <div class="timeline-wrapper">
-      <div id="svgdiv">
-        <svg id="slate" width="500" height="500">
-        </svg>
-      </div>
-    </div>
     {{#each locations}}
       <a href="{{pathFor "location"}}">{{title}}</a><br>
     {{/each}}
+    <svg width="500" height="500">
+      <circle cx="250" cy="25" r="25"/>
+    </svg>
   </div>
 </template>
