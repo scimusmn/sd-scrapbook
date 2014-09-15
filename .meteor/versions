@@ -36,6 +36,7 @@ meteor@1.0.3
 minifiers@1.0.2
 minimongo@1.0.2
 mongo@1.0.4
+mrt:topojson@1.6.8
 nemo64:bootstrap@3.2.0
 npm-bcrypt@0.7.7
 observe-sequence@1.0.2
