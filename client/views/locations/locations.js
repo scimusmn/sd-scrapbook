@@ -22,9 +22,8 @@ Template.locations.rendered = function () {
      * Web mercator focused on Arizona
      */
     var projection = d3.geo.mercator()
-        .scale(4000)
-        .center([-116.98985, 35.5457])
-        .translate([width / 2, height / 2])
+        .scale(13025)
+        .center([-119.109, 34.67])
         .precision(.1);
 
     var path = d3.geo.path()
