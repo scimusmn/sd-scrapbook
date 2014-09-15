@@ -25,48 +25,28 @@ Template.locations.rendered = function () {
         var newNumber = Math.round(Math.random() * 30);
         dataset.push(newNumber);             //Add new number to array
     }
+    var width = 960,
+    height = 1160;
 
-    d3.json("/data/ocean.geojson", function(error, ocean) {
-        if (error) return console.error(error);
-        console.log(ocean);
-        svg.append("path").
-            datum(topojson.feature(ocean, ocean.objects.subunits)).
-            attr("d", d3.geo.path().projection(d3.geo.mercator()));
+    var projection = d3.geo.albers()
+    .center([0, 55.4])
+    .rotate([4.4, 0])
+    .parallels([50, 60])
+    .scale(1200 * 5)
+    .translate([width / 2, height / 2]);
+
+    var path = d3.geo.path()
+    .projection(projection);
+
+    var svg = d3.select(".container").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+    d3.json("/data/uk.json", function(error, uk) {
+        svg.append("path")
+        .datum(topojson.feature(uk, uk.objects.subunits))
+        .attr("d", path);
     });
-
-    var w = 500;
-    var h = 50;
-    var svg = d3.select(".container").
-        append("svg").
-        attr("width", w).
-        attr("height", h);
-
-    var circles = svg.selectAll("circle").
-        data(dataset).
-        enter().
-        append("circle");
-
-    circles.
-        attr("cx", function(d, i) {
-            return (i * 50) + 25;
-        }).
-        attr("cy", h/2).
-        attr("r", function(d) {
-            return d;
-        });
-
-    d3.select(".container").
-        selectAll("div.d3").
-        data(dataset).
-        enter().
-        append("div").
-        attr('class', 'bar').
-        style("height", function(d) {
-            return (d * 5) + "px"
-        }).
-        text(function(d) {
-            return d;
-        });
 };
 
 Template.locations.events({
