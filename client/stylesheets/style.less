@@ -16,8 +16,9 @@ body {
 .container {
   width: 1920px;
   height: 1080px;
-  /*background-image: url("/images/map-base.jpg");*/
+  background-image: url("/images/map-base.jpg");
   margin: 0;
+  padding: 0;
 }
 
 .bar {
@@ -30,6 +31,10 @@ body {
 svg {
     fill: #999;
     stroke: #333;
-    stroke-width: .5;
-    border: 1px solid #888;
+    display: block;
+ }
+ .location-markers {
+   position: absolute;
+   top: 0;
+   right: 0;
  }

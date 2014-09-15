@@ -15,43 +15,15 @@ Template.locations.helpers({
 });
 
 Template.locations.rendered = function () {
-    /**
-     * Arbitrary D3 test code to learn the basics of drawing
-     * SVG items on the canvas
-     */
-    var dataset = [];
-
-    for (var i = 0; i < 25; i++) {           //Loop 25 times
-        var newNumber = Math.round(Math.random() * 30);
-        dataset.push(newNumber);             //Add new number to array
-    }
-    var width = 600,
-    height = 300;
+    var width = 1920,
+    height = 1080;
 
     /**
-     * Projection centered on Arizon, but for some reason Arizona is turned
-     * 90 degrees on its side.
-     */
-    //var projection = d3.geo.albers()
-    //.center([-111, 34.2])
-    //.rotate([0, 0])
-    //.parallels([50, 60])
-    //.scale(1200 * 5)
-    //.translate([width / 2, height / 2]);
-
-    /**
-     * Albers - focused on the continental USA
-     */
-    //var projection = d3.geo.albersUsa()
-    //.scale(1280)
-    //.translate([width / 2, height / 2]);
-
-    /**
-     * Web mercator focused on the world
+     * Web mercator focused on Arizona
      */
     var projection = d3.geo.mercator()
-        .scale(1000)
-        .center([-111, 34.2])
+        .scale(4000)
+        .center([-116.98985, 35.5457])
         .translate([width / 2, height / 2])
         .precision(.1);
 
@@ -67,6 +39,13 @@ Template.locations.rendered = function () {
             .datum(topojson.feature(arizona, arizona.objects.arizona))
             .attr("d", path);
     });
+
+    d3.json("/data/salton.json", function(error, salton) {
+        svg.append("path")
+            .datum(topojson.feature(salton, salton.objects.salton))
+            .attr("d", path);
+    });
+
 };
 
 Template.locations.events({
