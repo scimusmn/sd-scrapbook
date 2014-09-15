@@ -29,7 +29,7 @@ Template.locations.rendered = function () {
     height = 1160;
 
     var projection = d3.geo.albers()
-    .center([0, 55.4])
+    .center([-111, 34.2])
     .rotate([4.4, 0])
     .parallels([50, 60])
     .scale(1200 * 5)
@@ -42,9 +42,9 @@ Template.locations.rendered = function () {
     .attr("width", width)
     .attr("height", height);
 
-    d3.json("/data/uk.json", function(error, uk) {
+    d3.json("/data/arizona.json", function(error, arizona) {
         svg.append("path")
-        .datum(topojson.feature(uk, uk.objects.subunits))
+        .datum(topojson.feature(arizona, arizona.objects.arizona))
         .attr("d", path);
     });
 };
