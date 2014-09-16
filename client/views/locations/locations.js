@@ -57,6 +57,13 @@ Template.locations.rendered = function () {
             .attr("d", path);
     });
 
+    d3.json("/data/cities.json", function(error, cities) {
+        svg.append("path")
+            .datum(topojson.feature(cities, cities.objects.cities))
+            .attr("d", path)
+            .attr("class", 'cities');
+    });
+
 };
 
 Template.locations.events({
