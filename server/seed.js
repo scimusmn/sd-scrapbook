@@ -27,7 +27,7 @@ if (Locations.find().count() === 0) {
     title: "Scorpius",
     body: "Scorpius, sometimes known as Scorpio, is one of the constellations of the zodiac.",
     latitude: "33.05",
-    longitude: "-118.25"
+    longitude: "-118.45"
   });
 
 }

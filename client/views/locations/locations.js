@@ -33,6 +33,36 @@ Template.locations.rendered = function () {
         .attr("width", width)
         .attr("height", height);
 
+    /**
+     * Load the meteor collection for the Locations
+     */
+    Deps.autorun(function () {
+        var locations = Locations.find().fetch();
+        _.each(locations, function(location) {
+            console.log('Location', location.longitude + ', ' + location.latitude);
+
+            /**
+             * Use D3's projection manipulation to turn the long, lat coordinates into
+             * tralation measurements.
+             * Transform is a basic SVG attribute, and translate is a type of
+             * transformation.
+             *
+             * Position the circles at the center of the map at first and then
+             * move them to their real location with a transition.
+             */
+            svg.append("circle")
+                .attr("transform", function() {
+                    return "translate(" + projection([-117.022560, 33.887182]) + ")";
+                })
+                .transition()
+                .attr("r", 30)
+                .attr("transform", function() {
+                    return "translate(" + projection([location.longitude,location.latitude]) + ")";
+                })
+                .duration(500);
+        });
+    });
+
     //d3.json("/data/arizona.json", function(error, arizona) {
         //svg.append("path")
             //.datum(topojson.feature(arizona, arizona.objects.arizona))
