@@ -51,38 +51,115 @@ Template.locations.rendered = function () {
              * move them to their real location with a transition.
              */
             position = projection([location.longitude,location.latitude]);
-            svg.append("circle")
-                // Starting location at the center of the map
-                // We aren't animating form here any longer.
+            //svg.append("circle")
+                //// Starting location at the center of the map
+                //// We aren't animating form here any longer.
+                ////.attr("transform", function() {
+                    ////return "translate(" + projection([-117.022560, 33.887182]) + ")";
+                ////})
+
+                //.attr("class", 'location-title')
                 //.attr("transform", function() {
-                    //return "translate(" + projection([-117.022560, 33.887182]) + ")";
+                    //return "translate(" + projection([location.longitude,location.latitude]) + ")";
                 //})
 
+            /**
+             * Draw a white background first
+             *
+             * This serves as the matte for a shadow and also gives us a old
+             * skoool white border around the photo.
+             */
+            svg.append('rect')
                 .attr("transform", function() {
                     return "translate(" + projection([location.longitude,location.latitude]) + ")";
                 })
-                .attr("r", .01)
-                .transition()
-                .attr("r", 50)
-                .duration(300)
-                .delay(i * 200) // Stagger the markers animating in
-                .transition()
-                .attr("r", 32)
-                .duration(100)
-                .transition()
-                .attr("r", 40)
-                .duration(80);
+                .attr("width", 300)
+                .attr("height", 250)
+                .attr('stroke', 'white')
+                .attr('stroke-width', '10')
+                .attr('class', 'location-matte');
 
-            svg.append("svg:image")
+            clipId = 'special-' + i;
+            console.log(clipId);
+            svg.append('clipPath')
+                .attr("id", clipId)
+                    /**
+                     * Clip with a circle that bounces in from its center
+                     */
+                    //.append('circle')
+                    //.attr("transform", function() {
+                        //return "translate(" + projection([location.longitude,location.latitude]) + ")";
+                    //})
+                    //.attr("r", .01)
+                    //.transition()
+                    //.attr("r", 90)
+                    //.duration(300)
+                    //.delay(i * 200) // Stagger the markers animating in
+                    //.transition()
+                    //.attr("r", 40)
+                    //.duration(100)
+                    //.transition()
+                    //.attr("r", 80)
+                    //.duration(80)
+
+                    /**
+                     * Clip the image with a rectangle
+                     */
+                    .append('rect')
+                    .attr("transform", function() {
+                        return "translate(" + projection([location.longitude,location.latitude]) + ")";
+                    })
+                    .attr("width", 300)
+                    .attr("height", 250)
+
+                    //.attr('clip-path', clipIdUrl)
+                    //.attr("transform", function() {
+                        //return "translate(" + projection([location.longitude,location.latitude]) + ")";
+                    //})
+                    //.attr("r", 40);
+
+            clipIdUrl = 'url(#' + clipId + ')';
+            console.log(clipIdUrl);
+            svg.append('image')
                 .attr("xlink:href", "/images/house.jpg")
+                .attr("width", "600")
+                .attr("height", "400")
+                .attr("x", (position[0]-100))
+                .attr("y", (position[1]-100))
+                .attr("clip-path", clipIdUrl);
+
+            /**
+             * Finally draw a placename
+             */
+            svg.append('svg:text')
                 .attr("x", position[0])
                 .attr("y", position[1])
-                .attr("width", "200")
-                .attr("height", "182")
-                .transition()
-                .attr("width", "400")
-                .attr("height", "282")
-                .duration(800);
+                .attr("class", 'location-title')
+                .text(location.title);
+
+            /**
+             * Reference dot to show where the location lat long is pointing
+             *
+             * This should be turned off in the final version.
+             */
+            svg.append('circle')
+                .attr("r", 10)
+                .attr("transform", function() {
+                    return "translate(" + projection([location.longitude,location.latitude]) + ")";
+                })
+                .attr("class", 'location-ref-marker')
+
+
+            //svg.append("svg:image")
+                //.attr("xlink:href", "/images/house.jpg")
+                //.attr("x", position[0])
+                //.attr("y", position[1])
+                //.attr("width", "200")
+                //.attr("height", "182")
+                //.transition()
+                //.attr("width", "400")
+                //.attr("height", "282")
+                //.duration(800);
         });
     });
 
