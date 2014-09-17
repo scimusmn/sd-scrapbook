@@ -5,12 +5,24 @@
 /* Project styles */
 @import "_colors.import.less";
 @import "_sizes.import.less";
+@import "_fonts.import.less";
 
 body {
   background: #FFF;
-  color: #FF3e00;
+  color: @background-tan;
   margin: 0;
   padding: 0;
+  font-family: 'FuturaTS-Light', sans-serif;
+}
+
+.title {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 30px;
+  background: @attic-maroon;
+  width: @screen-width;
+  padding: 5px;
 }
 
 .container {

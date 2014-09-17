@@ -1,8 +1,11 @@
 <template name="locations">
   <div class="container container-map map-base">
+    <!--<div class="title">-->
+      <!--Digital Scrapbook-->
+    <!--</div>-->
     <div class="location-markers">
       {{#each locations}}
-        <a href="{{pathFor "location"}}">{{title}}</a><br>
+      <a href="{{pathFor "location"}}">{{title}}</a><br>
       {{/each}}
     </div>
   </div>
