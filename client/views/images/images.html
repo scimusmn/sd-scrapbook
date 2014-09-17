@@ -1,0 +1,9 @@
+<template name="images">
+  <div class="container container-map map-base">
+    <div class="image-markers">
+      {{#each images}}
+      <a href="{{pathFor "image"}}">{{title}}</a><br>
+      {{/each}}
+    </div>
+  </div>
+</template>

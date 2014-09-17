@@ -17,3 +17,11 @@ Meteor.publish('allLocations', function() {
 Meteor.publish('singleLocation', function(id) {
   return Locations.find(id);
 });
+
+/**
+ * Publish all Images
+ */
+Meteor.publish('allImages', function() {
+  return Images.find();
+});
+

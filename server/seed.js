@@ -24,10 +24,23 @@ if (Locations.find().count() === 0) {
   });
 
   Locations.insert({
-    title: "Scorpius",
-    body: "Scorpius, sometimes known as Scorpio, is one of the constellations of the zodiac.",
-    latitude: "33.05",
-    longitude: "-118.45"
+    title: "Anza-Borrego Desert",
+    description: "Anza-Borrego Desert State Park (ABDSP) is a state park located within the Colorado Desert of southern California, United States.",
+    latitude: "33.100492",
+    longitude: "-116.301327"
+
+  });
+
+}
+
+if (Images.find().count() === 0) {
+
+  Images.insert({
+    title: "Fieldtrip",
+    description: "Beaty, guide, and Mrs. Abbott among ocotillos during San Diego Natural History Museum trip to Borrego Valley and Thousand Palm Canyon.",
+    latitude: "33.100492",
+    longitude: "-116.301327"
+
   });
 
 }
