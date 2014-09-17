@@ -63,36 +63,37 @@ Template.locations.rendered = function () {
         });
     });
 
-    //d3.json("/data/arizona.json", function(error, arizona) {
+    /**
+     * Test map data to position the map projection
+     *
+     * These don't need to be shown in the final map, but keep them here.
+     * If the background raster map changes, we will need this data to
+     * reproject the D3 map so that the location markers are correct.
+     */
+    //d3.json("/data/salton.json", function(error, salton) {
         //svg.append("path")
-            //.datum(topojson.feature(arizona, arizona.objects.arizona))
+            //.datum(topojson.feature(salton, salton.objects.salton))
             //.attr("d", path);
     //});
 
-    d3.json("/data/salton.json", function(error, salton) {
-        svg.append("path")
-            .datum(topojson.feature(salton, salton.objects.salton))
-            .attr("d", path);
-    });
+    //d3.json("/data/i15.json", function(error, i15) {
+        //svg.append("path")
+            //.datum(topojson.feature(i15, i15.objects.i15))
+            //.attr("d", path);
+    //});
 
-    d3.json("/data/i15.json", function(error, i15) {
-        svg.append("path")
-            .datum(topojson.feature(i15, i15.objects.i15))
-            .attr("d", path);
-    });
+    //d3.json("/data/states.json", function(error, states) {
+        //svg.append("path")
+            //.datum(topojson.feature(states, states.objects.states))
+            //.attr("d", path);
+    //});
 
-    d3.json("/data/states.json", function(error, states) {
-        svg.append("path")
-            .datum(topojson.feature(states, states.objects.states))
-            .attr("d", path);
-    });
-
-    d3.json("/data/cities.json", function(error, cities) {
-        svg.append("path")
-            .datum(topojson.feature(cities, cities.objects.cities))
-            .attr("d", path)
-            .attr("class", 'cities');
-    });
+    //d3.json("/data/cities.json", function(error, cities) {
+        //svg.append("path")
+            //.datum(topojson.feature(cities, cities.objects.cities))
+            //.attr("d", path)
+            //.attr("class", 'cities');
+    //});
 
 };
 
