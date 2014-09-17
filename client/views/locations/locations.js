@@ -38,7 +38,7 @@ Template.locations.rendered = function () {
      */
     Deps.autorun(function () {
         var locations = Locations.find().fetch();
-        _.each(locations, function(location) {
+        _.each(locations, function(location, i) {
             console.log('Location', location.longitude + ', ' + location.latitude);
 
             /**
@@ -50,16 +50,39 @@ Template.locations.rendered = function () {
              * Position the circles at the center of the map at first and then
              * move them to their real location with a transition.
              */
+            position = projection([location.longitude,location.latitude]);
             svg.append("circle")
-                .attr("transform", function() {
-                    return "translate(" + projection([-117.022560, 33.887182]) + ")";
-                })
-                .transition()
-                .attr("r", 30)
+                // Starting location at the center of the map
+                // We aren't animating form here any longer.
+                //.attr("transform", function() {
+                    //return "translate(" + projection([-117.022560, 33.887182]) + ")";
+                //})
+
                 .attr("transform", function() {
                     return "translate(" + projection([location.longitude,location.latitude]) + ")";
                 })
-                .duration(500);
+                .attr("r", .01)
+                .transition()
+                .attr("r", 50)
+                .duration(300)
+                .delay(i * 200) // Stagger the markers animating in
+                .transition()
+                .attr("r", 32)
+                .duration(100)
+                .transition()
+                .attr("r", 40)
+                .duration(80);
+
+            svg.append("svg:image")
+                .attr("xlink:href", "/images/house.jpg")
+                .attr("x", position[0])
+                .attr("y", position[1])
+                .attr("width", "200")
+                .attr("height", "182")
+                .transition()
+                .attr("width", "400")
+                .attr("height", "282")
+                .duration(800);
         });
     });
 
