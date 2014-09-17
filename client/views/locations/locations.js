@@ -51,17 +51,6 @@ Template.locations.rendered = function () {
              * move them to their real location with a transition.
              */
             position = projection([location.longitude,location.latitude]);
-            //svg.append("circle")
-                //// Starting location at the center of the map
-                //// We aren't animating form here any longer.
-                ////.attr("transform", function() {
-                    ////return "translate(" + projection([-117.022560, 33.887182]) + ")";
-                ////})
-
-                //.attr("class", 'location-title')
-                //.attr("transform", function() {
-                    //return "translate(" + projection([location.longitude,location.latitude]) + ")";
-                //})
 
             /**
              * Draw a white background first
