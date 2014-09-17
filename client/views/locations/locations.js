@@ -19,7 +19,7 @@ Template.locations.rendered = function () {
     height = 1080;
 
     /**
-     * Web mercator focused on Arizona
+     * Southern california focus
      */
     var projection = d3.geo.mercator()
         .scale(13168)
