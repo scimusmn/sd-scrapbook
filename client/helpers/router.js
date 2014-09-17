@@ -57,7 +57,7 @@ Router.map(function() {
     },
     data: function () {
       return {
-        location: Location.findOne(this.params._id)
+        location: Locations.findOne(this.params._id)
       }
     }
   });
