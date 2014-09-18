@@ -1,27 +1,27 @@
-/* ---------------------------------------------------- +/
+/**
+ * Publications
+ *
+ * All publications-related code.
+ */
 
-## Publications ##
-
-All publications-related code.
-
-/+ ---------------------------------------------------- */
-
-// Publish all Locations
-
+/**
+ * Publish all locations
+ */
 Meteor.publish('allLocations', function() {
-  return Locations.find();
+    return Locations.find();
 });
 
-// Publish a single location
-
+/**
+ * Publish a single location
+ */
 Meteor.publish('singleLocation', function(id) {
-  return Locations.find(id);
+    return Locations.find(id);
 });
 
 /**
  * Publish all Images
  */
 Meteor.publish('allImages', function() {
-  return Images.find();
+    return Images.find();
 });
 
