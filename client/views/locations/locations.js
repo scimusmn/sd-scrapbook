@@ -1,10 +1,8 @@
-/* ---------------------------------------------------- +/
-
-## Locations ##
-
-Code related to the locations template
-
-/+ ---------------------------------------------------- */
+/**
+ * Locations
+ *
+ * Code related to the locations template
+ */
 
 Template.locations.created = function () {
     //
@@ -14,21 +12,62 @@ Template.locations.helpers({
     //
 });
 
+/**
+ * Code executed once the page is loaded and rendered
+ */
 Template.locations.rendered = function () {
-    var width = 1920,
-    height = 1080;
-
     /**
-     * Southern california focus
+     * Set the map projection to a Southern California focus
+     *
+     * This will need to be reprojected if the background map raster changes
      */
     var projection = d3.geo.mercator()
         .scale(13168)
         .center([-119.082, 34.656])
         .precision(.1);
 
-    var path = d3.geo.path()
-        .projection(projection);
+    /**
+     * Test map data to position the map projection
+     *
+     * These don't need to be shown in the final map, but keep them here.
+     * If the background raster map changes, we will need this data to
+     * reproject the D3 map so that the location markers are correct.
+     */
 
+    //var path = d3.geo.path()
+        //.projection(projection);
+
+    //d3.json("/data/salton.json", function(error, salton) {
+        //svg.append("path")
+            //.datum(topojson.feature(salton, salton.objects.salton))
+            //.attr("d", path);
+    //});
+
+    //d3.json("/data/i15.json", function(error, i15) {
+        //svg.append("path")
+            //.datum(topojson.feature(i15, i15.objects.i15))
+            //.attr("d", path);
+    //});
+
+    //d3.json("/data/states.json", function(error, states) {
+        //svg.append("path")
+            //.datum(topojson.feature(states, states.objects.states))
+            //.attr("d", path);
+    //});
+
+    //d3.json("/data/cities.json", function(error, cities) {
+        //svg.append("path")
+            //.datum(topojson.feature(cities, cities.objects.cities))
+            //.attr("d", path)
+            //.attr("class", 'cities');
+    //});
+
+    /**
+     * Initiate the SVG object for drawing all the location markers
+     */
+    // TODO: read this in from the LESS
+    var width = 1920;
+    var height = 1080;
     var svg = d3.select(".container").append("svg")
         .attr("width", width)
         .attr("height", height);
@@ -138,7 +177,12 @@ Template.locations.rendered = function () {
                 })
                 .attr("class", 'location-ref-marker')
 
-
+            /**
+             * Append an image at a specific location
+             *
+             * This is for reference, now that we're appending images
+             * per marker.
+             */
             //svg.append("svg:image")
                 //.attr("xlink:href", "/images/house.jpg")
                 //.attr("x", position[0])
@@ -151,38 +195,6 @@ Template.locations.rendered = function () {
                 //.duration(800);
         });
     });
-
-    /**
-     * Test map data to position the map projection
-     *
-     * These don't need to be shown in the final map, but keep them here.
-     * If the background raster map changes, we will need this data to
-     * reproject the D3 map so that the location markers are correct.
-     */
-    //d3.json("/data/salton.json", function(error, salton) {
-        //svg.append("path")
-            //.datum(topojson.feature(salton, salton.objects.salton))
-            //.attr("d", path);
-    //});
-
-    //d3.json("/data/i15.json", function(error, i15) {
-        //svg.append("path")
-            //.datum(topojson.feature(i15, i15.objects.i15))
-            //.attr("d", path);
-    //});
-
-    //d3.json("/data/states.json", function(error, states) {
-        //svg.append("path")
-            //.datum(topojson.feature(states, states.objects.states))
-            //.attr("d", path);
-    //});
-
-    //d3.json("/data/cities.json", function(error, cities) {
-        //svg.append("path")
-            //.datum(topojson.feature(cities, cities.objects.cities))
-            //.attr("d", path)
-            //.attr("class", 'cities');
-    //});
 
 };
 
