@@ -5,10 +5,16 @@
  */
 
 /**
- * Publish all locations
+ * Publish all locations.
+ *
+ * We also pull images along or now. Eventually we will filter this down
+ * for better efficiency.
  */
 Meteor.publish('allLocations', function() {
-    return Locations.find();
+    return [
+        Locations.find();
+        Images.find();
+    ]
 });
 
 /**
