@@ -30,7 +30,6 @@ if (Locations.find().count() === 0) {
     description: "Anza-Borrego Desert State Park (ABDSP) is a state park located within the Colorado Desert of southern California, United States.",
     latitude: "33.100492",
     longitude: "-116.301327"
-
   });
 
 }
