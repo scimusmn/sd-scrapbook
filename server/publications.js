@@ -12,8 +12,8 @@
  */
 Meteor.publish('allLocations', function() {
     return [
-        Locations.find();
-        Images.find();
+        Locations.find(),
+        Images.find()
     ]
 });
 
