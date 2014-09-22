@@ -77,6 +77,8 @@ Template.locations.rendered = function () {
      */
     Deps.autorun(function () {
         var locations = Locations.find().fetch();
+        var images = Images.find().fetch();
+        console.log('Images', images);
         _.each(locations, function(location, i) {
             console.log('Location', location.longitude + ', ' + location.latitude);
 
@@ -194,8 +196,27 @@ Template.locations.rendered = function () {
                 //.attr("height", "282")
                 //.duration(800);
         });
-    });
+        _.each(images, function(image, i) {
+            console.log('Image', image.longitude + ', ' + image.latitude);
+            position = projection([image.longitude,image.latitude]);
 
+            /**
+             * Draw a white background first
+             *
+             * This serves as the matte for a shadow and also gives us a old
+             * skoool white border around the photo.
+             */
+            svg.append('rect')
+                .attr("transform", function() {
+                    return "translate(" + position + ")";
+                })
+                .attr("width", 300)
+                .attr("height", 250)
+                .attr('stroke', 'white')
+                .attr('stroke-width', '10')
+                .attr('class', 'location-matte');
+        });
+    });
 };
 
 Template.locations.events({

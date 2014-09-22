@@ -43,8 +43,10 @@ if (Images.find().count() === 0) {
     title: "Fieldtrip",
     parentLocation: anzaBorrego,
     description: "Beaty, guide, and Mrs. Abbott among ocotillos during San Diego Natural History Museum trip to Borrego Valley and Thousand Palm Canyon.",
-    latitude: "33.100492",
-    longitude: "-116.301327",
+    //latitude: "33.100492",
+    //longitude: "-116.301327",
+    latitude: "34.100492",
+    longitude: "-117.301327",
     date: '1927'
   });
 
