@@ -21,6 +21,10 @@ sed -i -e 1,4d temp-sorted.csv
 # Remove whitespace
 echo "Trimming whitespace"
 csvfix trim -t temp-sorted.csv > temp-trimmed.csv
+
+# Remove any rows where the primary ID is not present.
+# This cleans up some note rows.
+echo "Removing extra rows"
 csvfix remove -f 6 -e '^$' temp-trimmed.csv > temp-stripped.csv
 cat header.csv temp-stripped.csv >> final.csv
 #mv temp-stripped.csv final.csv
