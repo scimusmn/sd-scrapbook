@@ -27,6 +27,11 @@ csvfix trim -t temp-sorted.csv > temp-trimmed.csv
 echo "Removing extra rows"
 csvfix remove -f 6 -e '^$' temp-trimmed.csv > temp-stripped.csv
 
+# Make our primary ID lower with no dash or underscore
+echo "Removing chracters from the ID"
+csvfix lower -f 6 temp-stripped.csv > temp-lower.csv
+csvfix edit -f 6 -e 's/[-,_]//g' temp-lower.csv > temp-dashless.csv
+
 # Change empty cells to a dash '-'
 # This makes it a bit easier to SEE in Excel.
 # I might remove this in production.
@@ -40,7 +45,7 @@ csvfix remove -f 6 -e '^$' temp-trimmed.csv > temp-stripped.csv
 # Split the lat,long column into two columns
 # We want to store this as separate fields in the data base.
 echo "Splitting out latitude and longitude"
-csvfix split_char -f 12 -c ',' temp-stripped.csv > temp-latlong.csv
+csvfix split_char -f 12 -c ',' temp-dashless.csv > temp-latlong.csv
 
 # Add the header
 echo "Adding a header row"
