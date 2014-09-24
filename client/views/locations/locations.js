@@ -197,7 +197,7 @@ Template.locations.rendered = function () {
                 //.duration(800);
         });
         _.each(images, function(image, i) {
-            console.log('Image', image.longitude + ', ' + image.latitude);
+            console.log('Image', image.title + ' - ' + image.longitude + ', ' + image.latitude);
             position = projection([image.longitude,image.latitude]);
 
             /**
