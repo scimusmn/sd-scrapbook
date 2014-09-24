@@ -26,6 +26,28 @@ csvfix trim -t temp-sorted.csv > temp-trimmed.csv
 # This cleans up some note rows.
 echo "Removing extra rows"
 csvfix remove -f 6 -e '^$' temp-trimmed.csv > temp-stripped.csv
-cat header.csv temp-stripped.csv >> final.csv
-#mv temp-stripped.csv final.csv
+
+# Change empty cells to a dash '-'
+# This makes it a bit easier to SEE in Excel.
+# I might remove this in production.
+# This should work but is producing an error.
+#
+#    ERROR: Character value 194 too big
+#
+# So I'm leaving it out for now.
+#csvfix edit -e 's/^$/ /g' temp-stripped.csv > temp-dashed.csv
+
+# Split the lat,long column into two columns
+# We want to store this as separate fields in the data base.
+echo "Splitting out latitude and longitude"
+csvfix split_char -f 12 -c ',' temp-stripped.csv > temp-latlong.csv
+
+# Add the header
+echo "Adding a header row"
+cat header.csv temp-latlong.csv >> temp-header.csv
+
+# Remove any columns outside our header scope
+echo "Removing extra columns"
+csvfix order -f 1:41 temp-header.csv > final.csv
+
 rm -rf temp-*
