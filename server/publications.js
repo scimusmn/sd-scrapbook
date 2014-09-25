@@ -60,7 +60,7 @@ Meteor.publish('allLocations', function() {
 
     return [
         Locations.find(),
-        Images.find(query)
+        Images.find(query, { title: 1, longitude: 1, latitude: 1, photographer: 1 })
         // Old random method
         // only pulled one image randomly form the entire list
         //Images.find( {}, { title: 1, longitude: 1, latitude: 1, photographer: 1}).skip(randNum).limit(1)
