@@ -201,7 +201,7 @@ Template.locations.rendered = function () {
          *
          */
         _.each(images, function(image, i) {
-            //console.log('Image: Title - ', image.title + '; Latitude - ' + image.latitude + '; Longitude - ' + image.longitude );
+            console.log('Image: Title - ', image.title + '; Latitude - ' + image.latitude + '; Longitude - ' + image.longitude );
             position = projection([image.longitude, image.latitude]);
 
             /**
