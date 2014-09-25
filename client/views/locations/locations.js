@@ -193,8 +193,8 @@ Template.locations.rendered = function () {
                 //.duration(800);
         });
         _.each(images, function(image, i) {
-            console.log('Image', image.title + ' - ' + image.lon + ', ' + image.lat);
-            position = projection([image.longitude,image.latitude]);
+            //console.log('Image: Title - ', image.title + '; Latitude - ' + image.latitude + '; Longitude - ' + image.longitude );
+            position = projection([image.longitude, image.latitude]);
 
             /**
              * Draw a white background first
@@ -204,13 +204,24 @@ Template.locations.rendered = function () {
              */
             svg.append('rect')
                 .attr("transform", function() {
-                    return "translate(" + position + ")";
+                    return "translate(" + position + ") scale(0.1)";
                 })
                 .attr("width", 300)
                 .attr("height", 250)
                 .attr('stroke', 'white')
                 .attr('stroke-width', '10')
-                .attr('class', 'location-matte');
+                .attr('class', 'location-matte')
+                .transition()
+                .delay(i * 100) // Stagger the markers animating in
+                .attr("transform", function() {
+                    return "translate(" + position + ") scale(1, 1)";
+                })
+                .duration(200);
+            svg.append('svg:text')
+                .attr("x", position[0])
+                .attr("y", position[1])
+                .attr("class", 'location-title')
+                .text(image.title);
         });
     });
 };
