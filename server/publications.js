@@ -18,10 +18,51 @@
 
 Meteor.publish('allLocations', function() {
 
-    var randNum = Math.floor((Math.random() * (imagesCount - 1) ) + 1);
-    console.log('rand', randNum);
+    /**
+     * Establish the size of the image collection so that we can select random
+     * elements within it.
+     */
+    // Devel approach to Location query
+    // Eventually I'll add in a find to discover the active locations later.
+    var activeLocIds = [1, 2, 13, 19];
+    var result = '';
+
+    /**
+     * Function to pad out the random numbers
+     *
+     * This helps us ensure that we only get on ID per location in the query
+     */
+    function padNumberMath(number, pad) {
+        var N = Math.pow(10, pad);
+        return number < N ? ("" + (N + number)).slice(1) : "" + number
+    }
+
+    /**
+     * Get an image for each location
+     */
+    var query = {
+        // Nest our and queries in an or, so we can get each location
+        $or: []
+    };
+
+    _.each(activeLocIds, function(activeLocId, i) {
+        // Count the images in each location and pick a random one
+        result = Images.find({dsLocId: activeLocId}).count();
+        var randNum = padNumberMath(Math.floor((Math.random() * (result - 1) ) + 1), 3);
+
+        // Add to our query, selecting for the location and random number
+        // using the _id
+        query['$or'].push({
+            $and: [ { dsLocId: activeLocId }, { _id: { $regex: randNum + '$', $options: 'i'}}]
+        })
+
+    });
+
     return [
         Locations.find(),
+        Images.find(query)
+        // Old random method
+        // only pulled one image randomly form the entire list
         //Images.find( {}, { title: 1, longitude: 1, latitude: 1, photographer: 1}).skip(randNum).limit(1)
     ]
 
