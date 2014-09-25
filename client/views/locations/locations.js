@@ -192,6 +192,14 @@ Template.locations.rendered = function () {
                 //.attr("height", "282")
                 //.duration(800);
         });
+
+        /**
+         * Images
+         *
+         * Actually I think that this will be our primary collection. I might
+         * move this into a seperate collection at some point.
+         *
+         */
         _.each(images, function(image, i) {
             //console.log('Image: Title - ', image.title + '; Latitude - ' + image.latitude + '; Longitude - ' + image.longitude );
             position = projection([image.longitude, image.latitude]);
