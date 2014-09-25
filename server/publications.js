@@ -17,18 +17,14 @@
  */
 
 Meteor.publish('allLocations', function() {
-    var imagesCount = Images.find({}).count();
-    console.log(imagesCount);
 
     var randNum = Math.floor((Math.random() * (imagesCount - 1) ) + 1);
     console.log('rand', randNum);
     return [
         Locations.find(),
         //Images.find( {}, { title: 1, longitude: 1, latitude: 1, photographer: 1}).skip(randNum).limit(1)
-
-
-        Images.find( {}, {'title':1, longitude: 1, latitude: 1, skip: randNum, limit: 1})
     ]
+
 });
 
 /**
