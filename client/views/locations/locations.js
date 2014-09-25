@@ -78,9 +78,7 @@ Template.locations.rendered = function () {
     Deps.autorun(function () {
         var locations = Locations.find().fetch();
         var images = Images.find().fetch();
-        console.log('Images', images);
         _.each(locations, function(location, i) {
-            console.log('Location', location.longitude + ', ' + location.latitude);
 
             /**
              * Use D3's projection manipulation to turn the long, lat coordinates into
@@ -110,7 +108,6 @@ Template.locations.rendered = function () {
                 .attr('class', 'location-matte');
 
             clipId = 'special-' + i;
-            console.log(clipId);
             svg.append('clipPath')
                 .attr("id", clipId)
                     /**
@@ -149,7 +146,6 @@ Template.locations.rendered = function () {
                     //.attr("r", 40);
 
             clipIdUrl = 'url(#' + clipId + ')';
-            console.log(clipIdUrl);
             svg.append('image')
                 .attr("xlink:href", "/images/house.jpg")
                 .attr("width", "600")
@@ -197,7 +193,7 @@ Template.locations.rendered = function () {
                 //.duration(800);
         });
         _.each(images, function(image, i) {
-            console.log('Image', image.title + ' - ' + image.longitude + ', ' + image.latitude);
+            console.log('Image', image.title + ' - ' + image.lon + ', ' + image.lat);
             position = projection([image.longitude,image.latitude]);
 
             /**
