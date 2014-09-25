@@ -49,6 +49,7 @@ Meteor.publish('allLocations', function() {
         // Count the images in each location and pick a random one
         result = Images.find({dsLocId: activeLocId}).count();
         var randNum = padNumberMath(Math.floor((Math.random() * (result - 1) ) + 1), 3);
+        console.log('loc:rand -', activeLocId + ':' + randNum);
 
         // Add to our query, selecting for the location and random number
         // using the _id
@@ -57,6 +58,7 @@ Meteor.publish('allLocations', function() {
         })
 
     });
+    console.log('---');
 
     return [
         Locations.find(),
