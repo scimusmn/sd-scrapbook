@@ -8,5 +8,25 @@
       <a href="{{pathFor "location"}}">{{title}}</a><br>
       {{/each}}
     </div>
+    <div class="images">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <td>location</td>
+            <td>title</td>
+            <td>photographer</td>
+          </tr>
+        </thead>
+        <tbody>
+        {{#each images}}
+          <tr>
+            <td>-</td>
+            <td><a href="{{pathFor "image"}}">{{title}}</a></td>
+            <td>{{photographer}}</td>
+          </tr>
+        {{/each}}
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>

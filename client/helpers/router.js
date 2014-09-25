@@ -45,7 +45,8 @@ Router.map(function() {
     },
     data: function () {
       return {
-        locations: Locations.find()
+        locations: Locations.find(),
+        images: Images.find()
       }
     }
   });
