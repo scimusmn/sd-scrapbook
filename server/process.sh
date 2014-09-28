@@ -56,3 +56,14 @@ echo "Removing extra columns"
 csvfix order -f 1:41 temp-header.csv > final.csv
 
 rm -rf temp-*
+
+# This final step is manual and is only documented here for reference.
+# Once you've created this big CSV of all the images we need to add the image
+# dimension data into the table. We use imagemagick to do this, and then
+# merge the csv into the file with new headers
+#
+# Create the image dimension sheet
+# identify -format "%t,%w,%h,%[fx:w/h]\n" *.jpg > dimensions.csv
+#
+# Merge the dimensions.csv into the final.csv
+
