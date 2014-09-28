@@ -132,12 +132,12 @@ Template.locations.rendered = function () {
                     /**
                      * Clip the image with a rectangle
                      */
-                    .append('rect')
-                    .attr("transform", function() {
-                        return "translate(" + projection([location.longitude,location.latitude]) + ")";
-                    })
-                    .attr("width", 300)
-                    .attr("height", 250)
+                    //.append('rect')
+                    //.attr("transform", function() {
+                        //return "translate(" + projection([location.longitude,location.latitude]) + ")";
+                    //})
+                    //.attr("width", 300)
+                    //.attr("height", 250)
 
                     //.attr('clip-path', clipIdUrl)
                     //.attr("transform", function() {
@@ -145,14 +145,14 @@ Template.locations.rendered = function () {
                     //})
                     //.attr("r", 40);
 
-            clipIdUrl = 'url(#' + clipId + ')';
-            svg.append('image')
-                .attr("xlink:href", "/images/house.jpg")
-                .attr("width", "600")
-                .attr("height", "400")
-                .attr("x", (position[0]-100))
-                .attr("y", (position[1]-100))
-                .attr("clip-path", clipIdUrl);
+            //clipIdUrl = 'url(#' + clipId + ')';
+            //svg.append('image')
+                //.attr("xlink:href", "/images/house.jpg")
+                //.attr("width", "600")
+                //.attr("height", "400")
+                //.attr("x", (position[0]-100))
+                //.attr("y", (position[1]-100))
+                //.attr("clip-path", clipIdUrl);
 
             /**
              * Finally draw a placename
@@ -203,6 +203,7 @@ Template.locations.rendered = function () {
         _.each(images, function(image, i) {
             console.log('Image: Title - ', image.title + '; Latitude - ' + image.latitude + '; Longitude - ' + image.longitude );
             position = projection([image.longitude, image.latitude]);
+            console.log('img ID', image._id);
 
             /**
              * Draw a white background first
@@ -210,26 +211,66 @@ Template.locations.rendered = function () {
              * This serves as the matte for a shadow and also gives us a old
              * skoool white border around the photo.
              */
-            svg.append('rect')
-                .attr("transform", function() {
-                    return "translate(" + position + ") scale(0.1)";
-                })
-                .attr("width", 300)
-                .attr("height", 250)
-                .attr('stroke', 'white')
-                .attr('stroke-width', '10')
-                .attr('class', 'location-matte')
-                .transition()
-                .delay(i * 100) // Stagger the markers animating in
-                .attr("transform", function() {
-                    return "translate(" + position + ") scale(1, 1)";
-                })
-                .duration(200);
+            //svg.append('rect')
+                //.attr("transform", function() {
+                    //return "translate(" + position + ") scale(0.1)";
+                //})
+                //.attr("width", 300)
+                //.attr("height", 250)
+                //.attr('stroke', 'white')
+                //.attr('stroke-width', '10')
+                //.attr('class', 'location-matte')
+                //.transition()
+                //.delay(i * 100) // Stagger the markers animating in
+                //.attr("transform", function() {
+                    //return "translate(" + position + ") scale(1, 1)";
+                //})
+                //.duration(200);
             svg.append('svg:text')
                 .attr("x", position[0])
                 .attr("y", position[1])
                 .attr("class", 'location-title')
                 .text(image.title);
+
+            var img = new Image();
+            var imgWidth = '';
+            var imgHeight = '';
+            var imgRatio = '';
+
+
+            svg.append('image')
+                .attr("xlink:href", "/images/source-photos/" + image._id + ".jpg")
+                .attr("width", "0")
+                .attr("height", "0")
+                .attr("opacity", ".1")
+                .attr("x", (position[0]-100))
+                .attr("y", (position[1]-100))
+                .attr('class', 'location-matte')
+                .transition()
+                //.delay(i * 50) // Stagger the markers animating in
+                .attr("width", "300")
+                .attr("height", "300")
+                .attr("opacity", "1")
+                .duration(500);
+
+            //img.onload = function() {
+
+              //imgWidth = this.width;
+              //imgHeight = this.height;
+              //console.log('DIMENSIONS: ',  imgWidth, imgHeight);
+
+                ////.transition()
+                ////.delay(i * 100) // Stagger the markers animating in
+                ////.attr("transform", function() {
+                    ////return "translate(" + position + ") scale(1, 1)";
+                ////})
+
+            //}
+            //imgRatio = (parseInt(imgWidth) / parseInt(imgHeight));
+            //console.log('ratio', imgRatio);
+            //img.src = "/images/source-photos/" + image._id + ".jpg";
+            //imgScaledHeight = Math.round(parseInt(imgWidth) * imgRatio);
+            //console.log('scaled height: ', imgScaledHeight);
         });
     });
 };
