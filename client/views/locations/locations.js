@@ -97,19 +97,19 @@ Template.locations.rendered = function () {
              * This serves as the matte for a shadow and also gives us a old
              * skoool white border around the photo.
              */
-            svg.append('rect')
-                .attr("transform", function() {
-                    return "translate(" + projection([location.longitude,location.latitude]) + ")";
-                })
-                .attr("width", 300)
-                .attr("height", 250)
-                .attr('stroke', 'white')
-                .attr('stroke-width', '10')
-                .attr('class', 'location-matte');
+            //svg.append('rect')
+                //.attr("transform", function() {
+                    //return "translate(" + projection([location.longitude,location.latitude]) + ")";
+                //})
+                //.attr("width", 300)
+                //.attr("height", 250)
+                //.attr('stroke', 'white')
+                //.attr('stroke-width', '10')
+                //.attr('class', 'location-matte');
 
-            clipId = 'special-' + i;
-            svg.append('clipPath')
-                .attr("id", clipId)
+            //clipId = 'special-' + i;
+            //svg.append('clipPath')
+                //.attr("id", clipId)
                     /**
                      * Clip with a circle that bounces in from its center
                      */
