@@ -1,6 +1,4 @@
 .DS_Store
-*.sublime-project
-*.sublime-workspace
-.meteor/.id
-public/fonts
-public/images/source-photos
+meteor/.meteor/.id
+meteor/public/fonts
+meteor/public/images/source-photos
