@@ -113,21 +113,21 @@ Template.locations.rendered = function () {
                     /**
                      * Clip with a circle that bounces in from its center
                      */
-                    //.append('circle')
-                    //.attr("transform", function() {
-                        //return "translate(" + projection([location.longitude,location.latitude]) + ")";
-                    //})
-                    //.attr("r", .01)
-                    //.transition()
-                    //.attr("r", 90)
-                    //.duration(300)
-                    //.delay(i * 200) // Stagger the markers animating in
-                    //.transition()
-                    //.attr("r", 40)
-                    //.duration(100)
-                    //.transition()
-                    //.attr("r", 80)
-                    //.duration(80)
+                    ////.append('circle')
+                    ////.attr("transform", function() {
+                        ////return "translate(" + projection([location.longitude,location.latitude]) + ")";
+                    ////})
+                    ////.attr("r", .01)
+                    ////.transition()
+                    ////.attr("r", 90)
+                    ////.duration(300)
+                    ////.delay(i * 200) // Stagger the markers animating in
+                    ////.transition()
+                    ////.attr("r", 40)
+                    ////.duration(100)
+                    ////.transition()
+                    ////.attr("r", 80)
+                    ////.duration(80)
 
                     /**
                      * Clip the image with a rectangle
