@@ -90,8 +90,8 @@ temp_header  = os.path.abspath('temp-header.csv')
 
 # Remove any columns outside our header scope
 print term.yellow('Removing extra columns')
-final  = os.path.abspath(data_path + os.sep + 'final.csv')
-(csvfix['order', '-f', '1:41', temp_header] > final)()
+piction  = os.path.abspath(data_path + os.sep + 'piction.csv')
+(csvfix['order', '-f', '1:41', temp_header] > piction)()
 
 # Cleanup all our temp files
 cwd = os.path.dirname(os.path.abspath(__file__))
@@ -106,4 +106,4 @@ for fl in glob.glob(cwd + '/temp-*'):
 ## Create the image dimension sheet
 ## identify -format "%t,%w,%h,%[fx:w/h]\n" *.jpg > dimensions.csv
 ##
-## Merge the dimensions.csv into the final.csv
+## Merge the dimensions.csv into the piction.csv
