@@ -5,6 +5,8 @@ from plumbum.cmd import cat, csvfix, in2csv, ls, sed, rm
 from blessings import Terminal
 import os
 import glob
+import csv
+import re
 
 # Setup the terminal object for blessings
 term = Terminal()
@@ -57,7 +59,15 @@ temp_trimmed = os.path.abspath('temp-trimmed.csv')
 # This cleans up some note rows.
 print term.yellow('Removing extra rows')
 temp_stripped = os.path.abspath('temp-stripped.csv')
-(csvfix['remove','-f', '6', '-e', "'^$'", temp_trimmed] > temp_stripped)()
+input = open(temp_trimmed, 'rb')
+output = open(temp_stripped, 'wb')
+writer = csv.writer(output)
+for row in csv.reader(input):
+    if row:
+        if not re.search('^$', row[5]):
+            writer.writerow(row)
+input.close()
+output.close()
 
 # Make our primary ID lower with no dash or underscore
 print term.yellow('Removing chracters from the ID')
