@@ -10,6 +10,7 @@ import glob
 term = Terminal()
 
 # Get setup
+data_path = '../data'
 database_file_name = 'piction'
 print term.bold('Processing data for the Digital Scrapbook')
 
@@ -29,7 +30,7 @@ sheet_csvs = []
 for sheet in sheets:
     sheet_csv = str.lower(sheet).replace('.', '') + '.csv'
     temp_sheet = 'temp-sheet-' + sheet_csv
-    (in2csv['--sheet', sheet, database_file_name + '.xlsx'] > temp_sheet)()
+    (in2csv['--sheet', sheet, data_path + os.sep + database_file_name + '.xlsx'] > temp_sheet)()
     sheet_csvs.append(os.path.abspath(temp_sheet))
 
 # Merge all the CSV files into a single file
@@ -83,13 +84,13 @@ temp_latlong = os.path.abspath('temp-latlong.csv')
 
 # Add the Piction data header
 print term.yellow('Adding a header row')
-piction_header  = os.path.abspath('piction_header.csv')
+piction_header  = os.path.abspath(data_path + os.sep + 'piction_header.csv')
 temp_header  = os.path.abspath('temp-header.csv')
 (cat[piction_header, temp_latlong] >> temp_header)()
 
 # Remove any columns outside our header scope
 print term.yellow('Removing extra columns')
-final  = os.path.abspath('final.csv')
+final  = os.path.abspath(data_path + os.sep + 'final.csv')
 (csvfix['order', '-f', '1:41', temp_header] > final)()
 
 # Cleanup all our temp files
