@@ -90,7 +90,7 @@ temp_header  = os.path.abspath('temp-header.csv')
 
 # Remove any columns outside our header scope
 print term.yellow('Removing extra columns')
-piction  = os.path.abspath(data_path + os.sep + 'piction.csv')
+piction  = os.path.abspath(data_path + os.sep + database_file_name + '.csv')
 (csvfix['order', '-f', '1:41', temp_header] > piction)()
 
 # Cleanup all our temp files
