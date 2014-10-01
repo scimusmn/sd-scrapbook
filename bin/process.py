@@ -100,8 +100,21 @@ temp_header  = os.path.abspath('temp-header.csv')
 
 # Remove any columns outside our header scope
 print term.yellow('Removing extra columns')
+temp_scope  = os.path.abspath('temp-scope.csv')
+(csvfix['order', '-f', '1:41', temp_header] > temp_scope)()
+
+# Build a dimensions file
+dimensions = os.path.abspath(data_path + os.sep + 'dimensions.csv')
+dimensions_header = os.path.abspath(data_path + os.sep + 'dimensions_header.csv')
+temp_dimensions = os.path.abspath('test-dimensions.csv')
+(cat[dimensions_header, dimensions] > temp_dimensions)()
+
+
+print term.yellow('Adding dimensions to piction file')
 piction  = os.path.abspath(data_path + os.sep + database_file_name + '.csv')
-(csvfix['order', '-f', '1:41', temp_header] > piction)()
+(csvfix['join', '-f', '6:1', temp_scope, temp_dimensions] > piction)()
+
+# csvfix join -f 6:1 piction.csv dimensions-new.csv > joined.csv
 
 # Cleanup all our temp files
 cwd = os.path.dirname(os.path.abspath(__file__))
