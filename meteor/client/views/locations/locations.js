@@ -190,25 +190,99 @@ Template.locations.rendered = function () {
 
         /**
          * Draw the title
+         *
+         * We probably won't use this on the final map.
          */
         svg.append('svg:text')
-            .attr("x", position[0])
-            .attr("y", position[1])
+            .attr("x", position[0] - 100)
+            .attr("y", position[1] - 110)
             .attr("class", 'location-title')
             .text(image.title);
 
         /**
-         * Draw a white background first
+         * Draw a white background for the image
          *
          * This serves as the matte for a shadow and also gives us a old
          * skoool white border around the photo.
          */
-        //svg.append('rect')
+        var imageBorder = 5;
+
+        // filters go in defs element
+        //var defs = svg.append("defs");
+
+        // create filter with id #drop-shadow
+        // height=130% so that the shadow is not clipped
+        //var filter = defs.append("filter")
+        //.attr("id", "drop-shadow")
+        //.attr("height", "130%");
+
+        // SourceAlpha refers to opacity of graphic that this filter will be applied to
+        // convolve that with a Gaussian with standard deviation 3 and store result
+        // in blur
+        //filter.append("feGaussianBlur")
+        //.attr("in", "SourceAlpha")
+        //.attr("stdDeviation", 5)
+        //.attr("result", "blur");
+
+        // translate output of Gaussian blur to the right and downwards with 2px
+        // store result in offsetBlur
+        //filter.append("feOffset")
+        //.attr("in", "blur")
+        //.attr("dx", 5)
+        //.attr("dy", 5)
+        //.attr("result", "offsetBlur");
+
+        // overlay original SourceGraphic over translated blurred opacity by using
+        // feMerge filter. Order of specifying inputs is important!
+        //var feMerge = filter.append("feMerge");
+
+        // Group for all the picture elements
+        var pictureGroup = svg.append("g");
+
+        var filter = pictureGroup.append("defs")
+        .append("filter")
+            .attr("id", "blur")
+        .append("feGaussianBlur")
+            .attr("stdDeviation", 5);
+
+        pictureGroup.append('rect')
+            .attr("width", "0")
+            .attr("height", "0")
+            .attr("opacity", ".1")
+            .attr("x", (position[0]))
+            .attr("y", (position[1]))
+            .style('fill', '#000')
+            .transition()
+            .delay(i * 50) // Stagger the markers animating in
+            // Simulate scaling form the center of the image
+            .attr("x", (position[0]) - (image.thumbWidth / 2))
+            .attr("y", (position[1]) - (image.thumbHeight / 2))
+            .attr("width", image.thumbWidth + (imageBorder * 2))
+            .attr("height", image.thumbHeight + (imageBorder * 2))
+            .attr("opacity", "1")
+            .attr("filter", "url(#blur)")
+            .duration(500);
+
+        pictureGroup.append('rect')
+            .attr("width", "0")
+            .attr("height", "0")
+            .attr("opacity", ".1")
+            .attr("x", (position[0]))
+            .attr("y", (position[1]))
+            .attr('class', 'location-matte')
+            .transition()
+            .delay(i * 50) // Stagger the markers animating in
+            // Simulate scaling form the center of the image
+            .attr("x", (position[0]) - (image.thumbWidth / 2))
+            .attr("y", (position[1]) - (image.thumbHeight / 2))
+            .attr("width", image.thumbWidth + (imageBorder * 2))
+            .attr("height", image.thumbHeight + (imageBorder * 2))
+            .attr("opacity", "1")
+            .duration(500);
+
         //.attr("transform", function() {
         //return "translate(" + position + ") scale(0.1)";
         //})
-        //.attr("width", 300)
-        //.attr("height", 250)
         //.attr('stroke', 'white')
         //.attr('stroke-width', '10')
         //.attr('class', 'location-matte')
@@ -219,44 +293,31 @@ Template.locations.rendered = function () {
         //})
         //.duration(200);
 
-        var img = new Image();
-        var imgWidth = '';
-        var imgHeight = '';
-        var imgRatio = '';
 
-        svg.append('image')
-        .attr("xlink:href", "/images/thumbnails/" + image._id + ".jpg")
-        .attr("width", "0")
-        .attr("height", "0")
-        .attr("opacity", ".1")
-        .attr("x", (position[0]-100))
-        .attr("y", (position[1]-100))
-        .attr('class', 'location-matte')
-        .transition()
-        .delay(i * 50) // Stagger the markers animating in
-        .attr("width", image.thumbWidth)
-        .attr("height", image.thumbHeight)
-        .attr("opacity", "1")
-        .duration(500);
-
-        //img.onload = function() {
-
-        //imgWidth = this.width;
-        //imgHeight = this.height;
-        //console.log('DIMENSIONS: ',  imgWidth, imgHeight);
-
-        ////.transition()
-        ////.delay(i * 100) // Stagger the markers animating in
-        ////.attr("transform", function() {
-        ////return "translate(" + position + ") scale(1, 1)";
-        ////})
-
+        //function blur() {
+            //filter.attr("stdDeviation", this.value / 5);
         //}
-        //imgRatio = (parseInt(imgWidth) / parseInt(imgHeight));
-        //console.log('ratio', imgRatio);
-        //img.src = "/images/source-photos/" + image._id + ".jpg";
-        //imgScaledHeight = Math.round(parseInt(imgWidth) * imgRatio);
-        //console.log('scaled height: ', imgScaledHeight);
+
+        pictureGroup.append('image')
+            .attr("xlink:href", "/images/thumbnails/" + image._id + ".jpg")
+            .attr("width", "0")
+            .attr("height", "0")
+            .attr("opacity", ".1")
+            .attr("x", (position[0] + imageBorder))
+            .attr("y", (position[1] + imageBorder))
+            .transition()
+            .delay(i * 50) // Stagger the markers animating in
+            // Simulate scaling form the center of the image
+            .attr("x", (position[0] + imageBorder) - (image.thumbWidth / 2))
+            .attr("y", (position[1] + imageBorder) - (image.thumbHeight / 2))
+            .attr("width", image.thumbWidth)
+            .attr("height", image.thumbHeight)
+            .attr("opacity", "1")
+            //.attr("transform", function() {
+                //return "skewY(60)";
+            //})
+            .duration(500);
+
     }
 
 
