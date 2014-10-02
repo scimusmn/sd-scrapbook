@@ -28,15 +28,15 @@ Template.locations.rendered = function () {
         .center([-119.082, 34.656])
         .precision(.1);
 
-
     var path = d3.geo.path()
         .projection(projection);
 
-
     /**
-     * City markers
+     * Dev map features
+     *
+     * Useful for dev map registrion. Normally disabled
      */
-    devMapFeatures(d3, projection);
+    //devMapFeatures(d3, projection);
 
     /**
      * Initiate the SVG object for drawing all the location markers
@@ -56,118 +56,7 @@ Template.locations.rendered = function () {
         var locations = Locations.find().fetch();
         var images = Images.find().fetch();
         _.each(locations, function(location, i) {
-
-            /**
-             * Use D3's projection manipulation to turn the long, lat coordinates into
-             * tralation measurements.
-             * Transform is a basic SVG attribute, and translate is a type of
-             * transformation.
-             *
-             * Position the circles at the center of the map at first and then
-             * move them to their real location with a transition.
-             */
-            position = projection([location.longitude,location.latitude]);
-
-            /**
-             * Draw a white background first
-             *
-             * This serves as the matte for a shadow and also gives us a old
-             * skoool white border around the photo.
-             */
-            //svg.append('rect')
-                //.attr("transform", function() {
-                    //return "translate(" + projection([location.longitude,location.latitude]) + ")";
-                //})
-                //.attr("width", 300)
-                //.attr("height", 250)
-                //.attr('stroke', 'white')
-                //.attr('stroke-width', '10')
-                //.attr('class', 'location-matte');
-
-            //clipId = 'special-' + i;
-            //svg.append('clipPath')
-                //.attr("id", clipId)
-                    /**
-                     * Clip with a circle that bounces in from its center
-                     */
-                    ////.append('circle')
-                    ////.attr("transform", function() {
-                        ////return "translate(" + projection([location.longitude,location.latitude]) + ")";
-                    ////})
-                    ////.attr("r", .01)
-                    ////.transition()
-                    ////.attr("r", 90)
-                    ////.duration(300)
-                    ////.delay(i * 200) // Stagger the markers animating in
-                    ////.transition()
-                    ////.attr("r", 40)
-                    ////.duration(100)
-                    ////.transition()
-                    ////.attr("r", 80)
-                    ////.duration(80)
-
-                    /**
-                     * Clip the image with a rectangle
-                     */
-                    //.append('rect')
-                    //.attr("transform", function() {
-                        //return "translate(" + projection([location.longitude,location.latitude]) + ")";
-                    //})
-                    //.attr("width", 300)
-                    //.attr("height", 250)
-
-                    //.attr('clip-path', clipIdUrl)
-                    //.attr("transform", function() {
-                        //return "translate(" + projection([location.longitude,location.latitude]) + ")";
-                    //})
-                    //.attr("r", 40);
-
-            //clipIdUrl = 'url(#' + clipId + ')';
-            //svg.append('image')
-                //.attr("xlink:href", "/images/house.jpg")
-                //.attr("width", "600")
-                //.attr("height", "400")
-                //.attr("x", (position[0]-100))
-                //.attr("y", (position[1]-100))
-                //.attr("clip-path", clipIdUrl);
-
-            /**
-             * Finally draw a placename
-             */
-            svg.append('svg:text')
-                .attr("x", position[0])
-                .attr("y", position[1])
-                .attr("class", 'location-title')
-                .text(location.title);
-
-            /**
-             * Reference dot to show where the location lat long is pointing
-             *
-             * This should be turned off in the final version.
-             */
-            svg.append('circle')
-                .attr("r", 10)
-                .attr("transform", function() {
-                    return "translate(" + projection([location.longitude,location.latitude]) + ")";
-                })
-                .attr("class", 'location-ref-marker')
-
-            /**
-             * Append an image at a specific location
-             *
-             * This is for reference, now that we're appending images
-             * per marker.
-             */
-            //svg.append("svg:image")
-                //.attr("xlink:href", "/images/house.jpg")
-                //.attr("x", position[0])
-                //.attr("y", position[1])
-                //.attr("width", "200")
-                //.attr("height", "182")
-                //.transition()
-                //.attr("width", "400")
-                //.attr("height", "282")
-                //.duration(800);
+            drawLocation(svg, projection, location, i);
         });
 
         /**
@@ -252,6 +141,116 @@ Template.locations.rendered = function () {
         });
     });
 
+    function drawLocation(svg, projection, location, i) {
+        /**
+        * Use D3's projection manipulation to turn the long, lat coordinates into
+        * tralation measurements.
+        * Transform is a basic SVG attribute, and translate is a type of
+        * transformation.
+        */
+        position = projection([location.longitude,location.latitude]);
+
+        /**
+         * Draw a white background first
+         *
+         * This serves as the matte for a shadow and also gives us a old
+         * skoool white border around the photo.
+         */
+        //svg.append('rect')
+        //.attr("transform", function() {
+        //return "translate(" + projection([location.longitude,location.latitude]) + ")";
+        //})
+        //.attr("width", 300)
+        //.attr("height", 250)
+        //.attr('stroke', 'white')
+        //.attr('stroke-width', '10')
+        //.attr('class', 'location-matte');
+
+        //clipId = 'special-' + i;
+        //svg.append('clipPath')
+        //.attr("id", clipId)
+        /**
+         * Clip with a circle that bounces in from its center
+         */
+        ////.append('circle')
+        ////.attr("transform", function() {
+        ////return "translate(" + projection([location.longitude,location.latitude]) + ")";
+        ////})
+        ////.attr("r", .01)
+        ////.transition()
+        ////.attr("r", 90)
+        ////.duration(300)
+        ////.delay(i * 200) // Stagger the markers animating in
+        ////.transition()
+        ////.attr("r", 40)
+        ////.duration(100)
+        ////.transition()
+        ////.attr("r", 80)
+        ////.duration(80)
+
+        /**
+         * Clip the image with a rectangle
+         */
+        //.append('rect')
+        //.attr("transform", function() {
+        //return "translate(" + projection([location.longitude,location.latitude]) + ")";
+        //})
+        //.attr("width", 300)
+        //.attr("height", 250)
+
+        //.attr('clip-path', clipIdUrl)
+        //.attr("transform", function() {
+        //return "translate(" + projection([location.longitude,location.latitude]) + ")";
+        //})
+        //.attr("r", 40);
+
+        //clipIdUrl = 'url(#' + clipId + ')';
+        //svg.append('image')
+        //.attr("xlink:href", "/images/house.jpg")
+        //.attr("width", "600")
+        //.attr("height", "400")
+        //.attr("x", (position[0]-100))
+        //.attr("y", (position[1]-100))
+        //.attr("clip-path", clipIdUrl);
+
+        /**
+         * Finally draw a placename
+         */
+        svg.append('svg:text')
+            .attr("x", position[0])
+            .attr("y", position[1])
+            .attr("class", 'location-title')
+            .text(location.title);
+
+        /**
+         * Reference dot to show where the location lat long is pointing
+         *
+         * This should be turned off in the final version.
+         */
+        svg.append('circle')
+            .attr("r", 10)
+            .attr("transform", function() {
+                    return "translate(" + projection([location.longitude,location.latitude]) + ")";
+                    })
+        .attr("class", 'location-ref-marker')
+
+        /**
+         * Append an image at a specific location
+         *
+         * This is for reference, now that we're appending images
+         * per marker.
+         */
+            //svg.append("svg:image")
+            //.attr("xlink:href", "/images/house.jpg")
+            //.attr("x", position[0])
+            //.attr("y", position[1])
+            //.attr("width", "200")
+            //.attr("height", "182")
+            //.transition()
+            //.attr("width", "400")
+            //.attr("height", "282")
+            //.duration(800);
+    }
 
     function devMapFeatures(d3, projection) {
         /**
