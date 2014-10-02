@@ -199,42 +199,8 @@ Template.locations.rendered = function () {
             .attr("class", 'location-title')
             .text(image.title);
 
-        /**
-         * Draw a white background for the image
-         *
-         * This serves as the matte for a shadow and also gives us a old
-         * skoool white border around the photo.
-         */
+        // Old skool border width
         var imageBorder = 5;
-
-        // filters go in defs element
-        //var defs = svg.append("defs");
-
-        // create filter with id #drop-shadow
-        // height=130% so that the shadow is not clipped
-        //var filter = defs.append("filter")
-        //.attr("id", "drop-shadow")
-        //.attr("height", "130%");
-
-        // SourceAlpha refers to opacity of graphic that this filter will be applied to
-        // convolve that with a Gaussian with standard deviation 3 and store result
-        // in blur
-        //filter.append("feGaussianBlur")
-        //.attr("in", "SourceAlpha")
-        //.attr("stdDeviation", 5)
-        //.attr("result", "blur");
-
-        // translate output of Gaussian blur to the right and downwards with 2px
-        // store result in offsetBlur
-        //filter.append("feOffset")
-        //.attr("in", "blur")
-        //.attr("dx", 5)
-        //.attr("dy", 5)
-        //.attr("result", "offsetBlur");
-
-        // overlay original SourceGraphic over translated blurred opacity by using
-        // feMerge filter. Order of specifying inputs is important!
-        //var feMerge = filter.append("feMerge");
 
         // Group for all the picture elements
         var pictureGroup = svg.append("g");
@@ -245,6 +211,7 @@ Template.locations.rendered = function () {
         .append("feGaussianBlur")
             .attr("stdDeviation", 5);
 
+        // Drop shadow rectangle
         pictureGroup.append('rect')
             .attr("width", "0")
             .attr("height", "0")
@@ -263,6 +230,7 @@ Template.locations.rendered = function () {
             .attr("filter", "url(#blur)")
             .duration(500);
 
+        // White border rectangle
         pictureGroup.append('rect')
             .attr("width", "0")
             .attr("height", "0")
@@ -280,24 +248,7 @@ Template.locations.rendered = function () {
             .attr("opacity", "1")
             .duration(500);
 
-        //.attr("transform", function() {
-        //return "translate(" + position + ") scale(0.1)";
-        //})
-        //.attr('stroke', 'white')
-        //.attr('stroke-width', '10')
-        //.attr('class', 'location-matte')
-        //.transition()
-        //.delay(i * 100) // Stagger the markers animating in
-        //.attr("transform", function() {
-        //return "translate(" + position + ") scale(1, 1)";
-        //})
-        //.duration(200);
-
-
-        //function blur() {
-            //filter.attr("stdDeviation", this.value / 5);
-        //}
-
+        // Image
         pictureGroup.append('image')
             .attr("xlink:href", "/images/thumbnails/" + image._id + ".jpg")
             .attr("width", "0")
@@ -313,9 +264,6 @@ Template.locations.rendered = function () {
             .attr("width", image.thumbWidth)
             .attr("height", image.thumbHeight)
             .attr("opacity", "1")
-            //.attr("transform", function() {
-                //return "skewY(60)";
-            //})
             .duration(500);
 
     }
