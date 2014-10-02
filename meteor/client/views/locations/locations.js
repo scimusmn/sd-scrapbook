@@ -201,6 +201,7 @@ Template.locations.rendered = function () {
          * move this into a seperate collection at some point.
          *
          */
+        images = _.shuffle(images);
         _.each(images, function(image, i) {
             console.log('Image: Title - ', image.title + '; Latitude - ' + image.latitude + '; Longitude - ' + image.longitude );
             position = projection([image.longitude, image.latitude]);
@@ -248,7 +249,7 @@ Template.locations.rendered = function () {
                 .attr("y", (position[1]-100))
                 .attr('class', 'location-matte')
                 .transition()
-                //.delay(i * 50) // Stagger the markers animating in
+                .delay(i * 50) // Stagger the markers animating in
                 .attr("width", image.thumbWidth)
                 .attr("height", image.thumbHeight)
                 .attr("opacity", "1")
