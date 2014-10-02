@@ -1,1 +1,1 @@
-_id,width,height,aspectRatio
+_id,thumbWidth,thumbHeight,thumbAspectRatio,expandedHeight,expandedWidth,expandedAspectRatio
