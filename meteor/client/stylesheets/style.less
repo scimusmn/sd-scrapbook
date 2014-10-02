@@ -72,26 +72,45 @@ svg.svg-canvas {
   left: 0;
 }
 
-.location-marker {
-  fill: transparent;
-  stroke: #333;
-  display: block;
-  stroke-width: 2;
-}
-
+//
+// Locations
+//
 .location-matte {
-  border: 4px solid #fff;
+  // Style for the matte border on the image
+  // TBD
 }
 
+// Text that goes along with each image at a location
 .location-title {
   font-size: 30px;
 }
 
+// Location references for each image location
 .location-ref-marker{
   fill: #f00;
   stroke: #FFF;
   stroke-width: 2px;
   opacity: .3;
+}
+
+//
+// Dev map styles for projection positioning
+//
+.water {
+  fill: @wetlands-blue;
+  opacity: .3;
+  borer: 2px solid #000;
+}
+
+.road {
+  fill: transparent;
+  borer: 2px solid #000;
+}
+
+.states {
+  fill: #000;
+  opacity: .2;
+  borer: 2px solid #000;
 }
 
 .cities {
