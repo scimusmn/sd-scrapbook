@@ -239,7 +239,7 @@ Template.locations.rendered = function () {
 
 
             svg.append('image')
-                .attr("xlink:href", "/images/source-photos/" + image._id + ".jpg")
+                .attr("xlink:href", "/images/thumbnails/" + image._id + ".jpg")
                 .attr("width", "0")
                 .attr("height", "0")
                 .attr("opacity", ".1")
@@ -248,8 +248,8 @@ Template.locations.rendered = function () {
                 .attr('class', 'location-matte')
                 .transition()
                 //.delay(i * 50) // Stagger the markers animating in
-                .attr("width", "300")
-                .attr("height", "300")
+                .attr("width", image.thumbWidth)
+                .attr("height", image.thumbHeight)
                 .attr("opacity", "1")
                 .duration(500);
 
