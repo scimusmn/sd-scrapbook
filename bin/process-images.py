@@ -28,7 +28,7 @@ mogrify_thumbnail_arguments = [
     '-path', photos_path + os.sep + 'processed-latest/thumbnails',
 
     # Thumbnail size
-    '-thumbnail', '300x300',
+    '-thumbnail', '200x200',
 
     # Input directory
     photos_path + os.sep + 'source-latest/*.jpg',
