@@ -69,6 +69,7 @@ Template.locations.rendered = function () {
     var width = 1920;
     var height = 1080;
     var svg = d3.select(".container").append("svg")
+        .attr("class", 'svg-canvas')
         .attr("width", width)
         .attr("height", height);
 
