@@ -8,3 +8,9 @@ data/photos/*/*.tif
 data/photos/*/*.TIF
 data/photos/*/*.png
 data/photos/*/*.PNG
+data/photos/*/*/*.jpg
+data/photos/*/*/*.JPG
+data/photos/*/*/*.tif
+data/photos/*/*/*.TIF
+data/photos/*/*/*.png
+data/photos/*/*/*.PNG
