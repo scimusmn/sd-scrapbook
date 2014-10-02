@@ -2,3 +2,9 @@
 meteor/.meteor/.id
 meteor/public/fonts
 meteor/public/images/source-photos
+data/photos/*/*.jpg
+data/photos/*/*.JPG
+data/photos/*/*.tif
+data/photos/*/*.TIF
+data/photos/*/*.png
+data/photos/*/*.PNG
