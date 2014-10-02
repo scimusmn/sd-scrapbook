@@ -17,7 +17,6 @@ Template.locations.helpers({
  */
 Template.locations.rendered = function () {
 
-
     /**
      * Set the map projection to a Southern California focus
      *
@@ -27,9 +26,6 @@ Template.locations.rendered = function () {
         .scale(13168)
         .center([-119.082, 34.656])
         .precision(.1);
-
-    var path = d3.geo.path()
-        .projection(projection);
 
     /**
      * Dev map features
@@ -50,94 +46,30 @@ Template.locations.rendered = function () {
         .attr("height", height);
 
     /**
-     * Load the meteor collection for the Locations
+     * Load the meteor collection for Locations and Images
      */
     Deps.autorun(function () {
+
+        /**
+         * Draw each location
+         */
         var locations = Locations.find().fetch();
-        var images = Images.find().fetch();
         _.each(locations, function(location, i) {
             drawLocation(svg, projection, location, i);
         });
 
         /**
-         * Images
+         * Draw each image
          *
+         * TODO:
          * Actually I think that this will be our primary collection. I might
          * move this into a seperate collection at some point.
          *
          */
+        var images = Images.find().fetch();
         images = _.shuffle(images);
         _.each(images, function(image, i) {
-            console.log('Image: Title - ', image.title + '; Latitude - ' + image.latitude + '; Longitude - ' + image.longitude );
-            position = projection([image.longitude, image.latitude]);
-            console.log('img ID', image._id);
-
-            /**
-             * Draw a white background first
-             *
-             * This serves as the matte for a shadow and also gives us a old
-             * skoool white border around the photo.
-             */
-            //svg.append('rect')
-                //.attr("transform", function() {
-                    //return "translate(" + position + ") scale(0.1)";
-                //})
-                //.attr("width", 300)
-                //.attr("height", 250)
-                //.attr('stroke', 'white')
-                //.attr('stroke-width', '10')
-                //.attr('class', 'location-matte')
-                //.transition()
-                //.delay(i * 100) // Stagger the markers animating in
-                //.attr("transform", function() {
-                    //return "translate(" + position + ") scale(1, 1)";
-                //})
-                //.duration(200);
-            svg.append('svg:text')
-                .attr("x", position[0])
-                .attr("y", position[1])
-                .attr("class", 'location-title')
-                .text(image.title);
-
-            var img = new Image();
-            var imgWidth = '';
-            var imgHeight = '';
-            var imgRatio = '';
-
-
-            svg.append('image')
-                .attr("xlink:href", "/images/thumbnails/" + image._id + ".jpg")
-                .attr("width", "0")
-                .attr("height", "0")
-                .attr("opacity", ".1")
-                .attr("x", (position[0]-100))
-                .attr("y", (position[1]-100))
-                .attr('class', 'location-matte')
-                .transition()
-                .delay(i * 50) // Stagger the markers animating in
-                .attr("width", image.thumbWidth)
-                .attr("height", image.thumbHeight)
-                .attr("opacity", "1")
-                .duration(500);
-
-            //img.onload = function() {
-
-              //imgWidth = this.width;
-              //imgHeight = this.height;
-              //console.log('DIMENSIONS: ',  imgWidth, imgHeight);
-
-                ////.transition()
-                ////.delay(i * 100) // Stagger the markers animating in
-                ////.attr("transform", function() {
-                    ////return "translate(" + position + ") scale(1, 1)";
-                ////})
-
-            //}
-            //imgRatio = (parseInt(imgWidth) / parseInt(imgHeight));
-            //console.log('ratio', imgRatio);
-            //img.src = "/images/source-photos/" + image._id + ".jpg";
-            //imgScaledHeight = Math.round(parseInt(imgWidth) * imgRatio);
-            //console.log('scaled height: ', imgScaledHeight);
+            drawImage(svg, projection, image, i);
         });
     });
 
@@ -251,6 +183,82 @@ Template.locations.rendered = function () {
             //.attr("height", "282")
             //.duration(800);
     }
+
+    function drawImage(svg, projection, image, i) {
+
+        position = projection([image.longitude, image.latitude]);
+
+        /**
+         * Draw the title
+         */
+        svg.append('svg:text')
+            .attr("x", position[0])
+            .attr("y", position[1])
+            .attr("class", 'location-title')
+            .text(image.title);
+
+        /**
+         * Draw a white background first
+         *
+         * This serves as the matte for a shadow and also gives us a old
+         * skoool white border around the photo.
+         */
+        //svg.append('rect')
+        //.attr("transform", function() {
+        //return "translate(" + position + ") scale(0.1)";
+        //})
+        //.attr("width", 300)
+        //.attr("height", 250)
+        //.attr('stroke', 'white')
+        //.attr('stroke-width', '10')
+        //.attr('class', 'location-matte')
+        //.transition()
+        //.delay(i * 100) // Stagger the markers animating in
+        //.attr("transform", function() {
+        //return "translate(" + position + ") scale(1, 1)";
+        //})
+        //.duration(200);
+
+        var img = new Image();
+        var imgWidth = '';
+        var imgHeight = '';
+        var imgRatio = '';
+
+        svg.append('image')
+        .attr("xlink:href", "/images/thumbnails/" + image._id + ".jpg")
+        .attr("width", "0")
+        .attr("height", "0")
+        .attr("opacity", ".1")
+        .attr("x", (position[0]-100))
+        .attr("y", (position[1]-100))
+        .attr('class', 'location-matte')
+        .transition()
+        .delay(i * 50) // Stagger the markers animating in
+        .attr("width", image.thumbWidth)
+        .attr("height", image.thumbHeight)
+        .attr("opacity", "1")
+        .duration(500);
+
+        //img.onload = function() {
+
+        //imgWidth = this.width;
+        //imgHeight = this.height;
+        //console.log('DIMENSIONS: ',  imgWidth, imgHeight);
+
+        ////.transition()
+        ////.delay(i * 100) // Stagger the markers animating in
+        ////.attr("transform", function() {
+        ////return "translate(" + position + ") scale(1, 1)";
+        ////})
+
+        //}
+        //imgRatio = (parseInt(imgWidth) / parseInt(imgHeight));
+        //console.log('ratio', imgRatio);
+        //img.src = "/images/source-photos/" + image._id + ".jpg";
+        //imgScaledHeight = Math.round(parseInt(imgWidth) * imgRatio);
+        //console.log('scaled height: ', imgScaledHeight);
+    }
+
 
     function devMapFeatures(d3, projection) {
         /**
