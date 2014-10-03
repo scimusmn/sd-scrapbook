@@ -6,6 +6,7 @@
 @import "_colors.import.less";
 @import "_sizes.import.less";
 @import "_fonts.import.less";
+@import "_animate.import.less";
 
 body {
   background: #FFF;
@@ -59,8 +60,44 @@ body {
   margin: auto;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
-  border: 10px solid #fff;
+  border: 10px solid @background-tan;
+  box-shadow: 2px 2px 20px @shadow-grey;
+}
+
+.location > * {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.location h3 {
+  background: @attic-maroon;
+  opacity: .98;
+  margin: 0 0 20px 0;
   padding: 20px;
+  font-family: 'FuturaTS-Demibold', sans-serif;
+  font-size: 45px;
+}
+
+.location-footer {
+  position: absolute;
+  bottom: 0;
+  height: 50px;
+  width: 100%;
+  background: @background-tan;
+  margin: 20px auto 0 auto;
+  text-align: center;
+  font-size: 35px;
+}
+
+.location-footer,
+.location-footer a {
+  color: @attic-maroon;
+}
+
+.location-footer a {
+  display: block;
+  width: 100%;
+  padding-top: 9px;
 }
 
 /**

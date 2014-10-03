@@ -271,7 +271,6 @@ Template.locations.rendered = function () {
             .duration(500);
     }
 
-
     function devMapFeatures(d3, projection) {
         /**
          * Test map data to position the map projection
@@ -329,12 +328,45 @@ Template.locations.events({
      * Image click
      */
     'click image':function(event, template){
-        // Get the clicked location string from the COM data-location attribute
-        var imageLocation = $(event.currentTarget).data("location");
-        // Query Mongo for a location with a matching title
-        var clickedLocation = Locations.findOne( {title: imageLocation });
-        // Navigate to the Location with the matching _id
-        Router.go('location', {_id: clickedLocation._id});
+        var animateContentOut = function() {
+            var imagePositions = d3.selectAll('image').attr('x');
+            d3.selectAll("image").each( function(d, i){
+
+                x = Number(d3.select(this).attr("x"));
+                y = Number(d3.select(this).attr("y"));
+
+                width = Number(d3.select(this).attr("width"));
+                height = Number(d3.select(this).attr("height"));
+
+                centerX = parseInt(x + (width / 2));
+                centerY = parseInt(y + (height / 2));
+
+                var pictureGroup = d3.select(this.parentNode)
+                    .transition()
+                    .delay(i * 75) // Stagger the markers animating out
+                    .attr("transform", function (){
+                        transform = 'translate(' + centerX + ',' + centerY + ')scale(0)';
+                        return transform
+                    })
+                    .duration(500);
+
+            });
+        }
+        animateContentOut();
+
+        window.setTimeout(function() {
+            goDestination();
+        }, 500);
+
+        function goDestination() {
+            // Get the clicked location string from the COM data-location attribute
+            var imageLocation = $(event.currentTarget).data("location");
+            // Query Mongo for a location with a matching title
+            var clickedLocation = Locations.findOne( {title: imageLocation });
+            // Navigate to the Location with the matching _id
+            Router.go('location', {_id: clickedLocation._id});
+        }
+
     }
 });
 
