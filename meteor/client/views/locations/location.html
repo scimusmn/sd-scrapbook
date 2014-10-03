@@ -1,10 +1,12 @@
 <template name="location">
-  <a href="{{pathFor 'locations'}}">← Back</a>
+  <div class="container container-map map-base">
   {{#with location}}
     <div class="location">
+      <a class="back" href="{{pathFor 'locations'}}">← Back</a>
       <h3>{{title}}</h3>
       <p>{{description}}</p>
-      <h5><a href="#" class="delete">Delete</a></h5>
+      <!--<h5><a href="#" class="delete">Delete</a></h5>-->
     </div>
   {{/with}}
+  </div>
 </template>
