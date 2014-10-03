@@ -25,6 +25,11 @@ body {
   padding: 5px;
 }
 
+/**
+ * ----------------------------------------------------------------------------
+ * Map container
+ * ----------------------------------------------------------------------------
+ */
 .container {
   width: @screen-width;
   height: @screen-height;
@@ -33,6 +38,7 @@ body {
   padding: 0;
 }
 
+// Currently unused title bar
 .bar {
   display: inline-block;
   width: 20px;
@@ -42,13 +48,10 @@ body {
 
 /**
  * ----------------------------------------------------------------------------
- * Location text
+ * Dev information tables
  * ----------------------------------------------------------------------------
  */
-.locations {
-  /*position: absolute;*/
-  /*right: 10px;*/
-  /*top: 10px;*/
+.dev-locations {
   position: absolute;
   left: 50px;
   top: 50px;
@@ -57,7 +60,7 @@ body {
   color: #222;
 }
 
-.images {
+.dev-images {
   position: absolute;
   left: 50px;
   top: 50px;
@@ -65,7 +68,6 @@ body {
   padding: 10px;
   color: #222;
 }
-
 
 /**
  * ----------------------------------------------------------------------------
