@@ -12,7 +12,7 @@ Fill in the app with dummy data if database is empty.
 if (Locations.find().count() === 0) {
 
   var sanDiegoCst = Locations.insert({
-    title: "San Diego",
+    title: "San Diego - Coast",
     description: "San Diego is a city along the coast.",
     latitude: "32.551019",
     longitude: "-117.111768"
@@ -26,10 +26,17 @@ if (Locations.find().count() === 0) {
   });
 
   var anzaBorrego = Locations.insert({
-    title: "Anza-Borrego Desert",
+    title: "Anza-Borrego/Palm Desert",
     description: "Anza-Borrego Desert State Park (ABDSP) is a state park located within the Colorado Desert of southern California, United States.",
     latitude: "33.100492",
     longitude: "-116.301327"
+  });
+
+  var clevelandNationalForest = Locations.insert({
+    title: "Cleveland National Forest",
+    description: "Cleveland National Forest encompasses 460,000 acres (720 sq mi (1,900 km2)), mostly of chaparral, with a few riparian areas.",
+    latitude: "33.3",
+    longitude: "-116.8"
   });
 
 }
