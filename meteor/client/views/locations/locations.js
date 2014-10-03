@@ -267,6 +267,7 @@ Template.locations.rendered = function () {
             .attr("width", image.thumbWidth)
             .attr("height", image.thumbHeight)
             .attr("opacity", "1")
+            .attr('location', image.generalLocationDs)
             .duration(500);
     }
 
@@ -328,7 +329,12 @@ Template.locations.events({
      * Image click
      */
     'click image':function(event, template){
-        console.log('you clicked a bar for document with _id=' + $(event.currentTarget).data("id"));
+        // Get the clicked location string from the COM data-location attribute
+        var imageLocation = $(event.currentTarget).data("location");
+        // Query Mongo for a location with a matching title
+        var clickedLocation = Locations.findOne( {title: imageLocation });
+        // Navigate to the Location with the matching _id
+        Router.go('location', {_id: clickedLocation._id});
     }
 });
 
