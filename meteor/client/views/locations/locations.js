@@ -203,7 +203,8 @@ Template.locations.rendered = function () {
         var imageBorder = 5;
 
         // Group for all the picture elements
-        var pictureGroup = svg.append("g");
+        var pictureGroup = svg.append("g")
+            .attr('class', 'picture-group')
 
         var filter = pictureGroup.append("defs")
         .append("filter")
@@ -266,7 +267,6 @@ Template.locations.rendered = function () {
             .attr("height", image.thumbHeight)
             .attr("opacity", "1")
             .duration(500);
-
     }
 
 
