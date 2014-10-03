@@ -251,6 +251,7 @@ Template.locations.rendered = function () {
         // Image
         pictureGroup.append('image')
             .attr("xlink:href", "/images/thumbnails/" + image._id + ".jpg")
+            .attr("data-id", "special" + image._id)
             .attr("width", "0")
             .attr("height", "0")
             .attr("opacity", ".1")
@@ -322,6 +323,11 @@ Template.locations.rendered = function () {
 };
 
 Template.locations.events({
-    // Respond to events
+    /**
+     * Image click
+     */
+    'click image':function(event, template){
+        console.log('you clicked a bar for document with _id=' + $(event.currentTarget).data("id"));
+    }
 });
 
