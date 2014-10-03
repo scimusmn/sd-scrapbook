@@ -252,7 +252,8 @@ Template.locations.rendered = function () {
         // Image
         pictureGroup.append('image')
             .attr("xlink:href", "/images/thumbnails/" + image._id + ".jpg")
-            .attr("data-id", "special" + image._id)
+            .attr("data-id", image._id)
+            .attr("data-location", image.generalLocationDs)
             .attr("width", "0")
             .attr("height", "0")
             .attr("opacity", ".1")
