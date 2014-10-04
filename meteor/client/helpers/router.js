@@ -40,6 +40,7 @@ Router.map(function() {
   // Locations
 
   this.route('locations', {
+    path: '/',
     waitOn: function () {
       return Meteor.subscribe('allLocations');
     },
@@ -61,13 +62,6 @@ Router.map(function() {
         location: Locations.findOne(this.params._id)
       }
     }
-  });
-
-
-  // Pages
-
-  this.route('homepage', {
-    path: '/'
   });
 
   this.route('content');
