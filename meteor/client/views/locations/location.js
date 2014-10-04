@@ -19,6 +19,7 @@ Template.location.helpers({
 });
 
 Template.location.rendered = function () {
+    // Fade in the main location wrapper
     $('.location').addClass('animated fadeIn92');
 };
 
