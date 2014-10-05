@@ -92,11 +92,66 @@ print term.yellow('Splitting out latitude and longitude')
 temp_latlong = os.path.abspath('temp-latlong.csv')
 (csvfix['split_char', '-f', '12', '-c', ',', temp_dashless] > temp_latlong)()
 
+# Parse the data uncertainties into ISO dates
+print term.blue('Fixing dates')
+temp_dates = os.path.abspath('temp-dates.csv')
+input = open(temp_latlong, 'rb')
+output = open(temp_dates, 'wb')
+writer = csv.writer(output)
+for row in csv.reader(input):
+    if row:
+        date_string = row[8]
+        #no_uncertainty = re.compile('u').sub('z', date_string)
+        #parts = no_uncertainty.split('-')
+        parts = date_string.split('-')
+        year = parts[0]
+
+        # Year only
+        if len(parts) == 1:
+            month = '06'
+            day = '15'
+        # Year and month
+        if len(parts) == 2:
+            day = '15'
+        # If the month is present, process it
+        if len(parts) == 2 or len(parts) == 3:
+            month = parts[1]
+            dic = {
+                "Jan": "01",
+                "Feb": "02",
+                "Mar": "03",
+                "Apr": "04",
+                "May": "05",
+                "Jun": "06",
+                "Jul": "07",
+                "Aug": "08",
+                "Sep": "09",
+                "Oct": "10",
+                "Nov": "11",
+                "Dec": "12",
+                "uuu": "06",
+            }
+            for i, j in dic.iteritems():
+                month = month.replace(i, j)
+        if len(parts) == 3:
+            day = parts[2]
+
+        # Average the year if a range (e.g. 1969/1980)
+        if re.search('/', year):
+            range = year.split('/')
+            yearlist = [float(x) for x in range]
+            year = int(sum(yearlist) / float(len(range)))
+
+        row[8] = str(str(year) + '-' + str(month) + '-' + str(day))
+        writer.writerow(row)
+input.close()
+output.close()
+
 # Add the Piction data header
 print term.yellow('Adding a header row')
 piction_header  = os.path.abspath(data_path + os.sep + 'piction_header.csv')
 temp_header  = os.path.abspath('temp-header.csv')
-(cat[piction_header, temp_latlong] >> temp_header)()
+(cat[piction_header, temp_dates] >> temp_header)()
 
 # Remove any columns outside our header scope
 print term.yellow('Removing extra columns')
