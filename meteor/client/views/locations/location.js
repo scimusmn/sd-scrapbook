@@ -22,9 +22,6 @@ Template.location.rendered = function () {
     // Fade in the main location wrapper
     $('.location').addClass('animated fadeIn92');
 
-    console.log('Locations collection = ', Locations);
-    console.log('Images collection = ', Images);
-
     /**
      * Setup image area
      */
