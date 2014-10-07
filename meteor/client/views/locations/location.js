@@ -202,30 +202,21 @@ Template.location.rendered = function () {
 };
 
 Template.location.events({
-    'mousemove .container': function(e) {
-        /**
-         * Dev mouse position data
-         */
-        $('.dev-mouse').html(
-            'Rel pointer X = ' + posX + '<br>' +
-            'Interval width = ' + intervalWidth + '<br>' +
-            'Rel interval = ' + posInterval
-        );
+    'mousemove .container': function (e) {
+
         /**
          * Setup basic objects and widths
          */
         var timeline = $('.time-canvas');
-        var timelineOffset = timeline.parent().offset();
-        var timelineWidth = timeline.width();
 
         // Count elements in our SVG element to get number of images
-        var imageGroups = d3.selectAll('.picture-group');
-        var imagesCount = imageGroups[0].length;
+        var imagesCount = d3.selectAll('.picture-group')[0].length;
 
-        var intervalWidth = (timelineWidth / imagesCount);
+        // Pixel interval between images
+        var intervalWidth = (timeline.width() / imagesCount);
 
         // Mouse position relative to the timeline
-        var posX = e.pageX - timelineOffset.left;
+        var posX = e.pageX - timeline.parent().offset().left;
         var posInterval = Math.floor(posX / intervalWidth);
 
         /**
