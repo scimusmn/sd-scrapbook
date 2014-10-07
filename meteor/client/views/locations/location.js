@@ -131,7 +131,7 @@ Template.location.rendered = function () {
         var filter = pictureGroup.append("defs")
             .append("filter")
             .attr("id", "blur")
-        .append("feGaussianBlur")
+            .append("feGaussianBlur")
             .attr("stdDeviation", 5);
 
         // Drop shadow rectangle
