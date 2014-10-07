@@ -103,23 +103,15 @@ Template.location.rendered = function () {
         };
     });
 
-    function drawImage(svg, image, i) {
-
-        // Totally stand in dummy position for testing
-        position = [300, 400];
-
+    /**
+     * Render each image
+     */
+    function drawImage(svg, image, i, widthInterval) {
         /**
-         * Draw the title
-         *
-         * We probably won't use this on the final map.
+         * Image properties
          */
-        svg.append('svg:text')
-            .attr("x", position[0] - 100)
-            .attr("y", position[1] - 110)
-            .attr("class", 'location-title')
-            .text(image.title);
-
-        // Old skool border width
+        var x = ((100 + (widthInterval * (i+1))) - widthInterval );
+        var y = 700;
         var imageBorder = 5;
 
         // Group for all the picture elements
