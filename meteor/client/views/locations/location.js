@@ -120,6 +120,7 @@ Template.location.rendered = function () {
          */
         var pictureGroup = svg.append("g")
             .attr('class', 'picture-group ' + 'picture-' + i)
+            .attr('data-index', i)
             .attr('data-date', image.date)
             .attr("transform", function (){
                 return translate;
