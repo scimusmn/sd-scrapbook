@@ -136,68 +136,171 @@ Template.location.rendered = function () {
 
         // Drop shadow rectangle
         pictureGroup.append('rect')
-            .attr("width", "0")
-            .attr("height", "0")
-            .attr("opacity", ".1")
-            .attr("x", (position[0]))
-            .attr("y", (position[1]))
+            //.attr("width", "0")
+            //.attr("height", "0")
+            //.attr("opacity", ".1")
+            .attr("x", 0)
+            .attr("y", 0)
             .style('fill', '#000')
-            .transition()
-            .delay(i * 50) // Stagger the markers animating in
-            // Simulate scaling form the center of the image
-            .attr("x", (position[0]) - (image.thumbWidth / 2))
-            .attr("y", (position[1]) - (image.thumbHeight / 2))
+            //.transition()
+            //.delay(i * delay) // Stagger the markers animating in
+            //// Simulate scaling form the center of the image
+            //.attr("x", (x) - (image.thumbWidth / 2))
+            //.attr("y", (y) - (image.thumbHeight / 2))
             .attr("width", image.thumbWidth + (imageBorder * 2))
             .attr("height", image.thumbHeight + (imageBorder * 2))
-            .attr("opacity", "1")
+            //.attr("opacity", "1")
             .attr("filter", "url(#blur)")
-            .duration(500);
+            //.duration(dur);
 
         // White border rectangle
         pictureGroup.append('rect')
-            .attr("width", "0")
-            .attr("height", "0")
-            .attr("opacity", ".1")
-            .attr("x", (position[0]))
-            .attr("y", (position[1]))
-            .attr('class', 'location-matte')
-            .transition()
-            .delay(i * 50) // Stagger the markers animating in
-            // Simulate scaling form the center of the image
-            .attr("x", (position[0]) - (image.thumbWidth / 2))
-            .attr("y", (position[1]) - (image.thumbHeight / 2))
+            //.attr("width", "0")
+            //.attr("height", "0")
+            //.attr("opacity", ".1")
+            //.attr("x", x)
+            //.attr("y", y)
+            //.transition()
+            //.delay(i * delay) // Stagger the markers animating in
+            //// Simulate scaling form the center of the image
+            //.attr("x", (x - (image.thumbWidth / 2)))
+            //.attr("y", (y - (image.thumbHeight / 2)))
+            .attr("x", (0 - imageBorder))
+            .attr("y", (0 - imageBorder))
             .attr("width", image.thumbWidth + (imageBorder * 2))
             .attr("height", image.thumbHeight + (imageBorder * 2))
-            .attr("opacity", "1")
-            .duration(500);
+            .attr('class', 'child location-matte')
+            //.attr("opacity", "1")
+            //.duration(dur);
 
         // Image
         pictureGroup.append('image')
             .attr("xlink:href", "/images/thumbnails/" + image._id + ".jpg")
             .attr("data-id", image._id)
             .attr("data-location", image.generalLocationDs)
-            .attr("width", "0")
-            .attr("height", "0")
-            .attr("opacity", ".1")
-            .attr("x", (position[0] + imageBorder))
-            .attr("y", (position[1] + imageBorder))
-            .transition()
-            .delay(i * 50) // Stagger the markers animating in
-            // Simulate scaling form the center of the image
-            .attr("x", (position[0] + imageBorder) - (image.thumbWidth / 2))
-            .attr("y", (position[1] + imageBorder) - (image.thumbHeight / 2))
+            //.attr("width", "0")
+            //.attr("height", "0")
+            //.attr("opacity", ".1")
+            //.transition()
+            //.delay(i * 10) // Stagger the markers animating in
+            //// Simulate scaling form the center of the image
             .attr("width", image.thumbWidth)
             .attr("height", image.thumbHeight)
-            .attr("opacity", "1")
             .attr('location', image.generalLocationDs)
-            .duration(500);
+            .attr('class', 'child')
+            //.duration(dur);
+
+        /**
+         * Set the picture group starting state
+         *
+         * Scale at 0
+         * All child elements with an opacity of 0
+         */
+        pictureGroup
+            .attr("transform", function (){
+                transform = translate + 'scale(0)';
+                return transform
+            });
+        pictureGroup.selectAll('.child')
+            .attr("opacity", "0");
+
+        /**
+         * Animate elements in.
+         *
+         * Scale and opacity at 1
+         */
+        pictureGroup
+            .transition()
+            .delay(i * 10) // Stagger the markers animating in
+            .attr("transform", function (){
+                transform = translate + 'scale(1)';
+                return transform
+            })
+            .duration(dur);
+        pictureGroup.selectAll('.child')
+            .transition()
+            .delay(i * 10) // Stagger the markers animating in
+            .attr("opacity", "1")
+            .duration(dur);
+
     }
-
-
-
 };
 
 Template.location.events({
+    'mousemove .container': function(e) {
+        //console.log('X', e.pageX);
+
+        /**
+         * Setup basic objects and widths
+         */
+        var timeline = $('.time-canvas');
+        var timelineOffset = timeline.parent().offset();
+        var timelineWidth = timeline.width();
+
+        // Count elements in our SVG element to get number of images
+        var imageGroups = d3.selectAll('.picture-group');
+        console.log('imageGroups = ', imageGroups);
+        var imagesCount = imageGroups[0].length;
+
+        var intervalWidth = (timelineWidth / imagesCount);
+
+        // Mouse position relative to the timeline
+        var posX = e.pageX - timelineOffset.left;
+        var posInterval = Math.floor(posX / intervalWidth);
+
+        // Get the handle object
+        var handle = d3.select('.time-handle-rect')
+        var handleWidth = handle.attr('width');
+        var handleWidthHalf = (handleWidth / 2);
+
+        // Prevent the handle from going off the edge of the timeline
+        if (posX < handleWidthHalf) {
+            posX = (handleWidthHalf);
+            posInterval = 1;
+        }
+        if (posX > 1760 - handleWidthHalf) {
+            posX = (1760 - handleWidthHalf);
+            posInterval = imagesCount;
+        }
+
+        // Set the middle of the handle to the mouse position
+        handle.attr('x', (posX - handleWidthHalf));
+
+        //bigPic = d3.selectAll('.picture-group').select('image')
+            //.transition()
+            //.attr("width", 600)
+            //.attr("height", 600)
+            //.duration(500);
+
+        //bigPic = d3.select('.picture-' + posInterval).select('image')
+
+        //bigPic = d3.selectAll('.picture-group');
+        ////console.log('bigPic', bigPic[0]);
+        //_.each(bigPic[0], function(pic, i) {
+            ////console.log('littlePic', pic);
+            //console.log(pic.attr('class'));
+        //});
+            //_.each(images, function(image, i) {
+                //drawImage(svg, image, i, widthInterval);
+            //});
+            //.transition()
+            //.attr("transform", function (){
+                //console.log('Classes', this.attr('class'));
+                //posInterval
+                //transform = 'scale(.1)';
+                //return transform
+            //})
+            //.duration(20);
+
+        var picture = d3.selectAll('image');
+        //picture.attr("x", function() { return Math.random() * 720; });
+
+        $('.dev-mouse').html(
+            'Rel pointer X = ' + posX + '<br>' +
+            'Interval width = ' + intervalWidth + '<br>' +
+            'Rel interval = ' + posInterval
+        );
+    },
 
     'click .back': function(e, instance){
         console.clear();
