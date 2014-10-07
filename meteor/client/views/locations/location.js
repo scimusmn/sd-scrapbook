@@ -113,13 +113,23 @@ Template.location.rendered = function () {
         var x = ((100 + (widthInterval * (i+1))) - widthInterval );
         var y = 700;
         var imageBorder = 5;
+        var delay = 10; // Milliseconds to delay the animation per image
+        var dur = 500; // Milliseconds for the image animation
+        var translateX = ((x + imageBorder) - (image.thumbWidth / 2))
+        var translateY = ((y + imageBorder) - (image.thumbHeight / 2));
+        var translate = 'translate(' + translateX + ',' + translateY + ')';
 
         // Group for all the picture elements
         var pictureGroup = svg.append("g")
-            .attr('class', 'picture-group')
+            .attr('class', 'picture-group ' + 'picture-' + i)
+            .attr('data-date', image.date)
+            .attr("transform", function (){
+                return translate;
+            })
+
 
         var filter = pictureGroup.append("defs")
-        .append("filter")
+            .append("filter")
             .attr("id", "blur")
         .append("feGaussianBlur")
             .attr("stdDeviation", 5);
