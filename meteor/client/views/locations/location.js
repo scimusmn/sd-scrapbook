@@ -206,8 +206,14 @@ Template.location.rendered = function () {
 
 Template.location.events({
     'mousemove .container': function(e) {
-        //console.log('X', e.pageX);
-
+        /**
+         * Dev mouse position data
+         */
+        $('.dev-mouse').html(
+            'Rel pointer X = ' + posX + '<br>' +
+            'Interval width = ' + intervalWidth + '<br>' +
+            'Rel interval = ' + posInterval
+        );
         /**
          * Setup basic objects and widths
          */
@@ -217,7 +223,6 @@ Template.location.events({
 
         // Count elements in our SVG element to get number of images
         var imageGroups = d3.selectAll('.picture-group');
-        console.log('imageGroups = ', imageGroups);
         var imagesCount = imageGroups[0].length;
 
         var intervalWidth = (timelineWidth / imagesCount);
@@ -244,40 +249,9 @@ Template.location.events({
         // Set the middle of the handle to the mouse position
         handle.attr('x', (posX - handleWidthHalf));
 
-        //bigPic = d3.selectAll('.picture-group').select('image')
-            //.transition()
-            //.attr("width", 600)
-            //.attr("height", 600)
-            //.duration(500);
-
-        //bigPic = d3.select('.picture-' + posInterval).select('image')
-
-        //bigPic = d3.selectAll('.picture-group');
-        ////console.log('bigPic', bigPic[0]);
-        //_.each(bigPic[0], function(pic, i) {
-            ////console.log('littlePic', pic);
-            //console.log(pic.attr('class'));
-        //});
-            //_.each(images, function(image, i) {
-                //drawImage(svg, image, i, widthInterval);
-            //});
-            //.transition()
-            //.attr("transform", function (){
-                //console.log('Classes', this.attr('class'));
-                //posInterval
-                //transform = 'scale(.1)';
-                //return transform
-            //})
-            //.duration(20);
-
         var picture = d3.selectAll('image');
         //picture.attr("x", function() { return Math.random() * 720; });
 
-        $('.dev-mouse').html(
-            'Rel pointer X = ' + posX + '<br>' +
-            'Interval width = ' + intervalWidth + '<br>' +
-            'Rel interval = ' + posInterval
-        );
     },
 
     'click .back': function(e, instance){
