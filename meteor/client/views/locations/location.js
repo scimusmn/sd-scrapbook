@@ -32,6 +32,20 @@ Template.location.rendered = function () {
         .attr("width", width)
         .attr("height", height);
 
+    /**
+     * Setup timeline area
+     */
+    var time = d3.select(".time").append("svg")
+        .attr("class", 'time-canvas')
+        .attr("width", width - 60)
+        .attr("height", 300);
+
+    /**
+     * We have to do our D3 stuff in here because of Meteor's client server
+     * stuff. I don't exactly understand...
+     *
+     * TODO: Research
+     */
     Deps.autorun(function () {
         /**
          * Draw each image
