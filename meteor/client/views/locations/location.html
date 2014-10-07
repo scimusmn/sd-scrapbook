@@ -1,10 +1,12 @@
 <template name="location">
   <div class="container container-map map-base">
+    <div class="dev-mouse"></div>
   {{#with location}}
     <div class="location">
       <h3>{{title}}</h3>
       <p>{{description}}</p>
-      <div class="images"><!-- SVG goes here --></div>
+      <div class="images"><!-- Images SVG goes here --></div>
+      <div class="time"><!-- Timeline SVG goes here --></div>
       <div class="location-footer">
         <a href="{{pathFor 'locations'}}">
           <span class="glyphicon glyphicon-home"></span>
