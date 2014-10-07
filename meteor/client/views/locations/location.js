@@ -109,7 +109,7 @@ Template.location.rendered = function () {
         var x = ((100 + (widthInterval * (i+1))) - widthInterval );
         var y = 700;
         var imageBorder = 5;
-        var delay = 10; // Milliseconds to delay the animation per image
+        var delay = 2; // Milliseconds to delay the animation per image
         var dur = 500; // Milliseconds for the image animation
         var translateX = ((x + imageBorder) - (image.thumbWidth / 2))
         var translateY = ((y + imageBorder) - (image.thumbHeight / 2));
@@ -186,7 +186,7 @@ Template.location.rendered = function () {
          */
         pictureGroup
             .transition()
-            .delay(i * 10) // Stagger the markers animating in
+            .delay(i * delay) // Stagger the markers animating in
             .attr("transform", function (){
                 transform = translate + ',scale(1)';
                 return transform
@@ -194,7 +194,7 @@ Template.location.rendered = function () {
             .duration(dur);
         pictureGroup.selectAll('.child')
             .transition()
-            .delay(i * 10) // Stagger the markers animating in
+            .delay(i * delay) // Stagger the markers animating in
             .attr("opacity", "1")
             .duration(dur);
 
