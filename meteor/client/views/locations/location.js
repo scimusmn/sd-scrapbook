@@ -48,7 +48,11 @@ Template.location.rendered = function () {
      */
     Deps.autorun(function () {
         /**
-         * Draw each image
+         * Wait for a half-second to let the collections load.
+         *
+         * TODO: figure out why we need to do this. Before I was doing this,
+         * the image counts would get set three times with successively
+         * increasing numbers.
          */
         var images = Images.find().fetch();
         console.log('Images to draw', images);
