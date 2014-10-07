@@ -21,7 +21,7 @@ Template.location.rendered = function () {
     /**
      * Setup image area
      */
-    var width = 1920 - 100,
+    var width = 1800,
         height = 1080 - 100,
         svg = d3.select(".images").append("svg")
             .attr("class", 'svg-canvas')
@@ -33,7 +33,7 @@ Template.location.rendered = function () {
      */
     var time = d3.select(".time").append("svg")
         .attr("class", 'time-canvas')
-        .attr("width", width - 60)
+        .attr("width", width - 30)
         .attr("height", 300);
 
     /**
@@ -64,9 +64,12 @@ Template.location.rendered = function () {
             images = _.sortBy(images, function(image) {
                 return image.date;
             });
-            widthInterval = parseInt((width - 100) / imagesCount);
+            var timelineMargin = 60;
+            widthInterval = parseInt((width - timelineMargin) / imagesCount);
+            var firstImageWidth = images[0].thumbWidth;
+            var lastImageWidth = images[parseInt(imagesCount - 1)].thumbWidth;
             _.each(images, function(image, i) {
-                drawImage(svg, image, i, widthInterval);
+                drawImage(svg, image, i, imagesCount, firstImageWidth, lastImageWidth, timelineMargin, widthInterval);
             });
 
             /**
@@ -102,18 +105,40 @@ Template.location.rendered = function () {
     /**
      * Render each image
      */
-    function drawImage(svg, image, i, widthInterval) {
+    function drawImage(svg, image, i, imagesCount, firstImageWidth, lastImageWidth, timelineMargin, widthInterval) {
         /**
          * Image properties
          */
-        var x = ((100 + (widthInterval * (i+1))) - widthInterval );
-        var y = 700;
         var imageBorder = 5;
         var delay = 2; // Milliseconds to delay the animation per image
         var dur = 500; // Milliseconds for the image animation
-        var translateX = ((x + imageBorder) - (image.thumbWidth / 2))
-        var translateY = ((y + imageBorder) - (image.thumbHeight / 2));
-        var translate = 'translate(' + translateX + ',' + translateY + ')';
+
+        /**
+         * Image positioning
+         */
+        // The x calue for the first image at the left edge of the timeline
+        var leftEdge = (timelineMargin / 2) - imageBorder;
+        if (i == 0) {
+            var centerX = leftEdge;
+        }
+
+        // The x value for the last image at the right edge of the timeline
+        //
+        // The last values account for the shadow offset in the group
+        var rightEdge = (timelineMargin / 2) + 1760 - lastImageWidth - (imageBorder * 2) - 5;
+        if (i == (imagesCount - 1)){
+            var centerX = rightEdge;
+        }
+
+        // Find the proper interval between images, for the rest of the images
+        var x = leftEdge + (i * (rightEdge - leftEdge) / (imagesCount - 2));
+        if ((i != 0) && (i != (imagesCount - 1))) {
+            var centerX = x;
+        }
+
+        // Put the images at the top of the timeline
+        var bottomY = (835 - image.thumbHeight);
+        var translate = 'translate(' + centerX + ',' + bottomY + ')';
 
         /**
          * Picture group parent
