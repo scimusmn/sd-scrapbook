@@ -119,7 +119,9 @@ Template.location.rendered = function () {
         var translateY = ((y + imageBorder) - (image.thumbHeight / 2));
         var translate = 'translate(' + translateX + ',' + translateY + ')';
 
-        // Group for all the picture elements
+        /**
+         * Picture group parent
+         */
         var pictureGroup = svg.append("g")
             .attr('class', 'picture-group ' + 'picture-' + i)
             .attr('data-date', image.date)
@@ -127,31 +129,21 @@ Template.location.rendered = function () {
                 return translate;
             })
 
-
+        /**
+         * Picture drop shadow
+         */
         var filter = pictureGroup.append("defs")
             .append("filter")
             .attr("id", "blur")
             .append("feGaussianBlur")
             .attr("stdDeviation", 5);
-
-        // Drop shadow rectangle
         pictureGroup.append('rect')
-            //.attr("width", "0")
-            //.attr("height", "0")
-            //.attr("opacity", ".1")
             .attr("x", 0)
             .attr("y", 0)
             .style('fill', '#000')
-            //.transition()
-            //.delay(i * delay) // Stagger the markers animating in
-            //// Simulate scaling form the center of the image
-            //.attr("x", (x) - (image.thumbWidth / 2))
-            //.attr("y", (y) - (image.thumbHeight / 2))
             .attr("width", image.thumbWidth + (imageBorder * 2))
             .attr("height", image.thumbHeight + (imageBorder * 2))
-            //.attr("opacity", "1")
             .attr("filter", "url(#blur)")
-            //.duration(dur);
 
         // White border rectangle
         pictureGroup.append('rect')
