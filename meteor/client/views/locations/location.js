@@ -129,61 +129,47 @@ Template.location.rendered = function () {
                 return translate;
             })
 
-        /**
-         * Picture drop shadow
-         */
-        var filter = pictureGroup.append("defs")
-            .append("filter")
-            .attr("id", "blur")
-            .append("feGaussianBlur")
-            .attr("stdDeviation", 5);
-        pictureGroup.append('rect')
-            .attr("x", 0)
-            .attr("y", 0)
-            .style('fill', '#000')
-            .attr("width", image.thumbWidth + (imageBorder * 2))
-            .attr("height", image.thumbHeight + (imageBorder * 2))
-            .attr("filter", "url(#blur)")
+            /**
+            * Picture drop shadow
+            */
+            var filter = pictureGroup.append("defs")
+                .append("filter")
+                .attr("id", "blur")
+                .append("feGaussianBlur")
+                .attr("stdDeviation", 5);
+            pictureGroup.append('rect')
+                .attr("x", 0)
+                .attr("y", 0)
+                .style('fill', '#000')
+                .attr("width", image.thumbWidth + (imageBorder * 2))
+                .attr("height", image.thumbHeight + (imageBorder * 2))
+                .attr('class', 'child')
+                .attr("filter", "url(#blur)")
 
-        // White border rectangle
-        pictureGroup.append('rect')
-            //.attr("width", "0")
-            //.attr("height", "0")
-            //.attr("opacity", ".1")
-            //.attr("x", x)
-            //.attr("y", y)
-            //.transition()
-            //.delay(i * delay) // Stagger the markers animating in
-            //// Simulate scaling form the center of the image
-            //.attr("x", (x - (image.thumbWidth / 2)))
-            //.attr("y", (y - (image.thumbHeight / 2)))
-            .attr("x", (0 - imageBorder))
-            .attr("y", (0 - imageBorder))
-            .attr("width", image.thumbWidth + (imageBorder * 2))
-            .attr("height", image.thumbHeight + (imageBorder * 2))
-            .attr('class', 'child location-matte')
-            //.attr("opacity", "1")
-            //.duration(dur);
+            /**
+            * Picture white border
+            */
+            pictureGroup.append('rect')
+                // Positions are relative to the group
+                .attr("x", (0 - imageBorder))
+                .attr("y", (0 - imageBorder))
+                .attr("width", image.thumbWidth + (imageBorder * 2))
+                .attr("height", image.thumbHeight + (imageBorder * 2))
+                .attr('class', 'child location-matte')
 
-        // Image
-        pictureGroup.append('image')
-            .attr("xlink:href", "/images/thumbnails/" + image._id + ".jpg")
-            .attr("data-id", image._id)
-            .attr("data-location", image.generalLocationDs)
-            //.attr("width", "0")
-            //.attr("height", "0")
-            //.attr("opacity", ".1")
-            //.transition()
-            //.delay(i * 10) // Stagger the markers animating in
-            //// Simulate scaling form the center of the image
-            .attr("width", image.thumbWidth)
-            .attr("height", image.thumbHeight)
-            .attr('location', image.generalLocationDs)
-            .attr('class', 'child')
-            //.duration(dur);
+            // Image
+            pictureGroup.append('image')
+                .attr("xlink:href", "/images/thumbnails/" + image._id + ".jpg")
+                .attr("data-id", image._id)
+                .attr("data-location", image.generalLocationDs)
+                //// Simulate scaling form the center of the image
+                .attr("width", image.thumbWidth)
+                .attr("height", image.thumbHeight)
+                .attr('location', image.generalLocationDs)
+                .attr('class', 'child')
 
         /**
-         * Set the picture group starting state
+         * Picture starting state
          *
          * Scale at 0
          * All child elements with an opacity of 0
@@ -197,7 +183,7 @@ Template.location.rendered = function () {
             .attr("opacity", "0");
 
         /**
-         * Animate elements in.
+         * Picture - Animate in.
          *
          * Scale and opacity at 1
          */
