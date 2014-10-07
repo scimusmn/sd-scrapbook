@@ -6,17 +6,13 @@ Code related to the location template
 
 /+ ---------------------------------------------------- */
 
-Template.location.created = function () {
-    //
-};
+//Template.location.created = function () {
+//};
 
-Template.location.helpers({
-
-    myHelper: function () {
-        //
-    }
-
-});
+//Template.location.helpers({
+    //myHelper: function () {
+    //}
+//});
 
 Template.location.rendered = function () {
     // Fade in the main location wrapper
