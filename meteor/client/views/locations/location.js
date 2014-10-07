@@ -21,12 +21,12 @@ Template.location.rendered = function () {
     /**
      * Setup image area
      */
-    var width = 1920 - 100;
-    var height = 1080 - 100;
-    var svg = d3.select(".images").append("svg")
-        .attr("class", 'svg-canvas')
-        .attr("width", width)
-        .attr("height", height);
+    var width = 1920 - 100,
+        height = 1080 - 100,
+        svg = d3.select(".images").append("svg")
+            .attr("class", 'svg-canvas')
+            .attr("width", width)
+            .attr("height", height);
 
     /**
      * Setup timeline area
@@ -123,7 +123,7 @@ Template.location.rendered = function () {
             .attr('data-date', image.date)
             .attr("transform", function (){
                 return translate;
-            })
+            });
 
             /**
             * Picture drop shadow
@@ -172,7 +172,7 @@ Template.location.rendered = function () {
          */
         pictureGroup
             .attr("transform", function (){
-                transform = translate + 'scale(0)';
+                transform = translate + ',scale(0)';
                 return transform
             });
         pictureGroup.selectAll('.child')
@@ -187,7 +187,7 @@ Template.location.rendered = function () {
             .transition()
             .delay(i * 10) // Stagger the markers animating in
             .attr("transform", function (){
-                transform = translate + 'scale(1)';
+                transform = translate + ',scale(1)';
                 return transform
             })
             .duration(dur);
@@ -227,7 +227,9 @@ Template.location.events({
         var posX = e.pageX - timelineOffset.left;
         var posInterval = Math.floor(posX / intervalWidth);
 
-        // Get the handle object
+        /**
+         * Position the handle relative to our pointer event
+         */
         var handle = d3.select('.time-handle-rect')
         var handleWidth = handle.attr('width');
         var handleWidthHalf = (handleWidth / 2);
