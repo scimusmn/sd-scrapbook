@@ -54,12 +54,53 @@ Template.location.rendered = function () {
          * the image counts would get set three times with successively
          * increasing numbers.
          */
-        var images = Images.find().fetch();
-        console.log('Images to draw', images);
-        //images = _.shuffle(images);
-        _.each(images, function(image, i) {
-            drawImage(svg, image, i);
-        });
+        window.setTimeout(function() {
+            renderLocation();
+        }, 500);
+
+        function renderLocation() {
+            /**
+             * Render each image
+             */
+            var imagesCursor = Images.find();
+            var imagesCount = imagesCursor.count();
+            var images = imagesCursor.fetch();
+            images = _.sortBy(images, function(image) {
+                return image.date;
+            });
+            widthInterval = parseInt((width - 100) / imagesCount);
+            _.each(images, function(image, i) {
+                drawImage(svg, image, i, widthInterval);
+            });
+
+            /**
+             * Print the start and end years of the timeline
+             */
+            // Start
+            time.append('svg:text')
+                .attr("x", 10)
+                .attr("y", 35)
+                .attr("class", 'time-label-start')
+                .text('1800');
+
+            // End
+            time.append('svg:text')
+                .attr("x", 1675)
+                .attr("y", 35)
+                .attr("class", 'time-label-end')
+                .text('2000');
+
+            /**
+             * Render the timeline handle
+             */
+            time.append('rect')
+                .attr("width", "50")
+                .attr("height", "50")
+                .attr('class', 'time-handle-rect')
+                .attr("x", 0)
+                .attr("y", 0);
+
+        };
     });
 
     function drawImage(svg, image, i) {
