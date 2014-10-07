@@ -247,6 +247,7 @@ Template.location.events({
     'click .back': function(e, instance){
         console.clear();
     },
+
     'click .delete': function(e, instance){
         var location = this;
         e.preventDefault();
