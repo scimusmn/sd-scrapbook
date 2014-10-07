@@ -239,8 +239,54 @@ Template.location.events({
         // Set the middle of the handle to the mouse position
         handle.attr('x', (posX - handleWidthHalf));
 
-        var picture = d3.selectAll('image');
-        //picture.attr("x", function() { return Math.random() * 720; });
+        /**
+         * Scale the images based on mouse position
+         *
+         * Make the images nearest the cursor the biggest
+         */
+        d3.selectAll('.picture-group').each( function(d, i){
+
+            /**
+             * Determine a scale value based on mouse position
+             */
+            var i = Number(d3.select(this).attr("data-index"));
+            console.log('i', i);
+            console.log('posInterval');
+            var distance = posInterval - i;
+            //var distanceScale;
+            if (distance === 0) {
+                distanceScale = 1;
+            }
+            else {
+                distanceScale = (1 / Math.abs(posInterval - i));
+            }
+
+            /**
+             * Transform the picture group
+             */
+            var pictureGroup = d3.select(this)
+            // Get the current transform object
+            var t = d3.transform(pictureGroup.attr('transform'));
+            // Set the scale value, without changing other attributes
+            // This allows the image to stay at its current X,Y position
+            // while scaling.
+            t.scale = [distanceScale, distanceScale];
+            // Turn the transform back into a string for SVG
+            transformString = t.toString();
+            pictureGroup
+                .transition()
+                .duration(50)
+                .attr("transform", transformString);
+        });
+
+        /**
+         * Dev mouse position data
+         */
+        $('.dev-mouse').html(
+            'Rel pointer X = ' + posX + '<br>' +
+            'Interval width = ' + intervalWidth + '<br>' +
+            'Pos interval = ' + posInterval + '<br>'
+        );
 
     },
 
