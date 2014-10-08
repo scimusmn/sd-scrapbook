@@ -232,8 +232,8 @@ Template.location.rendered = function () {
 
 Template.location.events({
     // Desired functionality, but disabled for testing
-    //'mousemove .container': function (e) {
-    'click .container': function (e) {
+    'mousemove .container': function (e) {
+    //'click .container': function (e) {
 
         /**
          * Setup basic objects and widths
@@ -281,15 +281,15 @@ Template.location.events({
              * Determine a scale value based on mouse position
              */
             i = Number(d3.select(this).attr("data-index"));
-            console.log('i', i);
-            console.log('posInterval');
             var distance = posInterval - i;
             //var distanceScale;
             if (distance === 0) {
                 distanceScale = 1;
             }
             else {
-                distanceScale = (2 * (1 / Math.abs(posInterval - i)));
+                var minVal = 0.3;
+                var maxVal = 0.7;
+                distanceScale = ( minVal + (maxVal - minVal) * (1 / (Math.abs(posInterval - i))));
             }
 
             /**
@@ -299,28 +299,32 @@ Template.location.events({
             var imageInGroup = pictureGroup.select('image');
             var imageHeight = imageInGroup
                 .attr('height');
-            console.log('imageHeight', imageHeight);
             // Get the current transform object
             var t = d3.transform(pictureGroup.attr('transform'));
             // Set the scale value, without changing other attributes
             // This allows the image to stay at its current X,Y position
             // while scaling.
-            console.log('image select');
-            console.log(imageInGroup);
             t.scale = [distanceScale, distanceScale];
+            var translateY;
+            if (posInterval == i) {
+                translateY = (835 - (imageHeight * distanceScale)) - 50;
+            }
+            else {
+                translateY = (835 - (imageHeight * distanceScale));
+            }
             t.translate = [
-                t.translate[0], // Keep the X axis in place
-                (835 - (imageHeight * distanceScale))
+                t.translate[0], // Keep the X axis in placename
+                translateY
             ];
             //console.log('t translate Y', t.translate[1]);
             // Turn the transform back into a string for SVG
             transformString = t.toString();
             pictureGroup
                 .transition()
-                .duration(50)
+                .duration(100)
+                .ease('circle-out')
                 .attr("transform", transformString);
         });
-
         /**
          * Dev mouse position data
          */
