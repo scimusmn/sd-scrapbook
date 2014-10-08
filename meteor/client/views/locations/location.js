@@ -118,8 +118,9 @@ Template.location.rendered = function () {
          */
         // The x calue for the first image at the left edge of the timeline
         var leftEdge = (timelineMargin / 2) - imageBorder;
-        if (i == 0) {
-            var centerX = leftEdge;
+        var centerX;
+        if (i === 0) {
+            centerX = leftEdge;
         }
 
         // The x value for the last image at the right edge of the timeline
