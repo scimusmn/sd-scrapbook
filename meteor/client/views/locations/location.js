@@ -159,7 +159,12 @@ Template.location.rendered = function () {
         var pictureGroup = svg.append("g")
             .attr('class', 'picture-group ' + 'picture-' + i)
             .attr('data-index', i)
+            .attr('data-id', image._id)
             .attr('data-date', image.date)
+            .attr('data-title', image.title)
+            .attr('data-xw', image.expandedWidth)
+            .attr('data-xh', image.expandedHeight)
+            .attr('data-description', image.description)
             .attr("transform", function (){
                 return translate;
             });
@@ -308,6 +313,8 @@ Template.location.events({
             var imageInGroup = pictureGroup.select('image');
             var imageHeight = imageInGroup
                 .attr('height');
+            var imageWidth = imageInGroup
+                .attr('width');
             // Get the current transform object
             var t = d3.transform(pictureGroup.attr('transform'));
             // Set the scale value, without changing other attributes
@@ -321,8 +328,13 @@ Template.location.events({
             else {
                 translateY = (835 - (imageHeight * distanceScale));
             }
+            // TODO: Figure out how to get the X values to scale with the scale() value
+            //
+            //var translateX = t.translate[0] + ((imageWidth / 2) * distanceScale);
+            //var translateX = t.translate[0] + ((imageWidth / 2) * distanceScale);
+            var translateX = t.translate[0];
             t.translate = [
-                t.translate[0], // Keep the X axis in placename
+                translateX, // Keep the X axis in placename
                 translateY
             ];
             //console.log('t translate Y', t.translate[1]);
@@ -334,6 +346,29 @@ Template.location.events({
                 .ease('circle-out')
                 .attr("transform", transformString);
         });
+
+        /**
+         * Display detail information about the photograph
+         */
+        // Get the image data from the thumbnail data objects
+        hlImg = $('g[data-index=' + posInterval + ']');
+
+        // Set the title
+        hlImgTitle = hlImg.data('title');
+        $('.image-detail h4').text(hlImgTitle);
+
+        hlImgDescription = hlImg.data('description');
+        $('.image-detail span.image-description').text(hlImgDescription);
+
+        hlImgId = hlImg.data('id');
+        hlImgExWidth = hlImg.data('xw');
+        console.log('w', hlImgExWidth);
+        hlImgExHeight = hlImg.data('xh');
+        console.log('h', hlImgExHeight);
+        //bigPic = d3.select("g.big-picture");
+        $('.big-picture-image').attr('src', '/images/expanded/' + hlImgId + ".jpg");
+        $('.big-picture-image').attr('height', (parseInt(hlImgExHeight) / 2));
+
         /**
          * Dev mouse position data
          */
