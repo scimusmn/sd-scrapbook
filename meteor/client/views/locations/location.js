@@ -37,6 +37,15 @@ Template.location.rendered = function () {
         .attr("height", 300);
 
     /**
+     * Setup big picture area
+     */
+
+    //bigPicSVG = d3.select(".big-picture").append("svg")
+        //.attr("class", 'svg-big-picture')
+        //.attr("width", 800)
+        //.attr("height", 600);
+
+    /**
      * We have to do our D3 stuff in here because of Meteor's client server
      * stuff. I don't exactly understand...
      *
