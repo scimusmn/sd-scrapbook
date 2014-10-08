@@ -231,7 +231,9 @@ Template.location.rendered = function () {
 };
 
 Template.location.events({
-    'mousemove .container': function (e) {
+    // Desired functionality, but disabled for testing
+    //'mousemove .container': function (e) {
+    'click .container': function (e) {
 
         /**
          * Setup basic objects and widths
