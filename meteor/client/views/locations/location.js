@@ -128,13 +128,16 @@ Template.location.rendered = function () {
         // The last values account for the shadow offset in the group
         var rightEdge = (timelineMargin / 2) + 1760 - lastImageWidth - (imageBorder * 2) - 5;
         if (i == (imagesCount - 1)){
-            var centerX = rightEdge;
+            centerX = rightEdge;
         }
 
         // Find the proper interval between images, for the rest of the images
-        var x = leftEdge + (i * (rightEdge - leftEdge) / (imagesCount - 2));
-        if ((i != 0) && (i != (imagesCount - 1))) {
-            var centerX = x;
+        var rightEdgeCenter = rightEdge + (firstImageWidth / 2);
+        var centerInterval = (rightEdgeCenter - leftEdge) / (imagesCount - 2);
+
+        if ((i !== 0) && (i != (imagesCount - 1))) {
+            // 15 for white border and shadow
+            centerX = leftEdge + (centerInterval * i) - ((image.thumbWidth + 15) / 2);
         }
 
         // Put the images at the top of the timeline
