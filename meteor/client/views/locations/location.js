@@ -366,8 +366,13 @@ Template.location.events({
         hlImgExHeight = hlImg.data('xh');
         console.log('h', hlImgExHeight);
         //bigPic = d3.select("g.big-picture");
-        $('.big-picture-image').attr('src', '/images/expanded/' + hlImgId + ".jpg");
-        $('.big-picture-image').attr('height', (parseInt(hlImgExHeight) / 2));
+
+        // Only change the image when we need to
+        var imagePath = '/images/expanded/' + hlImgId + '.jpg';
+        if ($('.big-picture-image').attr('src') != imagePath) {
+            $('.big-picture-image').attr('src', imagePath).stop(true, true).hide().fadeIn(400);
+            $('.big-picture-image').attr('height', (parseInt(hlImgExHeight) / 2));
+        }
 
         /**
          * Dev mouse position data
