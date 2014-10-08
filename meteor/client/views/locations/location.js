@@ -289,7 +289,7 @@ Template.location.events({
                 distanceScale = 1;
             }
             else {
-                distanceScale = (1 / Math.abs(posInterval - i));
+                distanceScale = (2 * (1 / Math.abs(posInterval - i)));
             }
 
             /**
