@@ -166,7 +166,7 @@ Template.location.rendered = function () {
                 .attr("width", image.thumbWidth + (imageBorder * 2))
                 .attr("height", image.thumbHeight + (imageBorder * 2))
                 .attr('class', 'child')
-                .attr("filter", "url(#blur)")
+                .attr("filter", "url(#blur)");
 
             /**
             * Picture white border
@@ -177,7 +177,7 @@ Template.location.rendered = function () {
                 .attr("y", (0 - imageBorder))
                 .attr("width", image.thumbWidth + (imageBorder * 2))
                 .attr("height", image.thumbHeight + (imageBorder * 2))
-                .attr('class', 'child location-matte')
+                .attr('class', 'child location-matte');
 
             // Image
             pictureGroup.append('image')
@@ -188,7 +188,7 @@ Template.location.rendered = function () {
                 .attr("width", image.thumbWidth)
                 .attr("height", image.thumbHeight)
                 .attr('location', image.generalLocationDs)
-                .attr('class', 'child')
+                .attr('class', 'child');
 
         /**
          * Picture starting state
@@ -199,7 +199,7 @@ Template.location.rendered = function () {
         pictureGroup
             .attr("transform", function (){
                 transform = translate + ',scale(0)';
-                return transform
+                return transform;
             });
         pictureGroup.selectAll('.child')
             .attr("opacity", "0");
@@ -214,7 +214,7 @@ Template.location.rendered = function () {
             .delay(i * delay) // Stagger the markers animating in
             .attr("transform", function (){
                 transform = translate + ',scale(1)';
-                return transform
+                return transform;
             })
             .duration(dur);
         pictureGroup.selectAll('.child')
@@ -247,7 +247,7 @@ Template.location.events({
         /**
          * Position the handle relative to our pointer event
          */
-        var handle = d3.select('.time-handle-rect')
+        var handle = d3.select('.time-handle-rect');
         var handleWidth = handle.attr('width');
         var handleWidthHalf = (handleWidth / 2);
 
@@ -274,7 +274,7 @@ Template.location.events({
             /**
              * Determine a scale value based on mouse position
              */
-            var i = Number(d3.select(this).attr("data-index"));
+            i = Number(d3.select(this).attr("data-index"));
             console.log('i', i);
             console.log('posInterval');
             var distance = posInterval - i;
@@ -289,7 +289,7 @@ Template.location.events({
             /**
              * Transform the picture group
              */
-            var pictureGroup = d3.select(this)
+            var pictureGroup = d3.select(this);
             // Get the current transform object
             var t = d3.transform(pictureGroup.attr('transform'));
             // Set the scale value, without changing other attributes
