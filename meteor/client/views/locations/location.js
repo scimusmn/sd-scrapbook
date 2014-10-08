@@ -296,12 +296,23 @@ Template.location.events({
              * Transform the picture group
              */
             var pictureGroup = d3.select(this);
+            var imageInGroup = pictureGroup.select('image');
+            var imageHeight = imageInGroup
+                .attr('height');
+            console.log('imageHeight', imageHeight);
             // Get the current transform object
             var t = d3.transform(pictureGroup.attr('transform'));
             // Set the scale value, without changing other attributes
             // This allows the image to stay at its current X,Y position
             // while scaling.
+            console.log('image select');
+            console.log(imageInGroup);
             t.scale = [distanceScale, distanceScale];
+            t.translate = [
+                t.translate[0], // Keep the X axis in place
+                (835 - (imageHeight * distanceScale))
+            ];
+            //console.log('t translate Y', t.translate[1]);
             // Turn the transform back into a string for SVG
             transformString = t.toString();
             pictureGroup
