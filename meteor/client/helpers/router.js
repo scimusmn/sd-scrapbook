@@ -53,14 +53,14 @@ Router.map(function() {
   });
 
   this.route('location', {
-    path: '/location/:_id',
+    path: '/location/:link',
     waitOn: function () {
-      return Meteor.subscribe('singleLocation', this.params._id);
+      return Meteor.subscribe('singleLocation', this.params.link);
     },
     data: function () {
       return {
-        location: Locations.findOne(this.params._id)
-      }
+        location: Locations.findOne({ 'link': this.params.link })
+      };
     }
   });
 

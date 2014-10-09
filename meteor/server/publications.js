@@ -71,13 +71,13 @@ Meteor.publish('allLocations', function() {
 /**
  * Publish a single location
  */
-Meteor.publish('singleLocation', function(id) {
+Meteor.publish('singleLocation', function(link) {
 
     /**
      * Get current location so that we can filter images
      * only to this location.
      */
-    var currentLocation = Locations.find(id);
+    var currentLocation = Locations.find( { 'link': link });
     var currentLocationObject = currentLocation.fetch();
     var currentLocationTitle = currentLocationObject[0].title;
     return [

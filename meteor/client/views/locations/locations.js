@@ -364,7 +364,7 @@ Template.locations.events({
             // Query Mongo for a location with a matching title
             var clickedLocation = Locations.findOne( {title: imageLocation });
             // Navigate to the Location with the matching _id
-            Router.go('location', {_id: clickedLocation._id});
+            Router.go('location', {link: clickedLocation.link});
         }
 
     }
