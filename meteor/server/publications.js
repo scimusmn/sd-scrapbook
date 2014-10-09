@@ -34,7 +34,7 @@ Meteor.publish('allLocations', function() {
      */
     function padNumberMath(number, pad) {
         var N = Math.pow(10, pad);
-        return number < N ? ("" + (N + number)).slice(1) : "" + number
+        return number < N ? ("" + (N + number)).slice(1) : "" + number;
     }
 
     /**
@@ -54,7 +54,7 @@ Meteor.publish('allLocations', function() {
         // using the _id
         query['$or'].push({
             $and: [ { dsLocId: activeLocId }, { _id: { $regex: randNum + '(now$|then$|r$|$)', $options: 'i'}}]
-        })
+        });
 
     });
 
@@ -64,7 +64,7 @@ Meteor.publish('allLocations', function() {
         // Old random method
         // only pulled one image randomly form the entire list
         //Images.find( {}, { title: 1, longitude: 1, latitude: 1, photographer: 1}).skip(randNum).limit(1)
-    ]
+    ];
 
 });
 
@@ -86,7 +86,7 @@ Meteor.publish('singleLocation', function(id) {
             {generalLocationDs: currentLocationTitle},
             {dsLocId: 1, title: 1, photographer: 1}
         )
-    ]
+    ];
 });
 
 /**

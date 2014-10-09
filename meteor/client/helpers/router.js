@@ -24,12 +24,12 @@ var filters = {
 
   isLoggedIn: function() {
     if (!(Meteor.loggingIn() || Meteor.user())) {
-      alert('Please Log In First.')
+      alert('Please Log In First.');
       this.stop();
     }
   }
 
-}
+};
 
 Router.onBeforeAction(filters.myFilter, {only: ['locations']});
 
@@ -48,7 +48,7 @@ Router.map(function() {
       return {
         locations: Locations.find(),
         images: Images.find()
-      }
+      };
     }
   });
 
