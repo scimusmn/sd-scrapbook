@@ -396,7 +396,7 @@ Template.location.events({
         e.preventDefault();
         Meteor.call('removeLocation', location, function(error, result){
             alert('Location deleted.');
-            Router.go('/locations');
+            Router.go('/');
         });
     }
 
