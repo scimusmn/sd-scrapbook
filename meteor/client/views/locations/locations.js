@@ -146,15 +146,6 @@ Template.locations.rendered = function () {
         //.attr("clip-path", clipIdUrl);
 
         /**
-         * Finally draw a placename
-         */
-        svg.append('svg:text')
-            .attr("x", position[0])
-            .attr("y", position[1])
-            .attr("class", 'location-title')
-            .text(location.title);
-
-        /**
          * Reference dot to show where the location lat long is pointing
          *
          * This should be turned off in the final version.
@@ -187,17 +178,6 @@ Template.locations.rendered = function () {
     function drawImage(svg, projection, image, i) {
 
         position = projection([image.longitude, image.latitude]);
-
-        /**
-         * Draw the title
-         *
-         * We probably won't use this on the final map.
-         */
-        svg.append('svg:text')
-            .attr("x", position[0] - 100)
-            .attr("y", position[1] - 110)
-            .attr("class", 'location-title')
-            .text(image.title);
 
         // Old skool border width
         var imageBorder = 5;
