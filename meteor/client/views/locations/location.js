@@ -73,6 +73,8 @@ Template.location.rendered = function () {
             images = _.sortBy(images, function(image) {
                 return image.date;
             });
+            firstYear = _.first(images).date.substring(0,4);
+            lastYear = _.last(images).date.substring(0,4);
             var timelineMargin = 60;
             widthInterval = parseInt((width - timelineMargin) / imagesCount);
             var firstImageWidth = images[0].thumbWidth;
@@ -89,14 +91,14 @@ Template.location.rendered = function () {
                 .attr("x", 10)
                 .attr("y", 35)
                 .attr("class", 'time-label-start')
-                .text('1800');
+                .text(firstYear);
 
             // End
             time.append('svg:text')
                 .attr("x", 1675)
                 .attr("y", 35)
                 .attr("class", 'time-label-end')
-                .text('2000');
+                .text(lastYear);
 
             /**
              * Render the timeline handle
