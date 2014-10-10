@@ -339,7 +339,6 @@ Template.location.events({
                 translateX, // Keep the X axis in placename
                 translateY
             ];
-            //console.log('t translate Y', t.translate[1]);
             // Turn the transform back into a string for SVG
             transformString = t.toString();
             pictureGroup
@@ -364,9 +363,7 @@ Template.location.events({
 
         hlImgId = hlImg.data('id');
         hlImgExWidth = hlImg.data('xw');
-        console.log('w', hlImgExWidth);
         hlImgExHeight = hlImg.data('xh');
-        console.log('h', hlImgExHeight);
         //bigPic = d3.select("g.big-picture");
 
         // Only change the image when we need to

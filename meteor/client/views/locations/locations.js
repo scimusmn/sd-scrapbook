@@ -50,27 +50,42 @@ Template.locations.rendered = function () {
      */
     Deps.autorun(function () {
 
-        /**
-         * Draw each location
-         */
-        var locations = Locations.find().fetch();
-        _.each(locations, function(location, i) {
-            drawLocation(svg, projection, location, i);
-        });
+        //
+        // Not sure why but we need to wait a few milliseconds before
+        // asking for the images object from MiniMongo. otherwise we'll Get
+        // the previous page's collection, which includes all the images for
+        // that location, resulting in tens of images animating into place
+        //
+        window.setTimeout(function() {
+            renderLocations();
+        }, 200);
 
-        /**
-         * Draw each image
-         *
-         * TODO:
-         * Actually I think that this will be our primary collection. I might
-         * move this into a seperate collection at some point.
-         *
-         */
-        var images = Images.find().fetch();
-        images = _.shuffle(images);
-        _.each(images, function(image, i) {
-            drawImage(svg, projection, image, i);
-        });
+        function renderLocations() {
+
+            /**
+             * Draw each location
+             */
+            var locations = Locations.find().fetch();
+            _.each(locations, function(location, i) {
+                drawLocation(svg, projection, location, i);
+            });
+
+            /**
+             * Draw each image
+             *
+             * TODO:
+             * Actually I think that this will be our primary collection. I might
+             * move this into a seperate collection at some point.
+             *
+             */
+            var images = Images.find().fetch();
+            console.log('images', images);
+            images = _.shuffle(images);
+            console.log('shuffled images', images);
+            _.each(images, function(image, i) {
+                drawImage(svg, projection, image, i);
+            });
+        }
     });
 
     function drawLocation(svg, projection, location, i) {
