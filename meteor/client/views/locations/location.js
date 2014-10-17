@@ -110,7 +110,7 @@ Template.location.rendered = function () {
                 .attr("x", 0)
                 .attr("y", 0);
 
-        };
+        }
     });
 
     /**
