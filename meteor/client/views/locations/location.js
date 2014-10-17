@@ -129,9 +129,12 @@ Template.location.rendered = function () {
          */
         // The x calue for the first image at the left edge of the timeline
         var leftEdge = (timelineMargin / 2) - imageBorder;
+        console.log('leftEdge - ', leftEdge);
+
         var centerX;
         if (i === 0) {
             centerX = leftEdge;
+            // Work here to see what centerX is.
         }
 
         // The x value for the last image at the right edge of the timeline
@@ -141,6 +144,7 @@ Template.location.rendered = function () {
         if (i == (imagesCount - 1)){
             centerX = rightEdge;
         }
+        console.log('re', rightEdge);
 
         // Find the proper interval between images, for the rest of the images
         var rightEdgeCenter = rightEdge + (firstImageWidth / 2);
@@ -163,6 +167,8 @@ Template.location.rendered = function () {
             .attr('data-index', i)
             .attr('data-id', image._id)
             .attr('data-date', image.date)
+            .attr('data-location', image.creationPlace)
+            .attr('data-photographer', image.photographer)
             .attr('data-title', image.title)
             .attr('data-xw', image.expandedWidth)
             .attr('data-xh', image.expandedHeight)
@@ -242,6 +248,21 @@ Template.location.rendered = function () {
             .delay(i * delay) // Stagger the markers animating in
             .attr("opacity", "1")
             .duration(dur);
+
+        var devGroup = svg.append("g");
+        // Dev position helper
+        var devRect = devGroup.append('rect')
+            // Positions are relative to the group
+            .attr("x", (centerX))
+            .attr("y", (835))
+            .attr("width", 5)
+            .attr("height", 40)
+            .attr('class', 'child dev-dot');
+
+        if (i === 0) {
+            devRect
+                .attr('class', 'child dev-dot dev-dot-one');
+        }
 
     }
 };
@@ -360,6 +381,9 @@ Template.location.events({
 
         hlImgDescription = hlImg.data('description');
         $('.image-detail span.image-description').text(hlImgDescription);
+        $('.image-detail span.image-location').text(hlImg.data('location'));
+        $('.image-detail span.image-date').text(hlImg.data('date'));
+        $('.image-detail span.image-photographer').text(hlImg.data('photographer'));
 
         hlImgId = hlImg.data('id');
         hlImgExWidth = hlImg.data('xw');
