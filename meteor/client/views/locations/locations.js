@@ -25,7 +25,7 @@ Template.locations.rendered = function () {
     var projection = d3.geo.mercator()
         .scale(13168)
         .center([-119.082, 34.656])
-        .precision(.1);
+        .precision(0.1);
 
     /**
      * Dev map features
@@ -170,7 +170,7 @@ Template.locations.rendered = function () {
             .attr("transform", function() {
                     return "translate(" + projection([location.longitude,location.latitude]) + ")";
                     })
-        .attr("class", 'location-ref-marker')
+        .attr("class", 'location-ref-marker');
 
         /**
          * Append an image at a specific location
@@ -199,7 +199,7 @@ Template.locations.rendered = function () {
 
         // Group for all the picture elements
         var pictureGroup = svg.append("g")
-            .attr('class', 'picture-group')
+            .attr('class', 'picture-group');
 
         var filter = pictureGroup.append("defs")
         .append("filter")
@@ -341,12 +341,12 @@ Template.locations.events({
                     .delay(i * 75) // Stagger the markers animating out
                     .attr("transform", function (){
                         transform = 'translate(' + centerX + ',' + centerY + ')scale(0)';
-                        return transform
+                        return transform;
                     })
                     .duration(500);
 
             });
-        }
+        };
         animateContentOut();
 
         window.setTimeout(function() {
