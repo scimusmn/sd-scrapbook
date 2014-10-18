@@ -123,65 +123,59 @@ Template.location.rendered = function () {
         var imageBorder = 5;
         var delay = 2; // Milliseconds to delay the animation per image
         var dur = 500; // Milliseconds for the image animation
+        var centerX;
+        var translateX;
 
         /**
          * Image positioning
          */
-        // The x calue for the first image at the left edge of the timeline
-        var leftEdge = (timelineMargin / 2) - imageBorder;
+        // This will be the X value for the first image at the left edge of the timeline.
+        var timelineLeftEdge = (timelineMargin / 2);
+
+        // The last values account for the shadow offset in the group
+        // TODO - make this less of a hack
+        var rightEdge = timelineLeftEdge + 1760 - lastImageWidth - ( timelineMargin / 2 ) + (imageBorder) + 10;
 
         // Centers for the first and last images
-        var firstCenterX = leftEdge + ( ( firstImageWidth + 15 ) / 2 );
+        // TODO - make 1760 a variable
+        var firstCenterX = timelineLeftEdge + ( ( firstImageWidth + 15 ) / 2 );
         var lastCenterX = 1760 - ( ( lastImageWidth + 15 ) / 2 );
 
-        var centerX;
-        var translateX;
+        // Values for the first image
         if (i === 0) {
             centerX = firstCenterX;
-            leftX = leftEdge;
-            console.log('First leftX - ', leftX);
-            console.log('First centerX - ', centerX);
-            console.log('First image.thumbWidth - ', image.thumbWidth);
+            leftX = timelineLeftEdge;
             translateX = leftX;
         }
 
-        // The x value for the last image at the right edge of the timeline
-        //
-        // The last values account for the shadow offset in the group
-        var rightEdge = (timelineMargin / 2) + 1760 - lastImageWidth - (imageBorder * 2) - 5;
+        // Values for the last image
         if (i == (imagesCount - 1)){
-            leftX = rightEdge;
             centerX = lastCenterX;
+            leftX = rightEdge;
             translateX = leftX;
-            console.log('Last leftX - ', leftX);
-            console.log('Last centerX - ', centerX);
-            console.log('Last image.thumbWidth - ', image.thumbWidth);
         }
-        //console.log('re', rightEdge);
-
-        var centerGaps = (lastCenterX - firstCenterX) / ( imagesCount - 2 );
 
 
-        // Find the proper interval between images, for the rest of the images
-        var rightEdgeCenter = rightEdge + (firstImageWidth / 2);
-        var centerInterval = (rightEdgeCenter - leftEdge) / (imagesCount - 2);
-
+        // Values for the rest of the image
+        //
+        // First find the proper interval between images, and then set the
+        // position based on the i value
+        //
+        // 15 for white border and shadow
+        // TODO make this gap a variable
+        var centerInterval = (lastCenterX - firstCenterX) / ( imagesCount - 2 );
         if ((i !== 0) && (i != (imagesCount - 1))) {
-            centerX = firstCenterX + (centerGaps * i);
-            // 15 for white border and shadow
+            centerX = firstCenterX + (centerInterval * i);
             leftX = centerX - ( ( parseInt( image.thumbWidth ) + 15 ) / 2);
             translateX = leftX;
-
-            // Old way
-            //leftX = leftEdge + (centerInterval * i) - ((image.thumbWidth + 15));
-            //centerX = leftEdge + (centerInterval * i) - ((image.thumbWidth + 15) / 2);
-
         }
 
-        // Put the images at the top of the timeline
+        // Y Value for all images is the same
+        //
+        // This bottom aligns the images to the top of the timeline
         var bottomY = (835 - image.thumbHeight);
-        // Adding dev height for order testing
-        //var bottomY = (835 - image.thumbHeight - ( i * 5 ) - 60 );
+
+        // Start building the SVG translate command
         var translate = 'translate(' + translateX + ',' + bottomY + ')';
 
         /**
