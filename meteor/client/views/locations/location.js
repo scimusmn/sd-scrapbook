@@ -75,7 +75,7 @@ Template.location.rendered = function () {
             });
             firstYear = _.first(images).date.substring(0,4);
             lastYear = _.last(images).date.substring(0,4);
-            var timelineMargin = 60;
+            var timelineMargin = 50;
             widthInterval = parseInt((width - timelineMargin) / imagesCount);
             var firstImageWidth = images[0].thumbWidth;
             var lastImageWidth = images[parseInt(imagesCount - 1)].thumbWidth;
