@@ -129,12 +129,20 @@ Template.location.rendered = function () {
          */
         // The x calue for the first image at the left edge of the timeline
         var leftEdge = (timelineMargin / 2) - imageBorder;
-        console.log('leftEdge - ', leftEdge);
+
+        // Centers for the first and last images
+        var firstCenterX = leftEdge + ( ( firstImageWidth + 15 ) / 2 );
+        var lastCenterX = 1760 - ( ( lastImageWidth + 15 ) / 2 );
 
         var centerX;
+        var translateX;
         if (i === 0) {
-            centerX = leftEdge;
-            // Work here to see what centerX is.
+            centerX = firstCenterX;
+            leftX = leftEdge;
+            console.log('First leftX - ', leftX);
+            console.log('First centerX - ', centerX);
+            console.log('First image.thumbWidth - ', image.thumbWidth);
+            translateX = leftX;
         }
 
         // The x value for the last image at the right edge of the timeline
@@ -142,22 +150,39 @@ Template.location.rendered = function () {
         // The last values account for the shadow offset in the group
         var rightEdge = (timelineMargin / 2) + 1760 - lastImageWidth - (imageBorder * 2) - 5;
         if (i == (imagesCount - 1)){
-            centerX = rightEdge;
+            leftX = rightEdge;
+            centerX = lastCenterX;
+            translateX = leftX;
+            console.log('Last leftX - ', leftX);
+            console.log('Last centerX - ', centerX);
+            console.log('Last image.thumbWidth - ', image.thumbWidth);
         }
-        console.log('re', rightEdge);
+        //console.log('re', rightEdge);
+
+        var centerGaps = (lastCenterX - firstCenterX) / ( imagesCount - 2 );
+
 
         // Find the proper interval between images, for the rest of the images
         var rightEdgeCenter = rightEdge + (firstImageWidth / 2);
         var centerInterval = (rightEdgeCenter - leftEdge) / (imagesCount - 2);
 
         if ((i !== 0) && (i != (imagesCount - 1))) {
+            centerX = firstCenterX + (centerGaps * i);
             // 15 for white border and shadow
-            centerX = leftEdge + (centerInterval * i) - ((image.thumbWidth + 15) / 2);
+            leftX = centerX - ( ( parseInt( image.thumbWidth ) + 15 ) / 2);
+            translateX = leftX;
+
+            // Old way
+            //leftX = leftEdge + (centerInterval * i) - ((image.thumbWidth + 15));
+            //centerX = leftEdge + (centerInterval * i) - ((image.thumbWidth + 15) / 2);
+
         }
 
         // Put the images at the top of the timeline
         var bottomY = (835 - image.thumbHeight);
-        var translate = 'translate(' + centerX + ',' + bottomY + ')';
+        // Adding dev height for order testing
+        //var bottomY = (835 - image.thumbHeight - ( i * 5 ) - 60 );
+        var translate = 'translate(' + translateX + ',' + bottomY + ')';
 
         /**
          * Picture group parent
@@ -249,19 +274,53 @@ Template.location.rendered = function () {
             .attr("opacity", "1")
             .duration(dur);
 
-        var devGroup = svg.append("g");
         // Dev position helper
-        var devRect = devGroup.append('rect')
-            // Positions are relative to the group
+        var devGroup = svg.append("g");
+        //var devRectLeft = devGroup.append('rect')
+            //.attr("x", (leftX))
+            //.attr("y", (835))
+            //.attr("width", 5)
+            //.attr("height", 40)
+            //.attr('class', 'child dev-dot-left');
+
+        // Left - white top
+        var devRectLeft = devGroup.append('rect')
+            .attr("x", (leftX))
+            .attr("y", (780))
+            .attr("width", 5)
+            .attr("height", 20)
+            .attr('class', 'child dev-dot-left');
+
+        // Center - yellow bottom
+        var devRectCenter = devGroup.append('rect')
             .attr("x", (centerX))
             .attr("y", (835))
             .attr("width", 5)
-            .attr("height", 40)
-            .attr('class', 'child dev-dot');
+            .attr("height", 20)
+            .attr('class', 'child dev-dot-center');
 
+        // First - red
         if (i === 0) {
-            devRect
-                .attr('class', 'child dev-dot dev-dot-one');
+            devRectLeft
+                .attr('class', 'child dev-dot-left dev-dot-left-one');
+            devRectCenter
+                .attr('class', 'child dev-dot-center dev-dot-center-one');
+        }
+
+        // 2nd - pink
+        if (i === 1) {
+            devRectLeft
+                .attr('class', 'child dev-dot-left dev-dot-left-two');
+            devRectCenter
+                .attr('class', 'child dev-dot-center dev-dot-center-two');
+        }
+
+        // Last - green
+        if (i == (imagesCount - 1)){
+            devRectLeft
+                .attr('class', 'child dev-dot-left dev-dot-left-last');
+            devRectCenter
+                .attr('class', 'child dev-dot-center dev-dot-center-last');
         }
 
     }
@@ -269,8 +328,8 @@ Template.location.rendered = function () {
 
 Template.location.events({
     // Desired functionality, but disabled for testing
-    'mousemove .container': function (e) {
-    //'click .container': function (e) {
+    //'mousemove .container': function (e) {
+    'click .container': function (e) {
 
         /**
          * Setup basic objects and widths

@@ -134,7 +134,9 @@ body {
   opacity: .8;
   position: absolute;
   width: 1760px;
-  height: 50px;
+  height: 10px;
+  /* Temp smaller for dev*/
+  /*height: 50px;*/
   bottom: 70px;
   font-size: 30px;
 }
@@ -208,13 +210,27 @@ svg.svg-canvas {
  * Dev information tables
  * ----------------------------------------------------------------------------
  */
+.dev-dot-left{
+  fill: white;
+}
 
-.dev-dot {
+.dev-dot-center{
   fill: yellow;
 }
 
-.dev-dot-one {
+.dev-dot-left-one,
+.dev-dot-center-one {
   fill: red;
+}
+
+.dev-dot-left-two,
+.dev-dot-center-two {
+  fill: pink;
+}
+
+.dev-dot-left-last,
+.dev-dot-center-last {
+  fill: green;
 }
 
 // Table of location data
