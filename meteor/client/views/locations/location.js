@@ -346,7 +346,7 @@ Template.location.events({
     //'click .container': function (e) {
 
         /**
-         * Setup basic objects and widths
+         * Get timeline width for position calculations
          */
         var timeline = $('.timeline-background-svg');
 
@@ -361,7 +361,10 @@ Template.location.events({
         var posInterval = Math.floor(posX / intervalWidth);
 
         /**
-         * Position the handle relative to our pointer event
+         * Timeline handle
+         *
+         * Position the handle center on our pointer, but prevent it
+         * from going off the edge of the timeline.
          */
         var handle = d3.select('.time-handle-rect');
         var handleWidth = handle.attr('width');
@@ -402,33 +405,17 @@ Template.location.events({
              */
             i = Number(d3.select(this).attr("data-index"));
             var distance = posInterval - i;
-            //var distanceScale;
             if (distance === 0) {
                 distanceScale = 1;
             }
             else {
-                var minVal = 0.3;
+                var minVal = 0.5;
                 var maxVal = 0.7;
                 distanceScale = ( minVal + (maxVal - minVal) * (1 / (Math.abs(posInterval - i))));
             }
 
             /**
              * Transform the picture group
-             *
-             *
-             *
-             *
-             *
-             * TODO start tackling the scale problems here
-             *
-             * Right now the image is staying in the same X place. This looks
-             * wrong. The image should stay in the same centerX place.
-             *
-             * Figure out how to get the centerX value from the DOM.
-             *
-             *
-             *
-             *
              */
             var pictureGroup = d3.select(this);
             var imageInGroup = pictureGroup.select('image');
@@ -477,7 +464,6 @@ Template.location.events({
                 translateX, // Keep the X axis in placename
                 translateY
             ];
-            // Turn the transform back into a string for SVG
             transformString = t.toString();
             pictureGroup
                 .transition()
