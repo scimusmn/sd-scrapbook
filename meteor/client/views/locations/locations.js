@@ -37,10 +37,10 @@ Template.locations.rendered = function () {
     // TODO: read this in from the LESS
     var width = 1920;
     var height = 1080;
-    var svg = d3.select(".container").append("svg")
-        .attr("class", 'svg-canvas')
-        .attr("width", width)
-        .attr("height", height);
+    var svg = d3.select('.container').append('svg')
+        .attr('class', 'svg-canvas')
+        .attr('width', width)
+        .attr('height', height);
 
     /**
      * Load the meteor collection for Locations and Images
@@ -101,61 +101,61 @@ Template.locations.rendered = function () {
          * skoool white border around the photo.
          */
         //svg.append('rect')
-        //.attr("transform", function() {
-        //return "translate(" + projection([location.longitude,location.latitude]) + ")";
+        //.attr('transform', function() {
+        //return 'translate(' + projection([location.longitude,location.latitude]) + ')';
         //})
-        //.attr("width", 300)
-        //.attr("height", 250)
+        //.attr('width', 300)
+        //.attr('height', 250)
         //.attr('stroke', 'white')
         //.attr('stroke-width', '10')
         //.attr('class', 'location-matte');
 
         //clipId = 'special-' + i;
         //svg.append('clipPath')
-        //.attr("id", clipId)
+        //.attr('id', clipId)
         /**
          * Clip with a circle that bounces in from its center
          */
         ////.append('circle')
-        ////.attr("transform", function() {
-        ////return "translate(" + projection([location.longitude,location.latitude]) + ")";
+        ////.attr('transform', function() {
+        ////return 'translate(' + projection([location.longitude,location.latitude]) + ')';
         ////})
-        ////.attr("r", .01)
+        ////.attr('r', .01)
         ////.transition()
-        ////.attr("r", 90)
+        ////.attr('r', 90)
         ////.duration(300)
         ////.delay(i * 200) // Stagger the markers animating in
         ////.transition()
-        ////.attr("r", 40)
+        ////.attr('r', 40)
         ////.duration(100)
         ////.transition()
-        ////.attr("r", 80)
+        ////.attr('r', 80)
         ////.duration(80)
 
         /**
          * Clip the image with a rectangle
          */
         //.append('rect')
-        //.attr("transform", function() {
-        //return "translate(" + projection([location.longitude,location.latitude]) + ")";
+        //.attr('transform', function() {
+        //return 'translate(' + projection([location.longitude,location.latitude]) + ')';
         //})
-        //.attr("width", 300)
-        //.attr("height", 250)
+        //.attr('width', 300)
+        //.attr('height', 250)
 
         //.attr('clip-path', clipIdUrl)
-        //.attr("transform", function() {
-        //return "translate(" + projection([location.longitude,location.latitude]) + ")";
+        //.attr('transform', function() {
+        //return 'translate(' + projection([location.longitude,location.latitude]) + ')';
         //})
-        //.attr("r", 40);
+        //.attr('r', 40);
 
         //clipIdUrl = 'url(#' + clipId + ')';
         //svg.append('image')
-        //.attr("xlink:href", "/images/house.jpg")
-        //.attr("width", "600")
-        //.attr("height", "400")
-        //.attr("x", (position[0]-100))
-        //.attr("y", (position[1]-100))
-        //.attr("clip-path", clipIdUrl);
+        //.attr('xlink:href', '/images/house.jpg')
+        //.attr('width', '600')
+        //.attr('height', '400')
+        //.attr('x', (position[0]-100))
+        //.attr('y', (position[1]-100))
+        //.attr('clip-path', clipIdUrl);
 
         /**
          * Reference dot to show where the location lat long is pointing
@@ -163,11 +163,11 @@ Template.locations.rendered = function () {
          * This should be turned off in the final version.
          */
         svg.append('circle')
-            .attr("r", 10)
-            .attr("transform", function() {
-                    return "translate(" + projection([location.longitude,location.latitude]) + ")";
+            .attr('r', 10)
+            .attr('transform', function() {
+                    return 'translate(' + projection([location.longitude,location.latitude]) + ')';
                     })
-        .attr("class", 'location-ref-marker');
+        .attr('class', 'location-ref-marker');
 
         /**
          * Append an image at a specific location
@@ -175,15 +175,15 @@ Template.locations.rendered = function () {
          * This is for reference, now that we're appending images
          * per marker.
          */
-            //svg.append("svg:image")
-            //.attr("xlink:href", "/images/house.jpg")
-            //.attr("x", position[0])
-            //.attr("y", position[1])
-            //.attr("width", "200")
-            //.attr("height", "182")
+            //svg.append('svg:image')
+            //.attr('xlink:href', '/images/house.jpg')
+            //.attr('x', position[0])
+            //.attr('y', position[1])
+            //.attr('width', '200')
+            //.attr('height', '182')
             //.transition()
-            //.attr("width", "400")
-            //.attr("height", "282")
+            //.attr('width', '400')
+            //.attr('height', '282')
             //.duration(800);
     }
 
@@ -195,70 +195,70 @@ Template.locations.rendered = function () {
         var imageBorder = 5;
 
         // Group for all the picture elements
-        var pictureGroup = svg.append("g")
+        var pictureGroup = svg.append('g')
             .attr('class', 'picture-group');
 
-        var filter = pictureGroup.append("defs")
-        .append("filter")
-            .attr("id", "blur")
-        .append("feGaussianBlur")
-            .attr("stdDeviation", 5);
+        var filter = pictureGroup.append('defs')
+        .append('filter')
+            .attr('id', 'blur')
+        .append('feGaussianBlur')
+            .attr('stdDeviation', 5);
 
         // Drop shadow rectangle
         pictureGroup.append('rect')
-            .attr("width", "0")
-            .attr("height", "0")
-            .attr("opacity", ".1")
-            .attr("x", (position[0]))
-            .attr("y", (position[1]))
+            .attr('width', '0')
+            .attr('height', '0')
+            .attr('opacity', '.1')
+            .attr('x', (position[0]))
+            .attr('y', (position[1]))
             .style('fill', '#000')
             .transition()
             .delay(i * 50) // Stagger the markers animating in
             // Simulate scaling form the center of the image
-            .attr("x", (position[0]) - (image.thumbWidth / 2))
-            .attr("y", (position[1]) - (image.thumbHeight / 2))
-            .attr("width", image.thumbWidth + (imageBorder * 2))
-            .attr("height", image.thumbHeight + (imageBorder * 2))
-            .attr("opacity", "1")
-            .attr("filter", "url(#blur)")
+            .attr('x', (position[0]) - (image.thumbWidth / 2))
+            .attr('y', (position[1]) - (image.thumbHeight / 2))
+            .attr('width', image.thumbWidth + (imageBorder * 2))
+            .attr('height', image.thumbHeight + (imageBorder * 2))
+            .attr('opacity', '1')
+            .attr('filter', 'url(#blur)')
             .duration(500);
 
         // White border rectangle
         pictureGroup.append('rect')
-            .attr("width", "0")
-            .attr("height", "0")
-            .attr("opacity", ".1")
-            .attr("x", (position[0]))
-            .attr("y", (position[1]))
+            .attr('width', '0')
+            .attr('height', '0')
+            .attr('opacity', '.1')
+            .attr('x', (position[0]))
+            .attr('y', (position[1]))
             .attr('class', 'location-matte')
             .transition()
             .delay(i * 50) // Stagger the markers animating in
             // Simulate scaling form the center of the image
-            .attr("x", (position[0]) - (image.thumbWidth / 2))
-            .attr("y", (position[1]) - (image.thumbHeight / 2))
-            .attr("width", image.thumbWidth + (imageBorder * 2))
-            .attr("height", image.thumbHeight + (imageBorder * 2))
-            .attr("opacity", "1")
+            .attr('x', (position[0]) - (image.thumbWidth / 2))
+            .attr('y', (position[1]) - (image.thumbHeight / 2))
+            .attr('width', image.thumbWidth + (imageBorder * 2))
+            .attr('height', image.thumbHeight + (imageBorder * 2))
+            .attr('opacity', '1')
             .duration(500);
 
         // Image
         pictureGroup.append('image')
-            .attr("xlink:href", "/images/thumbnails/" + image._id + ".jpg")
-            .attr("data-id", image._id)
-            .attr("data-location", image.generalLocationDs)
-            .attr("width", "0")
-            .attr("height", "0")
-            .attr("opacity", ".1")
-            .attr("x", (position[0] + imageBorder))
-            .attr("y", (position[1] + imageBorder))
+            .attr('xlink:href', '/images/thumbnails/' + image._id + '.jpg')
+            .attr('data-id', image._id)
+            .attr('data-location', image.generalLocationDs)
+            .attr('width', '0')
+            .attr('height', '0')
+            .attr('opacity', '.1')
+            .attr('x', (position[0] + imageBorder))
+            .attr('y', (position[1] + imageBorder))
             .transition()
             .delay(i * 50) // Stagger the markers animating in
             // Simulate scaling form the center of the image
-            .attr("x", (position[0] + imageBorder) - (image.thumbWidth / 2))
-            .attr("y", (position[1] + imageBorder) - (image.thumbHeight / 2))
-            .attr("width", image.thumbWidth)
-            .attr("height", image.thumbHeight)
-            .attr("opacity", "1")
+            .attr('x', (position[0] + imageBorder) - (image.thumbWidth / 2))
+            .attr('y', (position[1] + imageBorder) - (image.thumbHeight / 2))
+            .attr('width', image.thumbWidth)
+            .attr('height', image.thumbHeight)
+            .attr('opacity', '1')
             .attr('location', image.generalLocationDs)
             .duration(500);
     }
@@ -275,18 +275,18 @@ Template.locations.rendered = function () {
         var path = d3.geo.path()
         .projection(projection);
 
-        d3.json("/data/salton.json", function(error, salton) {
-        svg.append("path")
+        d3.json('/data/salton.json', function(error, salton) {
+        svg.append('path')
             .datum(topojson.feature(salton, salton.objects.salton))
-            .attr("d", path)
-            .attr("class", 'water');
+            .attr('d', path)
+            .attr('class', 'water');
         });
 
-        d3.json("/data/i15.json", function(error, i15) {
-        svg.append("path")
+        d3.json('/data/i15.json', function(error, i15) {
+        svg.append('path')
         .datum(topojson.feature(i15, i15.objects.i15))
-            .attr("d", path)
-            .attr("class", 'road');
+            .attr('d', path)
+            .attr('class', 'road');
         });
 
         /**
@@ -294,21 +294,21 @@ Template.locations.rendered = function () {
          * Only really useful for positioning the wiggly part of the Colorado
          * River in Mexico.
          */
-        d3.json("/data/states.json", function(error, states) {
-            svg.append("path")
+        d3.json('/data/states.json', function(error, states) {
+            svg.append('path')
             .datum(topojson.feature(states, states.objects.states))
-            .attr("d", path)
-            .attr("class", 'states');
+            .attr('d', path)
+            .attr('class', 'states');
         });
 
         /**
          * Cities markers
          */
-        d3.json("/data/cities.json", function(error, cities) {
-            svg.append("path")
+        d3.json('/data/cities.json', function(error, cities) {
+            svg.append('path')
             .datum(topojson.feature(cities, cities.objects.cities))
-            .attr("d", path)
-            .attr("class", 'cities');
+            .attr('d', path)
+            .attr('class', 'cities');
         });
 
     }
@@ -323,13 +323,13 @@ Template.locations.events({
 
         var animateContentOut = function() {
             var imagePositions = d3.selectAll('image').attr('x');
-            d3.selectAll("image").each( function(d, i){
+            d3.selectAll('image').each( function(d, i){
 
-                x = Number(d3.select(this).attr("x"));
-                y = Number(d3.select(this).attr("y"));
+                x = Number(d3.select(this).attr('x'));
+                y = Number(d3.select(this).attr('y'));
 
-                width = Number(d3.select(this).attr("width"));
-                height = Number(d3.select(this).attr("height"));
+                width = Number(d3.select(this).attr('width'));
+                height = Number(d3.select(this).attr('height'));
 
                 centerX = parseInt(x + (width / 2));
                 centerY = parseInt(y + (height / 2));
@@ -337,7 +337,7 @@ Template.locations.events({
                 var pictureGroup = d3.select(this.parentNode)
                     .transition()
                     .delay(i * 75) // Stagger the markers animating out
-                    .attr("transform", function (){
+                    .attr('transform', function (){
                         transform = 'translate(' + centerX + ',' + centerY + ')scale(0)';
                         return transform;
                     })
@@ -353,8 +353,8 @@ Template.locations.events({
 
         function goDestination() {
             // Get the clicked location string from the COM data-location attribute
-            var imageLocation = $(event.currentTarget).data("location");
-            var clickedImage  = $(event.currentTarget).data("id");
+            var imageLocation = $(event.currentTarget).data('location');
+            var clickedImage  = $(event.currentTarget).data('id');
             console.log('clickedImage - ', clickedImage);
             // Query Mongo for a location with a matching title
             var clickedLocation = Locations.findOne( {title: imageLocation });
