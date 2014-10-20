@@ -1,18 +1,11 @@
-/* ---------------------------------------------------- +/
+/**
+ * Single location
+ *
+ * This shows all the images in a timeline for the selected location.
+ */
 
-## Location ##
-
-Code related to the location template
-
-/+ ---------------------------------------------------- */
-
-//Template.location.created = function () {
-//};
-
-//Template.location.helpers({
-    //myHelper: function () {
-    //}
-//});
+// Enable dev features
+var dev = false;
 
 /**
  * Image properties
@@ -454,11 +447,13 @@ function highlightImage(pointerX) {
     /**
      * Dev mouse position data
      */
-    $('.dev-mouse').html(
-        'Rel pointer X = ' + posX + '<br>' +
-        'Interval width = ' + intervalWidth + '<br>' +
-        'Pos interval = ' + posInterval + '<br>'
-    );
+    if (dev) {
+        $('.dev-mouse').html(
+            'Rel pointer X = ' + posX + '<br>' +
+            'Interval width = ' + intervalWidth + '<br>' +
+            'Pos interval = ' + posInterval + '<br>'
+        );
+    }
 
 }
 

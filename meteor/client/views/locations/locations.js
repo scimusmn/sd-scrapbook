@@ -1,3 +1,10 @@
+/**
+ * Locations
+ *
+ * Map view of all locations.
+ * This shows a random picture from each location set.
+ */
+
 // Enable dev features
 var dev = false;
 
