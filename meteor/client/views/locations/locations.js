@@ -200,73 +200,72 @@ Template.locations.rendered = function () {
         // Old skool border width
         var imageBorder = 5;
 
+        var centerX = position[0];
+        var centerY = position[1];
         // Group for all the picture elements
         var pictureGroup = svg.append('g')
-            .attr('class', 'picture-group');
-
-        var filter = pictureGroup.append('defs')
-        .append('filter')
-            .attr('id', 'blur')
-        .append('feGaussianBlur')
-            .attr('stdDeviation', 5);
 
         // Drop shadow rectangle
+        var filter = pictureGroup.append('defs')
+            .append('filter')
+            .attr('id', 'blur')
+            .append('feGaussianBlur')
+            .attr('stdDeviation', 5);
         pictureGroup.append('rect')
-            .attr('width', '0')
-            .attr('height', '0')
-            .attr('opacity', '.1')
-            .attr('x', (position[0]))
-            .attr('y', (position[1]))
-            .style('fill', '#000')
-            .transition()
-            .delay(i * 50) // Stagger the markers animating in
-            // Simulate scaling form the center of the image
-            .attr('x', (position[0]) - (image.thumbWidth / 2))
-            .attr('y', (position[1]) - (image.thumbHeight / 2))
             .attr('width', image.thumbWidth + (imageBorder * 2))
             .attr('height', image.thumbHeight + (imageBorder * 2))
             .attr('opacity', '1')
-            .attr('filter', 'url(#blur)')
-            .duration(500);
+            .attr('x', 0)
+            .attr('y', 0)
+            .style('fill', '#000')
+            .attr('filter', 'url(#blur)');
 
         // White border rectangle
         pictureGroup.append('rect')
-            .attr('width', '0')
-            .attr('height', '0')
-            .attr('opacity', '.1')
-            .attr('x', (position[0]))
-            .attr('y', (position[1]))
-            .attr('class', 'location-matte')
-            .transition()
-            .delay(i * 50) // Stagger the markers animating in
-            // Simulate scaling form the center of the image
-            .attr('x', (position[0]) - (image.thumbWidth / 2))
-            .attr('y', (position[1]) - (image.thumbHeight / 2))
+            .attr('x', 0)
+            .attr('y', 0)
             .attr('width', image.thumbWidth + (imageBorder * 2))
             .attr('height', image.thumbHeight + (imageBorder * 2))
             .attr('opacity', '1')
-            .duration(500);
+            .attr('class', 'location-matte');
 
         // Image
         pictureGroup.append('image')
-            .attr('xlink:href', '/images/thumbnails/' + image._id + '.jpg')
-            .attr('data-id', image._id)
-            .attr('data-location', image.generalLocationDs)
-            .attr('width', '0')
-            .attr('height', '0')
-            .attr('opacity', '.1')
-            .attr('x', (position[0] + imageBorder))
-            .attr('y', (position[1] + imageBorder))
-            .transition()
-            .delay(i * 50) // Stagger the markers animating in
-            // Simulate scaling form the center of the image
-            .attr('x', (position[0] + imageBorder) - (image.thumbWidth / 2))
-            .attr('y', (position[1] + imageBorder) - (image.thumbHeight / 2))
+            .attr('x', imageBorder)
+            .attr('y', imageBorder)
             .attr('width', image.thumbWidth)
             .attr('height', image.thumbHeight)
             .attr('opacity', '1')
-            .attr('location', image.generalLocationDs)
-            .duration(500);
+            .attr('xlink:href', '/images/thumbnails/' + image._id + '.jpg')
+            .attr('data-id', image._id)
+            .attr('data-location', image.generalLocationDs);
+
+        pictureGroup
+            .attr('opacity', '0')
+            .attr('class', 'picture-group')
+            .attr('transform', function (){
+                return 'scale(.1), translate(' + (centerX / 0.1) + ', ' + (centerY / 0.1) + ')';
+            });
+
+        pictureGroup
+            .transition()
+            .attr('opacity', '1')
+            .attr('transform', function (){
+                var transform =
+                    'rotate(' + _.random(-2,2) + ', ' +
+                        ( centerX - ( image.thumbWidth / 2 ) ) + ', ' +
+                        ( centerY - ( image.thumbHeight / 2 ) ) +
+                    '),' +
+                    'scale(1),' +
+                    'translate(' +
+                        ( centerX - ( image.thumbWidth / 2 ) ) + ', ' +
+                        ( centerY - ( image.thumbHeight / 2 ) ) +
+                    ')';
+                return transform;
+            })
+            .duration(400)
+            .delay(i * 50); // Stagger the markers animating in
+
     }
 
     function devMapFeatures(d3, projection) {
