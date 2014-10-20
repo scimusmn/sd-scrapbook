@@ -323,6 +323,7 @@ Template.locations.events({
      * Image click
      */
     'click image':function(event, template){
+
         var animateContentOut = function() {
             var imagePositions = d3.selectAll('image').attr('x');
             d3.selectAll("image").each( function(d, i){
@@ -356,10 +357,16 @@ Template.locations.events({
         function goDestination() {
             // Get the clicked location string from the COM data-location attribute
             var imageLocation = $(event.currentTarget).data("location");
+            var clickedImage  = $(event.currentTarget).data("id");
+            console.log('clickedImage - ', clickedImage);
             // Query Mongo for a location with a matching title
             var clickedLocation = Locations.findOne( {title: imageLocation });
             // Navigate to the Location with the matching _id
-            Router.go('location', {link: clickedLocation.link});
+            Router.go(
+                'location',
+                {link: clickedLocation.link},
+                {query: {image: clickedImage}}
+            );
         }
 
     }

@@ -110,6 +110,21 @@ Template.location.rendered = function () {
             });
 
             /**
+             * Find the clicked image and highlight it
+             *
+             * TODO - This is a hack. We're looking up the x position for the
+             * image clicked and then passing it to the mousemove function.
+             *
+             * Figure out a better non-positional way to do this.
+             */
+            var clickedImage = Router.current().params.image;
+            var clickedImageDom = $('g[data-id=' + clickedImage + ']');
+            var clickedImageLeft = clickedImageDom.position().left;
+            window.setTimeout(function () {
+                highlightImage(clickedImageLeft + 140);
+            }, 500);
+
+            /**
              * Print the start and end years of the timeline
              */
             // Start
