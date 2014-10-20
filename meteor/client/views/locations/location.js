@@ -349,15 +349,16 @@ Template.location.events({
          * Get timeline width for position calculations
          */
         var timeline = $('.timeline-background-svg');
+        var timelineBackgroundWidth = timeline.width();
 
-        // Count elements in our SVG element to get number of images
-        var imagesCount = d3.selectAll('.picture-group')[0].length;
-
-        // Pixel interval between images
-        var intervalWidth = (timeline.width() / imagesCount);
-
-        // Mouse position relative to the timeline
+        /**
+         * Determine which image to highlight based on pointer position
+         */
         var posX = e.pageX - timeline.parent().offset().left;
+        var imagesCount = d3.selectAll('.picture-group')[0].length;
+        var intervalWidth = (
+            timeline.width() /
+            imagesCount);
         var posInterval = Math.floor(posX / intervalWidth);
 
         /**
@@ -367,31 +368,17 @@ Template.location.events({
          * from going off the edge of the timeline.
          */
         var handle = d3.select('.time-handle-rect');
-        var handleWidth = handle.attr('width');
-        var handleWidthHalf = (handleWidth / 2);
-
-        // Prevent the handle from going off the edge of the timeline
+        var handleWidthHalf = ( handle.attr('width') / 2 );
         if (posX <= handleWidthHalf) {
-            handleX = 0;
+            handleX = handleWidthHalf;
         }
-        //
-        // TODO make this (1750) a variable
-        //
-        if (posX >= 1750 - handleWidthHalf) {
-            handleX = (1750 - handleWidthHalf);
+        if (posX >= timeline.width() - handleWidthHalf) {
+            handleX = (timeline.width() - handleWidthHalf);
         }
-        if ( ( posX > handleWidthHalf ) && ( posX < ( 1750 - handleWidthHalf ) ) ) {
+        if ( ( posX > handleWidthHalf ) && ( posX < ( timeline.width() - handleWidthHalf ) ) ) {
             handleX = posX;
         }
-        console.log('handleX - ', handleX);
-        handle.attr('x', handleX);
-
-        //posInterval = 1;
-        //posInterval = imagesCount;
-        //console.log('posInterval - ', posInterval);
-        //console.log('posX - ', posX);
-
-        // Set the middle of the handle to the mouse position
+        handle.attr( 'x', ( handleX - handleWidthHalf ) );
 
         /**
          * Scale the images based on mouse position
@@ -432,8 +419,20 @@ Template.location.events({
             t.scale = [distanceScale, distanceScale];
 
             var timelineImages = $('.timeline-images');
-            var timelineImagesHeight =
-                timelineImages.css('height').replace('px', '');
+            var timelineImagesHeight = timelineImages.height();
+
+            /**
+             * X position
+             *
+             * Position the image off its center, scaled by the size of the
+             * image. Push the image right or left for the image border
+             * based on whether it's on the left or the right side.
+             */
+            var imageBorderTranslate = imageBorder;
+            if ( i >= ( imagesCount / 2 ) ) {
+                imageBorderTranslate = imageBorder * -1;
+            }
+            var translateX = dataCenterX - ((imageWidth * distanceScale) / 2) + imageBorderTranslate;
 
             /**
              * Y position
@@ -453,15 +452,13 @@ Template.location.events({
                 imageBottomPadding -
                 highlightHeight);
 
-            // TODO: Figure out how to get the X values to scale with the scale() value
-            //
-            //var translateX = t.translate[0] + ((imageWidth / 2) * distanceScale);
-            //var translateX = t.translate[0] + ((imageWidth / 2) * distanceScale);
-            // Old way
-            //var translateX = t.translate[0];
-            var translateX = dataCenterX - (imageWidth / 2);
+            /**
+             * Transform the image
+             *
+             * Turn the transform back into a string for SVG
+             */
             t.translate = [
-                translateX, // Keep the X axis in placename
+                translateX,
                 translateY
             ];
             transformString = t.toString();
