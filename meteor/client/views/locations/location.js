@@ -48,7 +48,7 @@ Template.location.rendered = function () {
     var timelineSVG  = d3.select(".timeline-background")
         .append("svg")
         .attr("class", 'timeline-background-svg')
-        .attr("width", timelineBackgroundWidth )
+        .attr("width", timelineBackgroundWidth)
         .attr("height", timelineBackgroundHeight);
 
     /**
@@ -76,7 +76,7 @@ Template.location.rendered = function () {
          * the image counts would get set three times with successively
          * increasing numbers.
          */
-        window.setTimeout(function() {
+        window.setTimeout(function () {
             renderLocation();
         }, 500);
 
@@ -87,7 +87,7 @@ Template.location.rendered = function () {
             var imagesCursor = Images.find();
             var imagesCount = imagesCursor.count();
             var images = imagesCursor.fetch();
-            images = _.sortBy(images, function(image) {
+            images = _.sortBy(images, function (image) {
                 return image.date;
             });
 
