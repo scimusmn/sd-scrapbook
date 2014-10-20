@@ -512,13 +512,4 @@ Template.location.events({
         console.clear();
     },
 
-    'click .delete': function(e, instance){
-        var location = this;
-        e.preventDefault();
-        Meteor.call('removeLocation', location, function(error, result){
-            alert('Location deleted.');
-            Router.go('/');
-        });
-    }
-
 });
