@@ -44,22 +44,22 @@ Template.location.rendered = function () {
         timelineBackground.css('margin-right').replace('px', '')
     );
     var timelineBackgroundHeight = timelineBackground.height();
-    var timelineSVG  = d3.select(".timeline-background")
-        .append("svg")
-        .attr("class", 'timeline-background-svg')
-        .attr("width", timelineBackgroundWidth)
-        .attr("height", timelineBackgroundHeight);
+    var timelineSVG  = d3.select('.timeline-background')
+        .append('svg')
+        .attr('class', 'timeline-background-svg')
+        .attr('width', timelineBackgroundWidth)
+        .attr('height', timelineBackgroundHeight);
 
     /**
      * Setup timeline images area
      */
     var timelineImages = $('.timeline-images');
     var timelineImagesHeight = timelineImages.height();
-    var timelineImagesSVG = d3.select(".timeline-images")
-        .append("svg")
-        .attr("class", 'timeline-images-svg')
-        .attr("width", timelineBackgroundWidth)
-        .attr("height", timelineImagesHeight);
+    var timelineImagesSVG = d3.select('.timeline-images')
+        .append('svg')
+        .attr('class', 'timeline-images-svg')
+        .attr('width', timelineBackgroundWidth)
+        .attr('height', timelineImagesHeight);
 
     /**
      * We have to do our D3 stuff in here because of Meteor's client server
@@ -114,27 +114,27 @@ Template.location.rendered = function () {
              */
             // Start
             timelineSVG .append('svg:text')
-                .attr("x", 10)
-                .attr("y", 35)
-                .attr("class", 'time-label-start')
+                .attr('x', 10)
+                .attr('y', 35)
+                .attr('class', 'time-label-start')
                 .text(firstYear);
 
             // End
             timelineSVG .append('svg:text')
-                .attr("x", 1675)
-                .attr("y", 35)
-                .attr("class", 'time-label-end')
+                .attr('x', 1675)
+                .attr('y', 35)
+                .attr('class', 'time-label-end')
                 .text(lastYear);
 
             /**
              * Render the timeline handle
              */
             timelineSVG .append('rect')
-                .attr("width", "50")
-                .attr("height", "50")
+                .attr('width', '50')
+                .attr('height', '50')
                 .attr('class', 'time-handle-rect')
-                .attr("x", 0)
-                .attr("y", 0);
+                .attr('x', 0)
+                .attr('y', 0);
 
         }
     });
@@ -195,7 +195,7 @@ Template.location.rendered = function () {
         /**
          * Picture group parent
          */
-        var pictureGroup = timelineImagesSVG.append("g")
+        var pictureGroup = timelineImagesSVG.append('g')
             .attr('class', 'picture-group ' + 'picture-' + i)
             .attr('data-index', i)
             .attr('data-id', image._id)
@@ -206,45 +206,45 @@ Template.location.rendered = function () {
             .attr('data-xh', image.expandedHeight)
             .attr('data-centerx', centerX)
             .attr('data-description', image.description)
-            .attr("transform", function (){
+            .attr('transform', function (){
                 return translate;
             });
 
             /**
             * Picture drop shadow
             */
-            var filter = pictureGroup.append("defs")
-                .append("filter")
-                .attr("id", "blur")
-                .append("feGaussianBlur")
-                .attr("stdDeviation", 5);
+            var filter = pictureGroup.append('defs')
+                .append('filter')
+                .attr('id', 'blur')
+                .append('feGaussianBlur')
+                .attr('stdDeviation', 5);
             pictureGroup.append('rect')
-                .attr("x", 0)
-                .attr("y", 0)
+                .attr('x', 0)
+                .attr('y', 0)
                 .style('fill', '#000')
-                .attr("width", image.thumbWidth + (imageBorder * 2))
-                .attr("height", image.thumbHeight + (imageBorder * 2))
+                .attr('width', image.thumbWidth + (imageBorder * 2))
+                .attr('height', image.thumbHeight + (imageBorder * 2))
                 .attr('class', 'child')
-                .attr("filter", "url(#blur)");
+                .attr('filter', 'url(#blur)');
 
             /**
             * Picture white border
             */
             pictureGroup.append('rect')
                 // Positions are relative to the group
-                .attr("x", (0 - imageBorder))
-                .attr("y", (0 - imageBorder))
-                .attr("width", image.thumbWidth + (imageBorder * 2))
-                .attr("height", image.thumbHeight + (imageBorder * 2))
+                .attr('x', (0 - imageBorder))
+                .attr('y', (0 - imageBorder))
+                .attr('width', image.thumbWidth + (imageBorder * 2))
+                .attr('height', image.thumbHeight + (imageBorder * 2))
                 .attr('class', 'child location-matte');
 
             // Image
             pictureGroup.append('image')
-                .attr("xlink:href", "/images/thumbnails/" + image._id + ".jpg")
-                .attr("data-id", image._id)
-                .attr("data-location", image.generalLocationDs)
-                .attr("width", image.thumbWidth)
-                .attr("height", image.thumbHeight)
+                .attr('xlink:href', '/images/thumbnails/' + image._id + '.jpg')
+                .attr('data-id', image._id)
+                .attr('data-location', image.generalLocationDs)
+                .attr('width', image.thumbWidth)
+                .attr('height', image.thumbHeight)
                 .attr('location', image.generalLocationDs)
                 .attr('class', 'child');
 
@@ -255,12 +255,12 @@ Template.location.rendered = function () {
          * All child elements with an opacity of 0
          */
         pictureGroup
-            .attr("transform", function (){
+            .attr('transform', function (){
                 var transform = translate + ',scale(0)';
                 return transform;
             });
         pictureGroup.selectAll('.child')
-            .attr("opacity", "0");
+            .attr('opacity', '0');
 
         /**
          * Picture - Animate in.
@@ -270,7 +270,7 @@ Template.location.rendered = function () {
         pictureGroup
             .transition()
             .delay(i * delay) // Stagger the markers animating in
-            .attr("transform", function (){
+            .attr('transform', function (){
                 var transform = translate + ',scale(1)';
                 return transform;
             })
@@ -278,38 +278,38 @@ Template.location.rendered = function () {
         pictureGroup.selectAll('.child')
             .transition()
             .delay(i * delay) // Stagger the markers animating in
-            .attr("opacity", "1")
+            .attr('opacity', '1')
             .duration(dur);
 
         // Dev position helper
-        var devGroup = timelineImagesSVG.append("g");
+        var devGroup = timelineImagesSVG.append('g');
         //var devRectLeft = devGroup.append('rect')
-            //.attr("x", (leftX))
-            //.attr("y", (835))
-            //.attr("width", 5)
-            //.attr("height", 40)
+            //.attr('x', (leftX))
+            //.attr('y', (835))
+            //.attr('width', 5)
+            //.attr('height', 40)
             //.attr('class', 'child dev-dot-left');
 
         //// Left - white top
         //var devRectLeft = devGroup.append('rect')
-            //.attr("x", (leftX))
-            //.attr("y", (780))
-            //.attr("width", 5)
-            //.attr("height", 20)
+            //.attr('x', (leftX))
+            //.attr('y', (780))
+            //.attr('width', 5)
+            //.attr('height', 20)
             //.attr('class', 'child dev-dot-left');
 
         //// Center - yellow bottom
         var devRectCenter = devGroup.append('rect')
-            .attr("x", (centerX))
-            .attr("y", (855))
-            .attr("width", 5)
-            .attr("height", 20)
+            .attr('x', (centerX))
+            .attr('y', (855))
+            .attr('width', 5)
+            .attr('height', 20)
             .attr('class', 'child dev-dot-center');
 
         devGroup.append('svg:text')
-            .attr("x", centerX)
-            .attr("y", (870))
-            .attr("class", 'dev-text')
+            .attr('x', centerX)
+            .attr('y', (870))
+            .attr('class', 'dev-text')
             .text(i);
 
         // First - red
@@ -389,7 +389,7 @@ Template.location.events({
             /**
              * Determine a scale value based on mouse position
              */
-            i = Number(d3.select(this).attr("data-index"));
+            i = Number(d3.select(this).attr('data-index'));
             var distance = posInterval - i;
             var distanceScale;
             if (distance === 0) {
@@ -467,7 +467,7 @@ Template.location.events({
                 .transition()
                 .duration(100)
                 .ease('circle-out')
-                .attr("transform", transformString);
+                .attr('transform', transformString);
         });
 
         /**
