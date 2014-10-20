@@ -69,85 +69,92 @@ Template.location.rendered = function () {
          * increasing numbers.
          */
         window.setTimeout(function () {
-            renderLocation();
+            renderLocation(timelineSVG, timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight);
         }, 500);
 
-        function renderLocation() {
-            /**
-             * Gather image data from the Meteor collection
-             */
-            var imagesCursor = Images.find();
-            var imagesCount = imagesCursor.count();
-            var images = imagesCursor.fetch();
-            images = _.sortBy(images, function (image) {
-                return image.date;
-            });
-
-            /**
-             * Date information for the timeline
-             */
-            var firstYear = _.first(images).date.substring(0,4);
-            var lastYear = _.last(images).date.substring(0,4);
-
-            /**
-             * Define some set attributes that we can't find in the loop
-             */
-            var firstImageWidth = images[0].thumbWidth;
-            var lastImageWidth = images[parseInt(imagesCount - 1)].thumbWidth;
-
-            /**
-             * Render each image from the Meteor collection data along the timeline
-             */
-            _.each(images, function(image, i) {
-                drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth);
-            });
-
-            /**
-             * Find the clicked image and highlight it
-             *
-             * TODO - This is a hack. We're looking up the x position for the
-             * image clicked and then passing it to the mousemove function.
-             *
-             * Figure out a better non-positional way to do this.
-             */
-            var clickedImage = Router.current().params.image;
-            var clickedImageDom = $('g[data-id=' + clickedImage + ']');
-            var clickedImageLeft = clickedImageDom.position().left;
-            window.setTimeout(function () {
-                highlightImage(clickedImageLeft + 140);
-            }, 500);
-
-            /**
-             * Print the start and end years of the timeline
-             */
-            // Start
-            timelineSVG .append('svg:text')
-                .attr('x', 10)
-                .attr('y', 35)
-                .attr('class', 'time-label-start')
-                .text(firstYear);
-
-            // End
-            timelineSVG .append('svg:text')
-                .attr('x', (timelineBackgroundWidth - 90))
-                .attr('y', 35)
-                .attr('class', 'time-label-end')
-                .text(lastYear);
-
-            /**
-             * Render the timeline handle
-             */
-            timelineSVG .append('rect')
-                .attr('width', '50')
-                .attr('height', '50')
-                .attr('class', 'time-handle-rect')
-                .attr('x', 0)
-                .attr('y', 0);
-
-        }
     });
 
 };
+
+/**
+ * Render the location page
+ */
+function renderLocation(timelineSVG, timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight) {
+    /**
+     * Gather image data from the Meteor collection
+     */
+    var imagesCursor = Images.find();
+    var imagesCount = imagesCursor.count();
+    var images = imagesCursor.fetch();
+    images = _.sortBy(images, function (image) {
+        return image.date;
+    });
+
+    /**
+     * Date information for the timeline
+     */
+    var firstYear = _.first(images).date.substring(0,4);
+    var lastYear = _.last(images).date.substring(0,4);
+
+    /**
+     * Define some set attributes that we can't find in the loop
+     */
+    var firstImageWidth = images[0].thumbWidth;
+    var lastImageWidth = images[parseInt(imagesCount - 1)].thumbWidth;
+
+    /**
+     * Render each image from the Meteor collection data along the timeline
+     */
+    _.each(images, function(image, i) {
+        drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth);
+    });
+
+    /**
+     * Find the clicked image and highlight it
+     *
+     * TODO - This is a hack. We're looking up the x position for the
+     * image clicked and then passing it to the mousemove function.
+     *
+     * Figure out a better non-positional way to do this.
+     */
+    var clickedImage = Router.current().params.image;
+    var clickedImageDom = $('g[data-id=' + clickedImage + ']');
+    var clickedImageLeft = clickedImageDom.position().left;
+    window.setTimeout(function () {
+        highlightImage(clickedImageLeft + 140);
+    }, 500);
+
+    /**
+     * Print the start and end years of the timeline
+     */
+    // Start
+    timelineSVG
+        .append('svg:text')
+        .attr('x', 10)
+        .attr('y', 35)
+        .attr('class', 'time-label-start')
+        .text(firstYear);
+
+    // End
+    timelineSVG
+        .append('svg:text')
+        .attr('x', (timelineBackgroundWidth - 90))
+        .attr('y', 35)
+        .attr('class', 'time-label-end')
+        .text(lastYear);
+
+    /**
+     * Render the timeline handle
+     */
+    timelineSVG .append('rect')
+        .attr('width', '50')
+        .attr('height', '50')
+        .attr('class', 'time-handle-rect')
+        .attr('x', 0)
+        .attr('y', 0);
+
+}
+
 /**
  * Render each image
  */
