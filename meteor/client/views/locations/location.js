@@ -272,7 +272,7 @@ function drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHei
      */
     pictureGroup
         .attr('transform', function (){
-            var transform = translate + ',scale(0)';
+            var transform = translate + ',scale(0), rotate(45)';
             return transform;
         });
     pictureGroup.selectAll('.child')
@@ -283,11 +283,13 @@ function drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHei
      *
      * Scale and opacity at 1
      */
+    var randomRotation = Math.floor(Math.random()*6) + 1;
+    randomRotation *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
     pictureGroup
         .transition()
         .delay(i * delay) // Stagger the markers animating in
         .attr('transform', function (){
-            var transform = translate + ',scale(1)';
+            var transform = translate + ',scale(1),rotate(' + randomRotation + ')';
             return transform;
         })
         .duration(dur);

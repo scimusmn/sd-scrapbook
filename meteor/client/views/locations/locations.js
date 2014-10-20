@@ -203,7 +203,7 @@ Template.locations.rendered = function () {
         var centerX = position[0];
         var centerY = position[1];
         // Group for all the picture elements
-        var pictureGroup = svg.append('g')
+        var pictureGroup = svg.append('g');
 
         // Drop shadow rectangle
         var filter = pictureGroup.append('defs')
@@ -240,6 +240,7 @@ Template.locations.rendered = function () {
             .attr('data-id', image._id)
             .attr('data-location', image.generalLocationDs);
 
+        // Starting state for picture group
         pictureGroup
             .attr('opacity', '0')
             .attr('class', 'picture-group')
@@ -247,6 +248,7 @@ Template.locations.rendered = function () {
                 return 'scale(.1), translate(' + (centerX / 0.1) + ', ' + (centerY / 0.1) + ')';
             });
 
+        // Animate picture group to full size
         pictureGroup
             .transition()
             .attr('opacity', '1')
@@ -265,7 +267,6 @@ Template.locations.rendered = function () {
             })
             .duration(400)
             .delay(i * 50); // Stagger the markers animating in
-
     }
 
     function devMapFeatures(d3, projection) {
@@ -328,26 +329,26 @@ Template.locations.events({
 
         var animateContentOut = function() {
 
-            var x, y, width, height, centerX, centerY;
+            var width, height, t;
             d3.selectAll('image').each( function(d, i){
 
-                x = Number(d3.select(this).attr('x'));
-                y = Number(d3.select(this).attr('y'));
-
+                // Get the image dimensions
                 width = Number(d3.select(this).attr('width'));
                 height = Number(d3.select(this).attr('height'));
 
-                centerX = parseInt(x + (width / 2));
-                centerY = parseInt(y + (height / 2));
+                // Get the current transform object
+                t = d3.transform(d3.select(this.parentNode).attr('transform'));
 
+                // Scale to zero from the center
+                t.scale = [0, 0];
+                t.translate[0] = t.translate[0] + ( width / 2 );
+                t.translate[1] = t.translate[1] + ( height / 2 );
+                var transformString = t.toString();
                 d3.select(this.parentNode)
                     .transition()
-                    .delay(i * 75) // Stagger the markers animating out
-                    .attr('transform', function (){
-                        return 'translate(' + centerX + ',' + centerY + ')scale(0)';
-                    })
+                    .delay(i * 75)
+                    .attr('transform', transformString)
                     .duration(500);
-
             });
         };
         animateContentOut();
