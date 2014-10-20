@@ -280,176 +280,178 @@ Template.location.rendered = function () {
             .delay(i * delay) // Stagger the markers animating in
             .attr('opacity', '1')
             .duration(dur);
-
     }
 };
 
-Template.location.events({
-    // Desired functionality, but disabled for testing
-    'mousemove .container': function (e) {
-    //'click .container': function (e) {
+function highlightImage(pointerX) {
+    /**
+     * Get timeline width for position calculations
+     */
+    var timeline = $('.timeline-background-svg');
 
-        /**
-         * Get timeline width for position calculations
-         */
-        var timeline = $('.timeline-background-svg');
-
-        /**
-         * Determine which image to highlight based on pointer position
-         */
-        var posX = e.pageX - timeline.parent().offset().left;
-        var imagesCount = d3.selectAll('.picture-group')[0].length;
-        var intervalWidth = (
+    /**
+     * Determine which image to highlight based on pointer position
+     */
+    var posX = pointerX - timeline.parent().offset().left;
+    var imagesCount = d3.selectAll('.picture-group')[0].length;
+    var intervalWidth = (
             timeline.width() /
             imagesCount);
-        var posInterval = Math.floor(posX / intervalWidth);
+    var posInterval = Math.floor(posX / intervalWidth);
+
+    /**
+     * Timeline handle
+     *
+     * Position the handle center on our pointer, but prevent it
+     * from going off the edge of the timeline.
+     */
+    var handle = d3.select('.time-handle-rect');
+    var handleWidthHalf = ( handle.attr('width') / 2 );
+    var handleX;
+    if (posX <= handleWidthHalf) {
+        handleX = handleWidthHalf;
+    }
+    if (posX >= timeline.width() - handleWidthHalf) {
+        handleX = (timeline.width() - handleWidthHalf);
+    }
+    if ( ( posX > handleWidthHalf ) && ( posX < ( timeline.width() - handleWidthHalf ) ) ) {
+        handleX = posX;
+    }
+    handle.attr( 'x', ( handleX - handleWidthHalf ) );
+
+    /**
+     * Scale the images based on mouse position
+     *
+     * Make the images nearest the cursor the biggest
+     */
+    d3.selectAll('.picture-group').each( function(d, i){
 
         /**
-         * Timeline handle
-         *
-         * Position the handle center on our pointer, but prevent it
-         * from going off the edge of the timeline.
+         * Determine a scale value based on mouse position
          */
-        var handle = d3.select('.time-handle-rect');
-        var handleWidthHalf = ( handle.attr('width') / 2 );
-        var handleX;
-        if (posX <= handleWidthHalf) {
-            handleX = handleWidthHalf;
+        i = Number(d3.select(this).attr('data-index'));
+        var distance = posInterval - i;
+        var distanceScale;
+        if (distance === 0) {
+            distanceScale = 1;
         }
-        if (posX >= timeline.width() - handleWidthHalf) {
-            handleX = (timeline.width() - handleWidthHalf);
+        else {
+            var minVal = 0.5;
+            var maxVal = 0.7;
+            distanceScale = ( minVal + (maxVal - minVal) * (1 / (Math.abs(posInterval - i))));
         }
-        if ( ( posX > handleWidthHalf ) && ( posX < ( timeline.width() - handleWidthHalf ) ) ) {
-            handleX = posX;
-        }
-        handle.attr( 'x', ( handleX - handleWidthHalf ) );
 
         /**
-         * Scale the images based on mouse position
-         *
-         * Make the images nearest the cursor the biggest
+         * Transform the picture group
          */
-        d3.selectAll('.picture-group').each( function(d, i){
+        var pictureGroup = d3.select(this);
+        var imageInGroup = pictureGroup.select('image');
+        var imageHeight = imageInGroup
+            .attr('height');
+        var imageWidth = imageInGroup
+            .attr('width');
+        // Get the current transform object
+        var dataCenterX = pictureGroup.attr('data-centerx');
+        var t = d3.transform(pictureGroup.attr('transform'));
+        // Set the scale value, without changing other attributes
+        // This allows the image to stay at its current X,Y position
+        // while scaling.
+        t.scale = [distanceScale, distanceScale];
 
-            /**
-             * Determine a scale value based on mouse position
-             */
-            i = Number(d3.select(this).attr('data-index'));
-            var distance = posInterval - i;
-            var distanceScale;
-            if (distance === 0) {
-                distanceScale = 1;
-            }
-            else {
-                var minVal = 0.5;
-                var maxVal = 0.7;
-                distanceScale = ( minVal + (maxVal - minVal) * (1 / (Math.abs(posInterval - i))));
-            }
+        var timelineImages = $('.timeline-images');
+        var timelineImagesHeight = timelineImages.height();
 
-            /**
-             * Transform the picture group
-             */
-            var pictureGroup = d3.select(this);
-            var imageInGroup = pictureGroup.select('image');
-            var imageHeight = imageInGroup
-                .attr('height');
-            var imageWidth = imageInGroup
-                .attr('width');
-            // Get the current transform object
-            var dataCenterX = pictureGroup.attr('data-centerx');
-            var t = d3.transform(pictureGroup.attr('transform'));
-            // Set the scale value, without changing other attributes
-            // This allows the image to stay at its current X,Y position
-            // while scaling.
-            t.scale = [distanceScale, distanceScale];
+        /**
+         * X position
+         *
+         * Position the image off its center, scaled by the size of the
+         * image. Push the image right or left for the image border
+         * based on whether it's on the left or the right side.
+         */
+        var imageBorderTranslate = imageBorder;
+        if ( i >= ( imagesCount / 2 ) ) {
+            imageBorderTranslate = imageBorder * -1;
+        }
+        var translateX = dataCenterX - ((imageWidth * distanceScale) / 2) + imageBorderTranslate;
 
-            var timelineImages = $('.timeline-images');
-            var timelineImagesHeight = timelineImages.height();
-
-            /**
-             * X position
-             *
-             * Position the image off its center, scaled by the size of the
-             * image. Push the image right or left for the image border
-             * based on whether it's on the left or the right side.
-             */
-            var imageBorderTranslate = imageBorder;
-            if ( i >= ( imagesCount / 2 ) ) {
-                imageBorderTranslate = imageBorder * -1;
-            }
-            var translateX = dataCenterX - ((imageWidth * distanceScale) / 2) + imageBorderTranslate;
-
-            /**
-             * Y position
-             *
-             * Highlight the current image by moving it up
-             */
-            var highlightHeight;
-            if (posInterval == i) {
-                highlightHeight = 50;
-            }
-            else {
-                highlightHeight = 0;
-            }
-            var translateY = (
+        /**
+         * Y position
+         *
+         * Highlight the current image by moving it up
+         */
+        var highlightHeight;
+        if (posInterval == i) {
+            highlightHeight = 50;
+        }
+        else {
+            highlightHeight = 0;
+        }
+        var translateY = (
                 timelineImagesHeight -
                 ( imageHeight * distanceScale ) -
                 imageBorder -
                 imageBottomPadding -
                 highlightHeight);
 
-            /**
-             * Transform the image
-             *
-             * Turn the transform back into a string for SVG
-             */
-            t.translate = [
-                translateX,
-                translateY
-            ];
-            var transformString = t.toString();
-            pictureGroup
-                .transition()
-                .duration(100)
-                .ease('circle-out')
-                .attr('transform', transformString);
-        });
-
         /**
-         * Display detail information about the photograph
+         * Transform the image
+         *
+         * Turn the transform back into a string for SVG
          */
-        // Get the image data from the thumbnail data objects
-        var hlImg = $('g[data-index=' + posInterval + ']');
+        t.translate = [
+            translateX,
+            translateY
+                ];
+        var transformString = t.toString();
+        pictureGroup
+            .transition()
+            .duration(100)
+            .ease('circle-out')
+            .attr('transform', transformString);
+    });
 
-        // Set the title
-        var hlImgTitle = hlImg.data('title');
-        $('.image-detail h4').text(hlImgTitle);
+    /**
+     * Display detail information about the photograph
+     */
+    // Get the image data from the thumbnail data objects
+    var hlImg = $('g[data-index=' + posInterval + ']');
 
-        var hlImgDescription = hlImg.data('description');
-        $('.image-detail span.image-description').text(hlImgDescription);
-        $('.image-detail span.image-location').text(hlImg.data('location'));
-        $('.image-detail span.image-date').text(hlImg.data('date'));
-        $('.image-detail span.image-photographer').text(hlImg.data('photographer'));
+    // Set the title
+    var hlImgTitle = hlImg.data('title');
+    $('.image-detail h4').text(hlImgTitle);
 
-        var hlImgId = hlImg.data('id');
-        var hlImgExHeight = hlImg.data('xh');
+    var hlImgDescription = hlImg.data('description');
+    $('.image-detail span.image-description').text(hlImgDescription);
+    $('.image-detail span.image-location').text(hlImg.data('location'));
+    $('.image-detail span.image-date').text(hlImg.data('date'));
+    $('.image-detail span.image-photographer').text(hlImg.data('photographer'));
 
-        // Only change the image when we need to
-        var imagePath = '/images/expanded/' + hlImgId + '.jpg';
-        if ($('.big-picture-image').attr('src') != imagePath) {
-            $('.big-picture-image').attr('src', imagePath).stop(true, true).hide().fadeIn(400);
-            $('.big-picture-image').attr('height', (parseInt(hlImgExHeight) / 2));
-        }
+    var hlImgId = hlImg.data('id');
+    var hlImgExHeight = hlImg.data('xh');
 
-        /**
-         * Dev mouse position data
-         */
-        $('.dev-mouse').html(
-            'Rel pointer X = ' + posX + '<br>' +
-            'Interval width = ' + intervalWidth + '<br>' +
-            'Pos interval = ' + posInterval + '<br>'
-        );
+    // Only change the image when we need to
+    var imagePath = '/images/expanded/' + hlImgId + '.jpg';
+    if ($('.big-picture-image').attr('src') != imagePath) {
+        $('.big-picture-image').attr('src', imagePath).stop(true, true).hide().fadeIn(400);
+        $('.big-picture-image').attr('height', (parseInt(hlImgExHeight) / 2));
+    }
 
+    /**
+     * Dev mouse position data
+     */
+    $('.dev-mouse').html(
+        'Rel pointer X = ' + posX + '<br>' +
+        'Interval width = ' + intervalWidth + '<br>' +
+        'Pos interval = ' + posInterval + '<br>'
+    );
+
+}
+
+Template.location.events({
+    // Desired functionality, but disabled for testing
+    //'mousemove .container': function (e) {
+    'click .container': function (e) {
+        highlightImage(e.pageX);
     },
 
     'click .back': function(e, instance){
