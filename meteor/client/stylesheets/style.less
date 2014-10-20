@@ -55,8 +55,8 @@ body {
 .location {
   background: #000;
   opacity: .92;
-  width: (@screen-width - 100);
-  height: (@screen-height - 100);
+  width: (@screen-width - 50);
+  height: (@screen-height - 50);
   margin: auto;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
@@ -100,8 +100,12 @@ body {
   padding-top: 9px;
 }
 
+/**
+ * ----------------------------------------------------------------------------
+ * Image detail on location page
+ * ----------------------------------------------------------------------------
+ */
 .image-detail {
-  width: 1760px;
   background: lighten(@background-tan, 20%);
   padding: 10px;
   color: @attic-maroon;
@@ -125,20 +129,27 @@ body {
 
 /**
  * ----------------------------------------------------------------------------
- * Timeline controller
+ * Timeline
  * ----------------------------------------------------------------------------
  */
 
-.time {
+@timeline-background-height: 50px;
+@timeline-background-bottom: 70px;
+@timeline-images-bottom: @timeline-background-height + @timeline-background-bottom;
+
+.timeline-background {
+  position: absolute;
   background: #eee;
   opacity: .8;
-  position: absolute;
-  width: 1760px;
-  height: 10px;
-  /* Temp smaller for dev*/
-  /*height: 50px;*/
-  bottom: 70px;
   font-size: 30px;
+  height: @timeline-background-height;
+  bottom: @timeline-background-bottom;
+}
+
+.timeline-images {
+  position: absolute;
+  height: 300px;
+  bottom: @timeline-images-bottom;
 }
 
 .time-handle-rect {
@@ -210,6 +221,10 @@ svg.svg-canvas {
  * Dev information tables
  * ----------------------------------------------------------------------------
  */
+.dev-text {
+  fill: white;
+}
+
 .dev-dot-left{
   fill: white;
 }

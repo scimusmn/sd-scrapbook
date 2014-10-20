@@ -14,36 +14,55 @@ Code related to the location template
     //}
 //});
 
+/**
+ * Image properties
+ */
+var imageBorder = 5; // White border aorund the picture
+var imageBottomPadding = 10; // Whitespace below images
+var delay = 5; // Milliseconds to delay the animation per image
+var dur = 500; // Milliseconds for the image animation
+
 Template.location.rendered = function () {
-    // Fade in the main location wrapper
-    $('.location').addClass('animated fadeIn92');
 
     /**
      * Setup image area
      */
-    var width = 1800,
-        height = 1080 - 100,
-        svg = d3.select(".images").append("svg")
-            .attr("class", 'svg-canvas')
-            .attr("width", width)
-            .attr("height", height);
+    var locationContainer = $('.location');
+
+    // Fade in the main location container
+    locationContainer.addClass('animated fadeIn92');
+
+    var locationWidth = locationContainer.width();
+    var locationHeight = locationContainer.height();
 
     /**
-     * Setup timeline area
+     * Setup timeline background
      */
-    var time = d3.select(".time").append("svg")
-        .attr("class", 'time-canvas')
-        .attr("width", width - 30)
-        .attr("height", 300);
+    var timelineBackground = $('.timeline-background');
+    var timelineBackgroundWidth = (
+        locationWidth -
+        timelineBackground.css('margin-left').replace('px', '') -
+        timelineBackground.css('margin-right').replace('px', '')
+    );
+    var timelineBackgroundHeight =
+        timelineBackground.css('height').replace('px', '');
+    var timelineSVG  = d3.select(".timeline-background")
+        .append("svg")
+        .attr("class", 'timeline-background-svg')
+        .attr("width", timelineBackgroundWidth )
+        .attr("height", timelineBackgroundHeight);
 
     /**
-     * Setup big picture area
+     * Setup timeline images area
      */
-
-    //bigPicSVG = d3.select(".big-picture").append("svg")
-        //.attr("class", 'svg-big-picture')
-        //.attr("width", 800)
-        //.attr("height", 600);
+    var timelineImages = $('.timeline-images');
+    var timelineImagesHeight =
+        timelineImages.css('height').replace('px', '');
+    var timelineImagesSVG = d3.select(".timeline-images")
+        .append("svg")
+        .attr("class", 'timeline-images-svg')
+        .attr("width", timelineBackgroundWidth)
+        .attr("height", timelineImagesHeight);
 
     /**
      * We have to do our D3 stuff in here because of Meteor's client server
@@ -65,7 +84,7 @@ Template.location.rendered = function () {
 
         function renderLocation() {
             /**
-             * Render each image
+             * Gather image data from the Meteor collection
              */
             var imagesCursor = Images.find();
             var imagesCount = imagesCursor.count();
@@ -73,28 +92,38 @@ Template.location.rendered = function () {
             images = _.sortBy(images, function(image) {
                 return image.date;
             });
+
+            /**
+             * Date information for the timeline
+             */
             firstYear = _.first(images).date.substring(0,4);
             lastYear = _.last(images).date.substring(0,4);
-            var timelineMargin = 50;
-            widthInterval = parseInt((width - timelineMargin) / imagesCount);
+
+            /**
+             * Define some set attributes that we can't find in the loop
+             */
             var firstImageWidth = images[0].thumbWidth;
             var lastImageWidth = images[parseInt(imagesCount - 1)].thumbWidth;
+
+            /**
+             * Render each image from the Meteor collection data along the timeline
+             */
             _.each(images, function(image, i) {
-                drawImage(svg, image, i, imagesCount, firstImageWidth, lastImageWidth, timelineMargin, widthInterval);
+                drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth);
             });
 
             /**
              * Print the start and end years of the timeline
              */
             // Start
-            time.append('svg:text')
+            timelineSVG .append('svg:text')
                 .attr("x", 10)
                 .attr("y", 35)
                 .attr("class", 'time-label-start')
                 .text(firstYear);
 
             // End
-            time.append('svg:text')
+            timelineSVG .append('svg:text')
                 .attr("x", 1675)
                 .attr("y", 35)
                 .attr("class", 'time-label-end')
@@ -103,7 +132,7 @@ Template.location.rendered = function () {
             /**
              * Render the timeline handle
              */
-            time.append('rect')
+            timelineSVG .append('rect')
                 .attr("width", "50")
                 .attr("height", "50")
                 .attr('class', 'time-handle-rect')
@@ -116,64 +145,51 @@ Template.location.rendered = function () {
     /**
      * Render each image
      */
-    function drawImage(svg, image, i, imagesCount, firstImageWidth, lastImageWidth, timelineMargin, widthInterval) {
-        /**
-         * Image properties
-         */
-        var imageBorder = 5;
-        var delay = 2; // Milliseconds to delay the animation per image
-        var dur = 500; // Milliseconds for the image animation
+    function drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth) {
         var centerX;
         var translateX;
 
         /**
          * Image positioning
          */
-        // This will be the X value for the first image at the left edge of the timeline.
-        var timelineLeftEdge = (timelineMargin / 2);
-
-        // The last values account for the shadow offset in the group
-        // TODO - make this less of a hack
-        var rightEdge = timelineLeftEdge + 1760 - lastImageWidth - ( timelineMargin / 2 ) + (imageBorder) + 10;
 
         // Centers for the first and last images
-        // TODO - make 1760 a variable
-        var firstCenterX = timelineLeftEdge + ( ( firstImageWidth + 15 ) / 2 );
-        var lastCenterX = 1760 - ( ( lastImageWidth + 15 ) / 2 );
+        var firstCenterX = imageBorder + ( ( firstImageWidth) / 2 );
+        var lastCenterX = timelineBackgroundWidth - ( ( lastImageWidth) / 2 );
 
         // Values for the first image
         if (i === 0) {
             centerX = firstCenterX;
-            leftX = timelineLeftEdge;
+            leftX = imageBorder;
             translateX = leftX;
         }
 
         // Values for the last image
         if (i == (imagesCount - 1)){
             centerX = lastCenterX;
-            leftX = rightEdge;
+            leftX = timelineBackgroundWidth - lastImageWidth - imageBorder;
             translateX = leftX;
         }
 
-
-        // Values for the rest of the image
+        // Values for the rest of the images
         //
         // First find the proper interval between images, and then set the
         // position based on the i value
-        //
-        // 15 for white border and shadow
-        // TODO make this gap a variable
-        var centerInterval = (lastCenterX - firstCenterX) / ( imagesCount - 2 );
+        var centerInterval = (lastCenterX - firstCenterX) / ( imagesCount - 1 );
         if ((i !== 0) && (i != (imagesCount - 1))) {
-            centerX = firstCenterX + (centerInterval * i);
-            leftX = centerX - ( ( parseInt( image.thumbWidth ) + 15 ) / 2);
+            centerX = firstCenterX + ( centerInterval * i );
+            leftX = centerX - ( ( parseInt( image.thumbWidth )) / 2);
             translateX = leftX;
         }
 
         // Y Value for all images is the same
         //
         // This bottom aligns the images to the top of the timeline
-        var bottomY = (835 - image.thumbHeight);
+        var bottomY = (
+            timelineImagesHeight -
+            image.thumbHeight -
+            imageBorder -
+            imageBottomPadding);
 
         // Start building the SVG translate command
         var translate = 'translate(' + translateX + ',' + bottomY + ')';
@@ -181,7 +197,7 @@ Template.location.rendered = function () {
         /**
          * Picture group parent
          */
-        var pictureGroup = svg.append("g")
+        var pictureGroup = timelineImagesSVG.append("g")
             .attr('class', 'picture-group ' + 'picture-' + i)
             .attr('data-index', i)
             .attr('data-id', image._id)
@@ -191,6 +207,7 @@ Template.location.rendered = function () {
             .attr('data-title', image.title)
             .attr('data-xw', image.expandedWidth)
             .attr('data-xh', image.expandedHeight)
+            .attr('data-centerx', centerX)
             .attr('data-description', image.description)
             .attr("transform", function (){
                 return translate;
@@ -229,7 +246,6 @@ Template.location.rendered = function () {
                 .attr("xlink:href", "/images/thumbnails/" + image._id + ".jpg")
                 .attr("data-id", image._id)
                 .attr("data-location", image.generalLocationDs)
-                //// Simulate scaling form the center of the image
                 .attr("width", image.thumbWidth)
                 .attr("height", image.thumbHeight)
                 .attr('location', image.generalLocationDs)
@@ -269,7 +285,7 @@ Template.location.rendered = function () {
             .duration(dur);
 
         // Dev position helper
-        var devGroup = svg.append("g");
+        var devGroup = timelineImagesSVG.append("g");
         //var devRectLeft = devGroup.append('rect')
             //.attr("x", (leftX))
             //.attr("y", (835))
@@ -277,42 +293,48 @@ Template.location.rendered = function () {
             //.attr("height", 40)
             //.attr('class', 'child dev-dot-left');
 
-        // Left - white top
-        var devRectLeft = devGroup.append('rect')
-            .attr("x", (leftX))
-            .attr("y", (780))
-            .attr("width", 5)
-            .attr("height", 20)
-            .attr('class', 'child dev-dot-left');
+        //// Left - white top
+        //var devRectLeft = devGroup.append('rect')
+            //.attr("x", (leftX))
+            //.attr("y", (780))
+            //.attr("width", 5)
+            //.attr("height", 20)
+            //.attr('class', 'child dev-dot-left');
 
-        // Center - yellow bottom
+        //// Center - yellow bottom
         var devRectCenter = devGroup.append('rect')
             .attr("x", (centerX))
-            .attr("y", (835))
+            .attr("y", (855))
             .attr("width", 5)
             .attr("height", 20)
             .attr('class', 'child dev-dot-center');
 
+        devGroup.append('svg:text')
+            .attr("x", centerX)
+            .attr("y", (870))
+            .attr("class", 'dev-text')
+            .text(i);
+
         // First - red
         if (i === 0) {
-            devRectLeft
-                .attr('class', 'child dev-dot-left dev-dot-left-one');
+            //devRectLeft
+                //.attr('class', 'child dev-dot-left dev-dot-left-one');
             devRectCenter
                 .attr('class', 'child dev-dot-center dev-dot-center-one');
         }
 
         // 2nd - pink
         if (i === 1) {
-            devRectLeft
-                .attr('class', 'child dev-dot-left dev-dot-left-two');
+            //devRectLeft
+                //.attr('class', 'child dev-dot-left dev-dot-left-two');
             devRectCenter
                 .attr('class', 'child dev-dot-center dev-dot-center-two');
         }
 
         // Last - green
         if (i == (imagesCount - 1)){
-            devRectLeft
-                .attr('class', 'child dev-dot-left dev-dot-left-last');
+            //devRectLeft
+                //.attr('class', 'child dev-dot-left dev-dot-left-last');
             devRectCenter
                 .attr('class', 'child dev-dot-center dev-dot-center-last');
         }
@@ -322,13 +344,13 @@ Template.location.rendered = function () {
 
 Template.location.events({
     // Desired functionality, but disabled for testing
-    //'mousemove .container': function (e) {
-    'click .container': function (e) {
+    'mousemove .container': function (e) {
+    //'click .container': function (e) {
 
         /**
          * Setup basic objects and widths
          */
-        var timeline = $('.time-canvas');
+        var timeline = $('.timeline-background-svg');
 
         // Count elements in our SVG element to get number of images
         var imagesCount = d3.selectAll('.picture-group')[0].length;
@@ -348,17 +370,27 @@ Template.location.events({
         var handleWidthHalf = (handleWidth / 2);
 
         // Prevent the handle from going off the edge of the timeline
-        if (posX < handleWidthHalf) {
-            posX = (handleWidthHalf);
-            posInterval = 1;
+        if (posX <= handleWidthHalf) {
+            handleX = 0;
         }
-        if (posX > 1760 - handleWidthHalf) {
-            posX = (1760 - handleWidthHalf);
-            posInterval = imagesCount;
+        //
+        // TODO make this (1750) a variable
+        //
+        if (posX >= 1750 - handleWidthHalf) {
+            handleX = (1750 - handleWidthHalf);
         }
+        if ( ( posX > handleWidthHalf ) && ( posX < ( 1750 - handleWidthHalf ) ) ) {
+            handleX = posX;
+        }
+        console.log('handleX - ', handleX);
+        handle.attr('x', handleX);
+
+        //posInterval = 1;
+        //posInterval = imagesCount;
+        //console.log('posInterval - ', posInterval);
+        //console.log('posX - ', posX);
 
         // Set the middle of the handle to the mouse position
-        handle.attr('x', (posX - handleWidthHalf));
 
         /**
          * Scale the images based on mouse position
@@ -384,6 +416,21 @@ Template.location.events({
 
             /**
              * Transform the picture group
+             *
+             *
+             *
+             *
+             *
+             * TODO start tackling the scale problems here
+             *
+             * Right now the image is staying in the same X place. This looks
+             * wrong. The image should stay in the same centerX place.
+             *
+             * Figure out how to get the centerX value from the DOM.
+             *
+             *
+             *
+             *
              */
             var pictureGroup = d3.select(this);
             var imageInGroup = pictureGroup.select('image');
@@ -392,23 +439,42 @@ Template.location.events({
             var imageWidth = imageInGroup
                 .attr('width');
             // Get the current transform object
+            var dataCenterX = pictureGroup.attr('data-centerx');
             var t = d3.transform(pictureGroup.attr('transform'));
             // Set the scale value, without changing other attributes
             // This allows the image to stay at its current X,Y position
             // while scaling.
             t.scale = [distanceScale, distanceScale];
-            var translateY;
+
+            var timelineImages = $('.timeline-images');
+            var timelineImagesHeight =
+                timelineImages.css('height').replace('px', '');
+
+            /**
+             * Y position
+             *
+             * Highlight the current image by moving it up
+             */
             if (posInterval == i) {
-                translateY = (835 - (imageHeight * distanceScale)) - 50;
+                highlightHeight = 50;
             }
             else {
-                translateY = (835 - (imageHeight * distanceScale));
+                highlightHeight = 0;
             }
+            var translateY = (
+                timelineImagesHeight -
+                ( imageHeight * distanceScale ) -
+                imageBorder -
+                imageBottomPadding -
+                highlightHeight);
+
             // TODO: Figure out how to get the X values to scale with the scale() value
             //
             //var translateX = t.translate[0] + ((imageWidth / 2) * distanceScale);
             //var translateX = t.translate[0] + ((imageWidth / 2) * distanceScale);
-            var translateX = t.translate[0];
+            // Old way
+            //var translateX = t.translate[0];
+            var translateX = dataCenterX - (imageWidth / 2);
             t.translate = [
                 translateX, // Keep the X axis in placename
                 translateY
