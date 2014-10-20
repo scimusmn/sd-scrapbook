@@ -83,7 +83,14 @@ Template.locations.rendered = function () {
         }
     });
 
-    function drawLocation(svg, projection, location, i) {
+    /**
+     * TODO Remove this.
+     *
+     * We aren't using locations any longer, I don't think
+     *
+     * Or make it a dev function for testing
+     */
+    function drawLocation(svg, projection, location) {
         /**
         * Use D3's projection manipulation to turn the long, lat coordinates into
         * tralation measurements.
