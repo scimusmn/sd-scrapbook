@@ -1,3 +1,4 @@
+// Enable dev features
 var dev = false;
 
 /**
