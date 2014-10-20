@@ -281,61 +281,6 @@ Template.location.rendered = function () {
             .attr('opacity', '1')
             .duration(dur);
 
-        // Dev position helper
-        var devGroup = timelineImagesSVG.append('g');
-        //var devRectLeft = devGroup.append('rect')
-            //.attr('x', (leftX))
-            //.attr('y', (835))
-            //.attr('width', 5)
-            //.attr('height', 40)
-            //.attr('class', 'child dev-dot-left');
-
-        //// Left - white top
-        //var devRectLeft = devGroup.append('rect')
-            //.attr('x', (leftX))
-            //.attr('y', (780))
-            //.attr('width', 5)
-            //.attr('height', 20)
-            //.attr('class', 'child dev-dot-left');
-
-        //// Center - yellow bottom
-        var devRectCenter = devGroup.append('rect')
-            .attr('x', (centerX))
-            .attr('y', (855))
-            .attr('width', 5)
-            .attr('height', 20)
-            .attr('class', 'child dev-dot-center');
-
-        devGroup.append('svg:text')
-            .attr('x', centerX)
-            .attr('y', (870))
-            .attr('class', 'dev-text')
-            .text(i);
-
-        // First - red
-        if (i === 0) {
-            //devRectLeft
-                //.attr('class', 'child dev-dot-left dev-dot-left-one');
-            devRectCenter
-                .attr('class', 'child dev-dot-center dev-dot-center-one');
-        }
-
-        // 2nd - pink
-        if (i === 1) {
-            //devRectLeft
-                //.attr('class', 'child dev-dot-left dev-dot-left-two');
-            devRectCenter
-                .attr('class', 'child dev-dot-center dev-dot-center-two');
-        }
-
-        // Last - green
-        if (i == (imagesCount - 1)){
-            //devRectLeft
-                //.attr('class', 'child dev-dot-left dev-dot-left-last');
-            devRectCenter
-                .attr('class', 'child dev-dot-center dev-dot-center-last');
-        }
-
     }
 };
 
