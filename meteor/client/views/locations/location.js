@@ -129,7 +129,7 @@ Template.location.rendered = function () {
 
             // End
             timelineSVG .append('svg:text')
-                .attr('x', 1675)
+                .attr('x', (timelineBackgroundWidth - 90))
                 .attr('y', 35)
                 .attr('class', 'time-label-end')
                 .text(lastYear);
