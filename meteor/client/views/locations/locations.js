@@ -1,13 +1,4 @@
-/**
- */
-
-Template.locations.created = function () {
-    //
-};
-
-Template.locations.helpers({
-    //
-});
+var dev = false;
 
 /**
  * Code executed once the page is loaded and rendered
@@ -27,9 +18,11 @@ Template.locations.rendered = function () {
     /**
      * Dev map features
      *
-     * Useful for dev map registrion. Normally disabled
+     * Useful for dev map registrion. Normally disabled.
      */
-    //devMapFeatures(d3, projection);
+    if (dev) {
+        devMapFeatures(d3, projection);
+    }
 
     /**
      * Initiate the SVG object for drawing all the location markers
