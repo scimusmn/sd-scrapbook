@@ -33,7 +33,6 @@ Template.location.rendered = function () {
     locationContainer.addClass('animated fadeIn92');
 
     var locationWidth = locationContainer.width();
-    var locationHeight = locationContainer.height();
 
     /**
      * Setup timeline background
@@ -94,8 +93,8 @@ Template.location.rendered = function () {
             /**
              * Date information for the timeline
              */
-            firstYear = _.first(images).date.substring(0,4);
-            lastYear = _.last(images).date.substring(0,4);
+            var firstYear = _.first(images).date.substring(0,4);
+            var lastYear = _.last(images).date.substring(0,4);
 
             /**
              * Define some set attributes that we can't find in the loop
@@ -145,6 +144,7 @@ Template.location.rendered = function () {
      */
     function drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth) {
         var centerX;
+        var leftX;
         var translateX;
 
         /**
@@ -203,7 +203,6 @@ Template.location.rendered = function () {
             .attr('data-location', image.creationPlace)
             .attr('data-photographer', image.photographer)
             .attr('data-title', image.title)
-            .attr('data-xw', image.expandedWidth)
             .attr('data-xh', image.expandedHeight)
             .attr('data-centerx', centerX)
             .attr('data-description', image.description)
@@ -257,7 +256,7 @@ Template.location.rendered = function () {
          */
         pictureGroup
             .attr("transform", function (){
-                transform = translate + ',scale(0)';
+                var transform = translate + ',scale(0)';
                 return transform;
             });
         pictureGroup.selectAll('.child')
@@ -272,7 +271,7 @@ Template.location.rendered = function () {
             .transition()
             .delay(i * delay) // Stagger the markers animating in
             .attr("transform", function (){
-                transform = translate + ',scale(1)';
+                var transform = translate + ',scale(1)';
                 return transform;
             })
             .duration(dur);
@@ -349,7 +348,6 @@ Template.location.events({
          * Get timeline width for position calculations
          */
         var timeline = $('.timeline-background-svg');
-        var timelineBackgroundWidth = timeline.width();
 
         /**
          * Determine which image to highlight based on pointer position
@@ -369,6 +367,7 @@ Template.location.events({
          */
         var handle = d3.select('.time-handle-rect');
         var handleWidthHalf = ( handle.attr('width') / 2 );
+        var handleX;
         if (posX <= handleWidthHalf) {
             handleX = handleWidthHalf;
         }
@@ -392,6 +391,7 @@ Template.location.events({
              */
             i = Number(d3.select(this).attr("data-index"));
             var distance = posInterval - i;
+            var distanceScale;
             if (distance === 0) {
                 distanceScale = 1;
             }
@@ -439,6 +439,7 @@ Template.location.events({
              *
              * Highlight the current image by moving it up
              */
+            var highlightHeight;
             if (posInterval == i) {
                 highlightHeight = 50;
             }
@@ -461,7 +462,7 @@ Template.location.events({
                 translateX,
                 translateY
             ];
-            transformString = t.toString();
+            var transformString = t.toString();
             pictureGroup
                 .transition()
                 .duration(100)
@@ -473,21 +474,20 @@ Template.location.events({
          * Display detail information about the photograph
          */
         // Get the image data from the thumbnail data objects
-        hlImg = $('g[data-index=' + posInterval + ']');
+        var hlImg = $('g[data-index=' + posInterval + ']');
 
         // Set the title
-        hlImgTitle = hlImg.data('title');
+        var hlImgTitle = hlImg.data('title');
         $('.image-detail h4').text(hlImgTitle);
 
-        hlImgDescription = hlImg.data('description');
+        var hlImgDescription = hlImg.data('description');
         $('.image-detail span.image-description').text(hlImgDescription);
         $('.image-detail span.image-location').text(hlImg.data('location'));
         $('.image-detail span.image-date').text(hlImg.data('date'));
         $('.image-detail span.image-photographer').text(hlImg.data('photographer'));
 
-        hlImgId = hlImg.data('id');
-        hlImgExWidth = hlImg.data('xw');
-        hlImgExHeight = hlImg.data('xh');
+        var hlImgId = hlImg.data('id');
+        var hlImgExHeight = hlImg.data('xh');
 
         // Only change the image when we need to
         var imagePath = '/images/expanded/' + hlImgId + '.jpg';
