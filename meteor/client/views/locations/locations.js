@@ -76,9 +76,7 @@ Template.locations.rendered = function () {
              *
              */
             var images = Images.find().fetch();
-            console.log('images', images);
             images = _.shuffle(images);
-            console.log('shuffled images', images);
             _.each(images, function(image, i) {
                 drawImage(svg, projection, image, i);
             });
@@ -92,7 +90,7 @@ Template.locations.rendered = function () {
         * Transform is a basic SVG attribute, and translate is a type of
         * transformation.
         */
-        position = projection([location.longitude,location.latitude]);
+        //var position = projection([location.longitude,location.latitude]);
 
         /**
          * Draw a white background first
@@ -189,7 +187,7 @@ Template.locations.rendered = function () {
 
     function drawImage(svg, projection, image, i) {
 
-        position = projection([image.longitude, image.latitude]);
+        var position = projection([image.longitude, image.latitude]);
 
         // Old skool border width
         var imageBorder = 5;
@@ -319,10 +317,11 @@ Template.locations.events({
     /**
      * Image click
      */
-    'click image':function(event, template){
+    'click image':function(e){
 
         var animateContentOut = function() {
-            var imagePositions = d3.selectAll('image').attr('x');
+
+            var x, y, width, height, centerX, centerY;
             d3.selectAll('image').each( function(d, i){
 
                 x = Number(d3.select(this).attr('x'));
@@ -334,12 +333,11 @@ Template.locations.events({
                 centerX = parseInt(x + (width / 2));
                 centerY = parseInt(y + (height / 2));
 
-                var pictureGroup = d3.select(this.parentNode)
+                d3.select(this.parentNode)
                     .transition()
                     .delay(i * 75) // Stagger the markers animating out
                     .attr('transform', function (){
-                        transform = 'translate(' + centerX + ',' + centerY + ')scale(0)';
-                        return transform;
+                        return 'translate(' + centerX + ',' + centerY + ')scale(0)';
                     })
                     .duration(500);
 
@@ -353,8 +351,8 @@ Template.locations.events({
 
         function goDestination() {
             // Get the clicked location string from the COM data-location attribute
-            var imageLocation = $(event.currentTarget).data('location');
-            var clickedImage  = $(event.currentTarget).data('id');
+            var imageLocation = $(e.currentTarget).data('location');
+            var clickedImage  = $(e.currentTarget).data('id');
             console.log('clickedImage - ', clickedImage);
             // Query Mongo for a location with a matching title
             var clickedLocation = Locations.findOne( {title: imageLocation });
