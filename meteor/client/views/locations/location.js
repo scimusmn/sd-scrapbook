@@ -488,7 +488,6 @@ Template.location.events({
         hlImgId = hlImg.data('id');
         hlImgExWidth = hlImg.data('xw');
         hlImgExHeight = hlImg.data('xh');
-        //bigPic = d3.select("g.big-picture");
 
         // Only change the image when we need to
         var imagePath = '/images/expanded/' + hlImgId + '.jpg';
