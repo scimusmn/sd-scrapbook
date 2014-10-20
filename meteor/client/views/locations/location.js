@@ -44,8 +44,7 @@ Template.location.rendered = function () {
         timelineBackground.css('margin-left').replace('px', '') -
         timelineBackground.css('margin-right').replace('px', '')
     );
-    var timelineBackgroundHeight =
-        timelineBackground.css('height').replace('px', '');
+    var timelineBackgroundHeight = timelineBackground.height();
     var timelineSVG  = d3.select(".timeline-background")
         .append("svg")
         .attr("class", 'timeline-background-svg')
@@ -56,8 +55,7 @@ Template.location.rendered = function () {
      * Setup timeline images area
      */
     var timelineImages = $('.timeline-images');
-    var timelineImagesHeight =
-        timelineImages.css('height').replace('px', '');
+    var timelineImagesHeight = timelineImages.height();
     var timelineImagesSVG = d3.select(".timeline-images")
         .append("svg")
         .attr("class", 'timeline-images-svg')
