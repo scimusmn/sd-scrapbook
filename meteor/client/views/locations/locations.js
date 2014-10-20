@@ -1,7 +1,4 @@
 /**
- * Locations
- *
- * Code related to the locations template
  */
 
 Template.locations.created = function () {
