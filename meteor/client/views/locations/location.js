@@ -147,149 +147,149 @@ Template.location.rendered = function () {
         }
     });
 
-    /**
-     * Render each image
-     */
-    function drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth) {
-        var centerX;
-        var leftX;
-        var translateX;
-
-        /**
-         * Image positioning
-         */
-
-        // Centers for the first and last images
-        var firstCenterX = imageBorder + ( ( firstImageWidth) / 2 );
-        var lastCenterX = timelineBackgroundWidth - ( ( lastImageWidth) / 2 );
-
-        // Values for the first image
-        if (i === 0) {
-            centerX = firstCenterX;
-            leftX = imageBorder;
-            translateX = leftX;
-        }
-
-        // Values for the last image
-        if (i == (imagesCount - 1)){
-            centerX = lastCenterX;
-            leftX = timelineBackgroundWidth - lastImageWidth - imageBorder;
-            translateX = leftX;
-        }
-
-        // Values for the rest of the images
-        //
-        // First find the proper interval between images, and then set the
-        // position based on the i value
-        var centerInterval = (lastCenterX - firstCenterX) / ( imagesCount - 1 );
-        if ((i !== 0) && (i != (imagesCount - 1))) {
-            centerX = firstCenterX + ( centerInterval * i );
-            leftX = centerX - ( ( parseInt( image.thumbWidth )) / 2);
-            translateX = leftX;
-        }
-
-        // Y Value for all images is the same
-        //
-        // This bottom aligns the images to the top of the timeline
-        var bottomY = (
-            timelineImagesHeight -
-            image.thumbHeight -
-            imageBorder -
-            imageBottomPadding);
-
-        // Start building the SVG translate command
-        var translate = 'translate(' + translateX + ',' + bottomY + ')';
-
-        /**
-         * Picture group parent
-         */
-        var pictureGroup = timelineImagesSVG.append('g')
-            .attr('class', 'picture-group ' + 'picture-' + i)
-            .attr('data-index', i)
-            .attr('data-id', image._id)
-            .attr('data-date', image.date)
-            .attr('data-location', image.creationPlace)
-            .attr('data-photographer', image.photographer)
-            .attr('data-title', image.title)
-            .attr('data-xh', image.expandedHeight)
-            .attr('data-centerx', centerX)
-            .attr('data-description', image.description)
-            .attr('transform', function (){
-                return translate;
-            });
-
-            /**
-            * Picture drop shadow
-            */
-            var filter = pictureGroup.append('defs')
-                .append('filter')
-                .attr('id', 'blur')
-                .append('feGaussianBlur')
-                .attr('stdDeviation', 5);
-            pictureGroup.append('rect')
-                .attr('x', 0)
-                .attr('y', 0)
-                .style('fill', '#000')
-                .attr('width', image.thumbWidth + (imageBorder * 2))
-                .attr('height', image.thumbHeight + (imageBorder * 2))
-                .attr('class', 'child')
-                .attr('filter', 'url(#blur)');
-
-            /**
-            * Picture white border
-            */
-            pictureGroup.append('rect')
-                // Positions are relative to the group
-                .attr('x', (0 - imageBorder))
-                .attr('y', (0 - imageBorder))
-                .attr('width', image.thumbWidth + (imageBorder * 2))
-                .attr('height', image.thumbHeight + (imageBorder * 2))
-                .attr('class', 'child location-matte');
-
-            // Image
-            pictureGroup.append('image')
-                .attr('xlink:href', '/images/thumbnails/' + image._id + '.jpg')
-                .attr('data-id', image._id)
-                .attr('data-location', image.generalLocationDs)
-                .attr('width', image.thumbWidth)
-                .attr('height', image.thumbHeight)
-                .attr('location', image.generalLocationDs)
-                .attr('class', 'child');
-
-        /**
-         * Picture starting state
-         *
-         * Scale at 0
-         * All child elements with an opacity of 0
-         */
-        pictureGroup
-            .attr('transform', function (){
-                var transform = translate + ',scale(0)';
-                return transform;
-            });
-        pictureGroup.selectAll('.child')
-            .attr('opacity', '0');
-
-        /**
-         * Picture - Animate in.
-         *
-         * Scale and opacity at 1
-         */
-        pictureGroup
-            .transition()
-            .delay(i * delay) // Stagger the markers animating in
-            .attr('transform', function (){
-                var transform = translate + ',scale(1)';
-                return transform;
-            })
-            .duration(dur);
-        pictureGroup.selectAll('.child')
-            .transition()
-            .delay(i * delay) // Stagger the markers animating in
-            .attr('opacity', '1')
-            .duration(dur);
-    }
 };
+/**
+ * Render each image
+ */
+function drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth) {
+    var centerX;
+    var leftX;
+    var translateX;
+
+    /**
+     * Image positioning
+     */
+
+    // Centers for the first and last images
+    var firstCenterX = imageBorder + ( ( firstImageWidth) / 2 );
+    var lastCenterX = timelineBackgroundWidth - ( ( lastImageWidth) / 2 );
+
+    // Values for the first image
+    if (i === 0) {
+        centerX = firstCenterX;
+        leftX = imageBorder;
+        translateX = leftX;
+    }
+
+    // Values for the last image
+    if (i == (imagesCount - 1)){
+        centerX = lastCenterX;
+        leftX = timelineBackgroundWidth - lastImageWidth - imageBorder;
+        translateX = leftX;
+    }
+
+    // Values for the rest of the images
+    //
+    // First find the proper interval between images, and then set the
+    // position based on the i value
+    var centerInterval = (lastCenterX - firstCenterX) / ( imagesCount - 1 );
+    if ((i !== 0) && (i != (imagesCount - 1))) {
+        centerX = firstCenterX + ( centerInterval * i );
+        leftX = centerX - ( ( parseInt( image.thumbWidth )) / 2);
+        translateX = leftX;
+    }
+
+    // Y Value for all images is the same
+    //
+    // This bottom aligns the images to the top of the timeline
+    var bottomY = (
+        timelineImagesHeight -
+        image.thumbHeight -
+        imageBorder -
+        imageBottomPadding);
+
+    // Start building the SVG translate command
+    var translate = 'translate(' + translateX + ',' + bottomY + ')';
+
+    /**
+     * Picture group parent
+     */
+    var pictureGroup = timelineImagesSVG.append('g')
+        .attr('class', 'picture-group ' + 'picture-' + i)
+        .attr('data-index', i)
+        .attr('data-id', image._id)
+        .attr('data-date', image.date)
+        .attr('data-location', image.creationPlace)
+        .attr('data-photographer', image.photographer)
+        .attr('data-title', image.title)
+        .attr('data-xh', image.expandedHeight)
+        .attr('data-centerx', centerX)
+        .attr('data-description', image.description)
+        .attr('transform', function (){
+            return translate;
+        });
+
+        /**
+        * Picture drop shadow
+        */
+        var filter = pictureGroup.append('defs')
+            .append('filter')
+            .attr('id', 'blur')
+            .append('feGaussianBlur')
+            .attr('stdDeviation', 5);
+        pictureGroup.append('rect')
+            .attr('x', 0)
+            .attr('y', 0)
+            .style('fill', '#000')
+            .attr('width', image.thumbWidth + (imageBorder * 2))
+            .attr('height', image.thumbHeight + (imageBorder * 2))
+            .attr('class', 'child')
+            .attr('filter', 'url(#blur)');
+
+        /**
+        * Picture white border
+        */
+        pictureGroup.append('rect')
+            // Positions are relative to the group
+            .attr('x', (0 - imageBorder))
+            .attr('y', (0 - imageBorder))
+            .attr('width', image.thumbWidth + (imageBorder * 2))
+            .attr('height', image.thumbHeight + (imageBorder * 2))
+            .attr('class', 'child location-matte');
+
+        // Image
+        pictureGroup.append('image')
+            .attr('xlink:href', '/images/thumbnails/' + image._id + '.jpg')
+            .attr('data-id', image._id)
+            .attr('data-location', image.generalLocationDs)
+            .attr('width', image.thumbWidth)
+            .attr('height', image.thumbHeight)
+            .attr('location', image.generalLocationDs)
+            .attr('class', 'child');
+
+    /**
+     * Picture starting state
+     *
+     * Scale at 0
+     * All child elements with an opacity of 0
+     */
+    pictureGroup
+        .attr('transform', function (){
+            var transform = translate + ',scale(0)';
+            return transform;
+        });
+    pictureGroup.selectAll('.child')
+        .attr('opacity', '0');
+
+    /**
+     * Picture - Animate in.
+     *
+     * Scale and opacity at 1
+     */
+    pictureGroup
+        .transition()
+        .delay(i * delay) // Stagger the markers animating in
+        .attr('transform', function (){
+            var transform = translate + ',scale(1)';
+            return transform;
+        })
+        .duration(dur);
+    pictureGroup.selectAll('.child')
+        .transition()
+        .delay(i * delay) // Stagger the markers animating in
+        .attr('opacity', '1')
+        .duration(dur);
+}
 
 function highlightImage(pointerX) {
     /**
