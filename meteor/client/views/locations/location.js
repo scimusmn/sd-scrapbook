@@ -283,13 +283,13 @@ function drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHei
      *
      * Scale and opacity at 1
      */
-    var randomRotation = Math.floor(Math.random()*6) + 1;
-    randomRotation *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
     pictureGroup
         .transition()
         .delay(i * delay) // Stagger the markers animating in
         .attr('transform', function (){
-            var transform = translate + ',scale(1),rotate(' + randomRotation + ')';
+            // Random roation code is slow. Debug before showing this off.
+            //var transform = translate + ',scale(1),rotate(' + _.random(-20,20) + ')';
+            var transform = translate + ',scale(1))';
             return transform;
         })
         .duration(dur);
@@ -468,8 +468,8 @@ function highlightImage(pointerX) {
 
 Template.location.events({
     // Desired functionality, but disabled for testing
-    //'mousemove .container': function (e) {
-    'click .container': function (e) {
+    'mousemove .container': function (e) {
+    //'click .container': function (e) {
         highlightImage(e.pageX);
     },
 
