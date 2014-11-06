@@ -217,11 +217,11 @@ function drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHei
         .attr('data-id', image._id)
         .attr('data-date', image.date)
         .attr('data-location', image.creationPlace)
-        .attr('data-photographer', image.photographer)
+        .attr('data-credit-line', image.creditLine)
         .attr('data-title', image.title)
         .attr('data-xh', image.expandedHeight)
         .attr('data-centerx', centerX)
-        .attr('data-description', image.description)
+        .attr('data-description', image.labelTextEnglish)
         .attr('transform', function (){
             return translate;
         });
@@ -441,7 +441,7 @@ function highlightImage(pointerX) {
     $('.image-detail span.image-description').text(hlImgDescription);
     $('.image-detail span.image-location').text(hlImg.data('location'));
     $('.image-detail span.image-date').text(hlImg.data('date'));
-    $('.image-detail span.image-photographer').text(hlImg.data('photographer'));
+    $('.image-detail span.image-credit-line').text(hlImg.data('credit-line'));
 
     var hlImgId = hlImg.data('id');
     var hlImgExHeight = hlImg.data('xh');
