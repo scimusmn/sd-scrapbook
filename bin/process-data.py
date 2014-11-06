@@ -22,7 +22,11 @@ print rm('-rf', database_file_name + '.csv')
 # Get all the sheets into CSVs
 print term.yellow('Extracting the CSVs')
 
-sheets = [ '1-Anza', '2-Cleve', '13-SDCst', '19-L.A.']
+#sheets = [ '1-Anza', '2-Cleve', '13-SDCst', '19-L.A.']
+sheets = [ '1-Anza', '2-Cleve', '13-SDCst', '19-L.A.', '7-Moj', '12-Bern',
+          '3-Color', '4-Imp', '5-Josh', '6-Torr', '8-NorthSD', '9-OC',
+          '10-Palo', '11-Salton', '14-SDIn', '15-Gabr', '16-Jac',
+          '17-Mon', '18-SoSD', '20-River', '21-Channel']
 
 # Write a CSV for each sheet in the Excel files and save the filepaths
 # in an array for merging
@@ -41,15 +45,19 @@ print term.yellow('Merging the files')
 merge_arguments = ['file_merge', '-f', '6']
 merge_arguments.extend(sheet_csvs)
 temp_merged = os.path.abspath('temp-merged.csv')
+print merge_arguments
 (csvfix[merge_arguments] > temp_merged)()
 
 print term.yellow('Sorting the rows')
 sort_arguments = ['sort', '-f', '6:D,1', temp_merged]
 temp_sorted = os.path.abspath('temp-sorted.csv')
 (csvfix[sort_arguments] > temp_sorted)()
+
 print term.red('Removing the header lines')
 temp_sorted_no_header = os.path.abspath('temp-sorted-no-header.csv')
-(sed['-e', "1,4d", temp_sorted] > temp_sorted_no_header)()
+(sed['-e', "1," + str(len(sheets) + 1) + "d", temp_sorted] > temp_sorted_no_header)()
+
+
 
 print term.yellow('Remove whitespace')
 temp_trimmed = os.path.abspath('temp-trimmed.csv')
