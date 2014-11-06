@@ -17,6 +17,7 @@
     "d3": false,
     "topojson": false,
     // Meteor objects
+    "Meteor": false,
     "Template": false,
     "Deps": false,
     "Router": false,
