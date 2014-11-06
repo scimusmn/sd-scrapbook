@@ -63,9 +63,14 @@ Template.locations.rendered = function () {
             /**
              * Draw each location
              */
+            var positions = [];
             var locations = Locations.find().fetch();
             _.each(locations, function(location, i) {
                 drawLocation(svg, projection, location, i);
+                positions[location.dsLocId] = {
+                    latitude: location.latitude,
+                    longitude: location.longitude
+                };
             });
 
             /**
@@ -79,7 +84,9 @@ Template.locations.rendered = function () {
             var images = Images.find().fetch();
             images = _.shuffle(images);
             _.each(images, function(image, i) {
-                drawImage(svg, projection, image, i);
+                var latitude = positions[image.dsLocId].latitude;
+                var longitude = positions[image.dsLocId].longitude;
+                drawImage(svg, projection, latitude, longitude, image, i);
             });
         }
     });
@@ -193,9 +200,10 @@ Template.locations.rendered = function () {
             //.duration(800);
     }
 
-    function drawImage(svg, projection, image, i) {
+    function drawImage(svg, projection, latitude, longitude, image, i) {
 
-        var position = projection([image.longitude, image.latitude]);
+        // Image position
+        var position = projection([longitude, latitude]);
 
         // Old skool border width
         var imageBorder = 5;
