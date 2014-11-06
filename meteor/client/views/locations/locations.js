@@ -246,6 +246,7 @@ Template.locations.rendered = function () {
             .attr('opacity', '1')
             .attr('xlink:href', '/images/thumbnails/' + image._id + '.jpg')
             .attr('data-id', image._id)
+            .attr('data-locid', image.dsLocId)
             .attr('data-location', image.generalLocationDs);
 
         // Starting state for picture group
@@ -367,11 +368,10 @@ Template.locations.events({
 
         function goDestination() {
             // Get the clicked location string from the COM data-location attribute
-            var imageLocation = $(e.currentTarget).data('location');
+            var imageLocation = String($(e.currentTarget).data('locid'));
             var clickedImage  = $(e.currentTarget).data('id');
-            console.log('clickedImage - ', clickedImage);
             // Query Mongo for a location with a matching title
-            var clickedLocation = Locations.findOne( {title: imageLocation });
+            var clickedLocation = Locations.findOne( {dsLocId: imageLocation });
             // Navigate to the Location with the matching _id
             Router.go(
                 'location',
