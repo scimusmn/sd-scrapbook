@@ -19,8 +19,8 @@ Template.locations.rendered = function () {
      * This will need to be reprojected if the background map raster changes
      */
     var projection = d3.geo.mercator()
-        .scale(13168)
-        .center([-119.082, 34.656])
+        .scale(16160)
+        .center([-119.150, 34.59])
         .precision(0.1);
 
     /**
