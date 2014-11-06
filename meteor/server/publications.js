@@ -30,7 +30,7 @@ Meteor.publish('allLocations', function() {
     /**
      * Function to pad out the random numbers
      *
-     * This helps us ensure that we only get on ID per location in the query
+     * This helps us ensure that we only get one ID per location in the query
      */
     function padNumberMath(number, pad) {
         var N = Math.pow(10, pad);
