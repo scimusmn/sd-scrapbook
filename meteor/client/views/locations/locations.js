@@ -259,117 +259,115 @@ Template.locations.rendered = function () {
      * Or make it a dev function for testing
      */
     function drawLocation(svg, projection, location) {
-        /**
-        * Use D3's projection manipulation to turn the long, lat coordinates into
-        * tralation measurements.
-        * Transform is a basic SVG attribute, and translate is a type of
-        * transformation.
-        */
-        //var position = projection([location.longitude,location.latitude]);
+
+        // Draw location pin
+        drawPin(svg, location);
 
         /**
-         * Draw a white background first
+         * Dev text
          *
-         * This serves as the matte for a shadow and also gives us a old
-         * skoool white border around the photo.
+         * This is for marker placement and should be disabled for production.
          */
-        //svg.append('rect')
-        //.attr('transform', function() {
-        //return 'translate(' + projection([location.longitude,location.latitude]) + ')';
-        //})
-        //.attr('width', 300)
-        //.attr('height', 250)
-        //.attr('stroke', 'white')
-        //.attr('stroke-width', '10')
-        //.attr('class', 'location-matte');
+        if (dev) {
+            var position = projection([location.longitude,location.latitude]);
+            svg.append('text')
+            .attr('x', position[0])
+            .attr('y', position[1])
+            .text(location.dsLocId)
+            .attr('font-family', 'Courier')
+            .attr('font-size', '20px')
+            .attr('fill', 'white')
+            .attr('stroke-width', 1.5)
+            .attr('stroke', '#000');
+        }
 
-        //clipId = 'special-' + i;
-        //svg.append('clipPath')
-        //.attr('id', clipId)
-        /**
-         * Clip with a circle that bounces in from its center
-         */
-        ////.append('circle')
-        ////.attr('transform', function() {
-        ////return 'translate(' + projection([location.longitude,location.latitude]) + ')';
-        ////})
-        ////.attr('r', .01)
-        ////.transition()
-        ////.attr('r', 90)
-        ////.duration(300)
-        ////.delay(i * 200) // Stagger the markers animating in
-        ////.transition()
-        ////.attr('r', 40)
-        ////.duration(100)
-        ////.transition()
-        ////.attr('r', 80)
-        ////.duration(80)
-
-        /**
-         * Clip the image with a rectangle
-         */
-        //.append('rect')
-        //.attr('transform', function() {
-        //return 'translate(' + projection([location.longitude,location.latitude]) + ')';
-        //})
-        //.attr('width', 300)
-        //.attr('height', 250)
-
-        //.attr('clip-path', clipIdUrl)
-        //.attr('transform', function() {
-        //return 'translate(' + projection([location.longitude,location.latitude]) + ')';
-        //})
-        //.attr('r', 40);
-
-        //clipIdUrl = 'url(#' + clipId + ')';
-        //svg.append('image')
-        //.attr('xlink:href', '/images/house.jpg')
-        //.attr('width', '600')
-        //.attr('height', '400')
-        //.attr('x', (position[0]-100))
-        //.attr('y', (position[1]-100))
-        //.attr('clip-path', clipIdUrl);
-
-        /**
-         * Reference dot to show where the location lat long is pointing
-         *
-         * This should be turned off in the final version.
-         */
-        svg.append('circle')
-            .attr('r', 10)
-            .attr('transform', function() {
-                    return 'translate(' + projection([location.longitude,location.latitude]) + ')';
-                    })
-        .attr('class', 'location-ref-marker');
-
-        /**
-         * Append an image at a specific location
-         *
-         * This is for reference, now that we're appending images
-         * per marker.
-         */
-            //svg.append('svg:image')
-            //.attr('xlink:href', '/images/house.jpg')
-            //.attr('x', position[0])
-            //.attr('y', position[1])
-            //.attr('width', '200')
-            //.attr('height', '182')
-            //.transition()
-            //.attr('width', '400')
-            //.attr('height', '282')
-            //.duration(800);
     }
 
-    function drawImage(svg, projection, latitude, longitude, image, i) {
+    function drawPin(svg, location) {
+
+        var position = projection([location.longitude,location.latitude]);
+        var randPin = _.random(0, 2);
+        var pinRotate;
+        if (randPin == 0) {
+            pinRotate = 15;
+        }
+        else if (randPin == 1) {
+            pinRotate = -15;
+        }
+        else {
+            pinRotate = -5;
+        }
+
+        var gradientPinBody = svg.append('svg:defs')
+            .append('svg:linearGradient')
+            .attr('id', 'gradientPinBody')
+            .attr('x1', '0%')
+            .attr('y1', '0%')
+            .attr('x2', '100%')
+            .attr('y2', '100%')
+            .attr('spreadMethod', 'pad');
+
+        // Light
+        gradientPinBody.append('svg:stop')
+            .attr('offset', '0%')
+            .attr('stop-color', '#EAECEC')
+            .attr('stop-opacity', 1);
+
+        // Dark
+        gradientPinBody.append('svg:stop')
+            .attr('offset', '100%')
+            .attr('stop-color', '#8E9093')
+            .attr('stop-opacity', 1);
+
+        var pinBodyX = position[0] + 2;
+        var pinBodyY = position[1] - 12;
+        var pinBody = svg.append('rect')
+            .attr('x', pinBodyX)
+            .attr('y', pinBodyY)
+            .attr('width', 2)
+            .attr('height', 15)
+            .attr('fill', 'url(#gradientPinBody)')
+            .attr('transform', function (){
+                return 'rotate(' + pinRotate + ', ' + pinBodyX + ', ' + pinBodyY + ')';
+            });
+
+
+        var gradientPinHead = svg.append('svg:defs')
+            .append('svg:linearGradient')
+            .attr('id', 'gradientPinHead')
+            .attr('x1', '0%')
+            .attr('y1', '0%')
+            .attr('x2', '100%')
+            .attr('y2', '100%')
+            .attr('spreadMethod', 'pad');
+
+        gradientPinHead.append('svg:stop')
+            .attr('offset', '0%')
+            .attr('stop-color', '#aa0000')
+            .attr('stop-opacity', 1);
+
+        gradientPinHead.append('svg:stop')
+            .attr('offset', '100%')
+            .attr('stop-color', '#3D0000')
+            .attr('stop-opacity', 1);
+
+        var pinHead = svg.append('circle')
+            .attr('cx', position[0] + 3.8)
+            .attr('cy', position[1] - 16)
+            .attr('r', 5)
+            .attr('fill', 'url(#gradientPinHead)');
+
+    }
+
+    function drawImage(svg, projection, markerPosition, imagePosition, image, i) {
 
         // Image position
-        var position = projection([longitude, latitude]);
 
         // Old skool border width
         var imageBorder = 5;
 
-        var centerX = position[0];
-        var centerY = position[1];
+        var centerX = imagePosition[0];
+        var centerY = imagePosition[1];
         // Group for all the picture elements
         var pictureGroup = svg.append('g');
 
@@ -393,9 +391,22 @@ Template.locations.rendered = function () {
             .attr('x', 0)
             .attr('y', 0)
             .attr('width', image.thumbWidth + (imageBorder * 2))
-            .attr('height', image.thumbHeight + (imageBorder * 2))
+            .attr('height', image.thumbHeight + (imageBorder * 2) + 40)
             .attr('opacity', '1')
             .attr('class', 'location-matte');
+
+        var imageName = image.generalLocationDs;
+        if (imageName.length > 15 ) {
+            imageName = imageName.substring(0,15) + '...';
+        }
+
+        pictureGroup.append('text')
+            .attr('x', 10)
+            .attr('y', image.thumbHeight + 37)
+            .text(imageName)
+            .attr('font-family', 'Amatic SC')
+            .attr('font-size', '30px')
+            .attr('fill', '#663233');
 
         // Image
         pictureGroup.append('image')
@@ -408,6 +419,16 @@ Template.locations.rendered = function () {
             .attr('data-id', image._id)
             .attr('data-locid', image.dsLocId)
             .attr('data-location', image.generalLocationDs);
+
+        //pictureGroup.append('text')
+            //.attr('x', (image.thumbWidth/ 2))
+            //.attr('y', (image.thumbHeight/ 2))
+            //.text(image.dsLocId)
+            //.attr('font-family', 'Courier')
+            //.attr('font-size', '50px')
+            //.attr('fill', '#FFF')
+            //.attr('stroke-width', 2)
+            //.attr('stroke', '#000');
 
         // Starting state for picture group
         pictureGroup
