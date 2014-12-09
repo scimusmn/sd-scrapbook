@@ -21,8 +21,9 @@ Template.locations.rendered = function () {
      */
     var projection = d3.geo.mercator()
         //.scale(16160)
-        .scale(19140)
-        .center([-118.618, 34.050])
+        .scale(19225)
+        // bigger right, bigger up
+        .center([-118.616, 34.048])
         .precision(0.1);
 
     /**
