@@ -171,8 +171,6 @@ Template.locations.rendered = function () {
                 // Our original location before offset
                 var markerPosition = projection([longitude, latitude]);
                 var imagePosition = projection([(parseFloat(longitude) + xOffset), (parseFloat(latitude) + yOffset)]);
-                //console.log('markerPosition - ', markerPosition);
-                //console.log('imagePosition - ', imagePosition);
 
                 var markerX = parseFloat(markerPosition[0]);
                 var markerY = parseFloat(markerPosition[1]);
@@ -221,7 +219,6 @@ Template.locations.rendered = function () {
                     //{ 'x': (imagePosition[0] + 50), 'y': (imagePosition[1] + ((markerPosition[1] - imagePosition[1]) / 2))},
                     { 'x': imagePosition[0], 'y': imagePinY}
                 ];
-                console.log('lineData - ', lineData);
 
                 var lineFunction = d3.svg.line()
                     .x(function(d) { return d.x; })
