@@ -7,7 +7,7 @@
 
 // Enable dev features
 var dev = false;
-var devMarkers = true;
+var devMarkers = false;
 
 /**
  * Code executed once the page is loaded and rendered
