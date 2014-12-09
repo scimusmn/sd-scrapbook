@@ -57,7 +57,7 @@ Template.locations.rendered = function () {
         //
         window.setTimeout(function() {
             renderLocations();
-        }, 200);
+        }, 1000);
 
         function renderLocations() {
 
