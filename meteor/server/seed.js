@@ -177,8 +177,8 @@ if (Locations.find().count() === 0) {
     title: 'Los Angeles',
     link: 'los-angeles',
     description: '',
-    latitude: '34.0204989,',
-    longitude: '-118.411732532.622338',
+    latitude: '34.0204989',
+    longitude: '-118.4117325',
     dsLocId: '19'
   });
 
