@@ -118,8 +118,9 @@ Template.locations.rendered = function () {
                     yOffset = 0.4;
                 }
                 else if (image.dsLocId == '8') {
-                    xOffset = 0.4;
-                    yOffset = 0.3;
+                    xOffset = -0.4;
+                    yOffset = -0.1;
+                    oo
                 }
                 else if (image.dsLocId == '10') {
                     xOffset = 0.2;
@@ -134,12 +135,12 @@ Template.locations.rendered = function () {
                     yOffset = -0.1;
                 }
                 else if (image.dsLocId == '13') {
-                    xOffset = -0.3;
-                    yOffset = -0.2;
+                    xOffset = -0.2;
+                    yOffset = -0.35;
                 }
                 else if (image.dsLocId == '14') {
-                    xOffset = -1.0;
-                    yOffset = 0.1;
+                    xOffset = -1.1;
+                    yOffset = -0.3;
                 }
                 else if (image.dsLocId == '15') {
                     xOffset = -0.4;

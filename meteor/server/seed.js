@@ -123,8 +123,8 @@ if (Locations.find().count() === 0) {
     title: 'San Diego - Coast',
     link: 'san-diego-coast',
     description: '',
-    latitude: '32.676523',
-    longitude: '-117.247203',
+    latitude: '32.694081',
+    longitude: '-117.232840',
     dsLocId: '13'
   });
 
