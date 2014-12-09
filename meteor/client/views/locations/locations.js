@@ -219,7 +219,7 @@ Template.locations.rendered = function () {
                 //}
 
                 var lineData = [
-                    { 'x': markerX, 'y': markerY},
+                    { 'x': markerX, 'y': markerY + 16.5},
                     { 'x': lineMidX, 'y': lineMidY},
                     //{ 'x': (imagePosition[0] + 50), 'y': (imagePosition[1] + ((markerPosition[1] - imagePosition[1]) / 2))},
                     { 'x': imagePosition[0], 'y': imagePinY}
@@ -246,10 +246,6 @@ Template.locations.rendered = function () {
 
             });
 
-            _.each(locations, function(location, i) {
-                drawLocation(svg, projection, location, i);
-            });
-
         }
     });
 
@@ -273,8 +269,8 @@ Template.locations.rendered = function () {
         if (devMarkers) {
             var position = projection([location.longitude,location.latitude]);
             svg.append('text')
-            .attr('x', position[0])
-            .attr('y', position[1])
+            .attr('x', position[0] - 5)
+            .attr('y', position[1] - 2)
             .text(location.dsLocId)
             .attr('font-family', 'Courier')
             .attr('font-size', '20px')
@@ -287,20 +283,117 @@ Template.locations.rendered = function () {
 
     function drawPin(svg, location) {
 
+        // Pin location
         var position = projection([location.longitude,location.latitude]);
+
+        // Randomize the pin rotation
         var randPin = _.random(0, 2);
         var pinRotate;
-        if (randPin == 0) {
-            pinRotate = 15;
+        if (randPin === 0) {
+            pinRotate = 0;
         }
         else if (randPin == 1) {
-            pinRotate = -15;
-        }
-        else {
             pinRotate = -5;
         }
+        else {
+            pinRotate = 5;
+        }
 
-        var gradientPinBody = svg.append('svg:defs')
+        /**
+         * Pin Group
+         */
+        var pinGroup = svg.append('g');
+
+        pinGroup
+            .attr('width', '200')
+            .attr('height', '200');
+
+        var pinHeadRadius = 5;
+        var pinBodyWidth = 2;
+        var pinBodyHeight = 15;
+
+        /**
+         * Blur filters
+         *
+         * We make a couple filters of differing blurs
+         *
+         * We also make the filter bigger to be to prevent clipping
+         */
+        var filterLoose = pinGroup.append('defs')
+            .append('filter')
+            .attr('id', 'pin-blur-tight')
+            .attr('x', '-100')
+            .attr('y', '-100')
+            .attr('width', '200')
+            .attr('height', '200')
+            .append('feGaussianBlur')
+            .attr('stdDeviation', 2);
+
+        var filterTight = pinGroup.append('defs')
+            .append('filter')
+            .attr('id', 'pin-blur-loose')
+            .attr('x', '-100')
+            .attr('y', '-100')
+            .attr('width', '200')
+            .attr('height', '200')
+            .append('feGaussianBlur')
+            .attr('stdDeviation', 3);
+
+        /**
+         * Map depression
+         * Small ellipse shadow where the pin sticks into the map
+         */
+        pinGroup.append('ellipse')
+            .attr('cx', 0)
+            .attr('cy', pinBodyHeight + 4)
+            .attr('rx', 6.5)
+            .attr('ry', 1.5)
+            .attr('fill', 'black')
+            .attr('filter', 'url(#pin-blur-loose)')
+            .attr('opacity', '.8');
+
+        /**
+         * Pin Body shadow
+         *
+         * 45 degree shadow for the pin body
+         */
+        var pinShadowRot = 65;
+        var pinBodyShadowWidth = 2;
+        var pinBodyShadow = pinGroup.append('rect')
+            .attr('x', (0 - (pinBodyShadowWidth / 2)))
+            .attr('y', (pinHeadRadius / 2))
+            .attr('width', pinBodyShadowWidth)
+            .attr('height', 15)
+            .attr('fill', 'black')
+            .attr('transform', function (){
+                var transform = 'rotate(' + pinShadowRot + ', 0, 18)';
+                return transform;
+            })
+            .attr('filter', 'url(#pin-blur-tight)')
+            .attr('opacity', '.8');
+
+        /**
+         * Pin head shadow
+         */
+        pinGroup.append('circle')
+            .attr('cx', 0)
+            .attr('cy', 0)
+            .attr('r', pinHeadRadius - 1)
+            .attr('fill', 'black')
+            .attr('transform', function (){
+                var transform = 'rotate(' + pinShadowRot + ', 0, 18)';
+                return transform;
+            })
+            .attr('opacity', '.8')
+            .attr('filter', 'url(#pin-blur-loose)');
+
+
+        /**
+         * Pin body
+         *
+         * silver gradient rectangle for the body of the pin
+         */
+        var gradientPinBody = pinGroup.append('svg:defs')
             .append('svg:linearGradient')
             .attr('id', 'gradientPinBody')
             .attr('x1', '0%')
@@ -309,32 +402,31 @@ Template.locations.rendered = function () {
             .attr('y2', '100%')
             .attr('spreadMethod', 'pad');
 
-        // Light
+        // Light gradient color
         gradientPinBody.append('svg:stop')
             .attr('offset', '0%')
             .attr('stop-color', '#EAECEC')
             .attr('stop-opacity', 1);
 
-        // Dark
+        // Dark gradient color
         gradientPinBody.append('svg:stop')
             .attr('offset', '100%')
             .attr('stop-color', '#8E9093')
             .attr('stop-opacity', 1);
 
-        var pinBodyX = position[0] + 2;
-        var pinBodyY = position[1] - 12;
-        var pinBody = svg.append('rect')
-            .attr('x', pinBodyX)
-            .attr('y', pinBodyY)
-            .attr('width', 2)
-            .attr('height', 15)
-            .attr('fill', 'url(#gradientPinBody)')
-            .attr('transform', function (){
-                return 'rotate(' + pinRotate + ', ' + pinBodyX + ', ' + pinBodyY + ')';
-            });
+        pinGroup.append('rect')
+            .attr('x', (0 - (pinBodyWidth / 2)))
+            .attr('y', (pinHeadRadius / 2))
+            .attr('width', pinBodyWidth)
+            .attr('height', pinBodyHeight)
+            .attr('fill', 'url(#gradientPinBody)');
 
-
-        var gradientPinHead = svg.append('svg:defs')
+        /**
+         * Pin head
+         *
+         * Red radial gradient in a circle for the pin top
+         */
+        var gradientPinHead = pinGroup.append('svg:defs')
             .append('svg:linearGradient')
             .attr('id', 'gradientPinHead')
             .attr('x1', '0%')
@@ -353,11 +445,26 @@ Template.locations.rendered = function () {
             .attr('stop-color', '#3D0000')
             .attr('stop-opacity', 1);
 
-        var pinHead = svg.append('circle')
-            .attr('cx', position[0] + 3.8)
-            .attr('cy', position[1] - 16)
-            .attr('r', 5)
+        var pinHead = pinGroup.append('circle')
+            //.attr('cx', position[0] + 3.8)
+            //.attr('cy', position[1] - 16)
+            .attr('cx', 0)
+            .attr('cy', 0)
+            .attr('r', pinHeadRadius)
             .attr('fill', 'url(#gradientPinHead)');
+
+        /**
+         * Position the pin
+         *
+         * We transform the entire pin group into the marker location
+         */
+        pinGroup
+            .attr('class', 'pin-group')
+            .attr('transform', function (){
+                var transform = 'translate(' + (position[0]) + ', ' + (position[1]) + ')' +
+                    'rotate(' + pinRotate + ', 0, 0)';
+                return transform;
+            });
 
     }
 
