@@ -220,8 +220,8 @@ Template.locations.rendered = function () {
                 //}
 
                 var lineData = [
-                    { 'x': markerX, 'y': markerY + 16.5},
-                    { 'x': lineMidX, 'y': lineMidY},
+                    { 'x': markerX, 'y': markerY + 16.5 - 15},
+                    { 'x': lineMidX, 'y': lineMidY - 15},
                     //{ 'x': (imagePosition[0] + 50), 'y': (imagePosition[1] + ((markerPosition[1] - imagePosition[1]) / 2))},
                     { 'x': imagePosition[0], 'y': imagePinY}
                 ];
@@ -462,7 +462,7 @@ Template.locations.rendered = function () {
         pinGroup
             .attr('class', 'pin-group')
             .attr('transform', function (){
-                var transform = 'translate(' + (position[0]) + ', ' + (position[1]) + ')' +
+                var transform = 'translate(' + (position[0]) + ', ' + ((position[1]) - pinBodyHeight) + ')' +
                     'rotate(' + pinRotate + ', 0, 0)';
                 return transform;
             });
@@ -470,8 +470,6 @@ Template.locations.rendered = function () {
     }
 
     function drawImage(svg, projection, markerPosition, imagePosition, image, i) {
-
-        // Image position
 
         // Old skool border width
         var imageBorder = 5;
@@ -547,6 +545,11 @@ Template.locations.rendered = function () {
             .attr('transform', function (){
                 return 'scale(.1), translate(' + (centerX / 0.1) + ', ' + (centerY / 0.1) + ')';
             });
+
+        console.log('imagePosition - ', imagePosition);
+        imagePosition = [imagePosition[0], ((imagePosition[1] - (image.thumbHeight/ 2) - 5) + 15)];
+        drawPin(svg, imagePosition);
+
 
         // Animate picture group to full size
         pictureGroup
