@@ -256,12 +256,6 @@ Template.locations.rendered = function () {
                     })
                     .attr('filter', 'url(#line-blur)');
 
-                var dot = svg.append('circle')
-                    .attr('r', 10)
-                    .attr('x', lineMidX)
-                    .attr('y', lineMidY)
-                    .attr('class', 'location-ref-marker');
-
             });
 
         }
@@ -563,7 +557,6 @@ Template.locations.rendered = function () {
                 return 'scale(.1), translate(' + (centerX / 0.1) + ', ' + (centerY / 0.1) + ')';
             });
 
-        console.log('imagePosition - ', imagePosition);
         imagePosition = [imagePosition[0], ((imagePosition[1] - (image.thumbHeight/ 2) - 5) + 15)];
         drawPin(svg, imagePosition);
 
