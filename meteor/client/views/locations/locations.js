@@ -7,6 +7,7 @@
 
 // Enable dev features
 var dev = false;
+var devMarkers = true;
 
 /**
  * Code executed once the page is loaded and rendered
@@ -265,7 +266,7 @@ Template.locations.rendered = function () {
          *
          * This is for marker placement and should be disabled for production.
          */
-        if (dev) {
+        if (devMarkers) {
             var position = projection([location.longitude,location.latitude]);
             svg.append('text')
             .attr('x', position[0])
