@@ -87,8 +87,167 @@ Template.locations.rendered = function () {
             _.each(images, function(image, i) {
                 var latitude = positions[image.dsLocId].latitude;
                 var longitude = positions[image.dsLocId].longitude;
-                drawImage(svg, projection, latitude, longitude, image, i);
+
+                var xOffset;
+                var yOffset;
+
+                if (image.dsLocId == '2') {
+                    xOffset = 0.1;
+                    yOffset = -0.5;
+                }
+                if (image.dsLocId == '3') {
+                    xOffset = -2.3;
+                    yOffset = -0.2;
+                }
+                if (image.dsLocId == '4') {
+                    xOffset = 0.3;
+                    yOffset = -0.2;
+                }
+                else if (image.dsLocId == '5') {
+                    xOffset = 0.3;
+                    yOffset = 0.2;
+                }
+                else if (image.dsLocId == '6') {
+                    xOffset = -0.3;
+                    yOffset = 0.4;
+                }
+                else if (image.dsLocId == '8') {
+                    xOffset = 0.4;
+                    yOffset = 0.3;
+                }
+                else if (image.dsLocId == '10') {
+                    xOffset = 0.2;
+                    yOffset = -0.3;
+                }
+                else if (image.dsLocId == '11') {
+                    xOffset = 0.2;
+                    yOffset = -0.3;
+                }
+                else if (image.dsLocId == '12') {
+                    xOffset = 0.6;
+                    yOffset = 0.4;
+                }
+                else if (image.dsLocId == '13') {
+                    xOffset = -0.3;
+                    yOffset = -0.2;
+                }
+                else if (image.dsLocId == '14') {
+                    xOffset = -1.0;
+                    yOffset = 0.1;
+                }
+                else if (image.dsLocId == '15') {
+                    xOffset = -0.4;
+                    yOffset = 0.05;
+                }
+                else if (image.dsLocId == '17') {
+                    xOffset = -0.2;
+                    yOffset = -0.2;
+                }
+                else if (image.dsLocId == '18') {
+                    xOffset = 0.4;
+                    yOffset = -0.1;
+                }
+                else if (image.dsLocId == '19') {
+                    xOffset = -0.2;
+                    yOffset = -0.4;
+                }
+                else if (image.dsLocId == '20') {
+                    xOffset = 0.1;
+                    yOffset = 0.6;
+                }
+                //else if (image.dsLocId == '20') {
+                    //xOffset = 0.5;
+                    //yOffset = 0.4;
+                //}
+                else if (image.dsLocId == '21') {
+                    xOffset = 0.05;
+                    yOffset = -0.2;
+                }
+                else {
+                    xOffset = 0;
+                    yOffset = 0;
+                }
+
+                // Our original location before offset
+                var markerPosition = projection([longitude, latitude]);
+                var imagePosition = projection([(parseFloat(longitude) + xOffset), (parseFloat(latitude) + yOffset)]);
+                //console.log('markerPosition - ', markerPosition);
+                //console.log('imagePosition - ', imagePosition);
+
+                var markerX = parseFloat(markerPosition[0]);
+                var markerY = parseFloat(markerPosition[1]);
+
+                var imagePinX = imagePosition[0];
+                var imagePinY = (imagePosition[1] - (2*(image.thumbHeight / 5)));
+
+                // Check to see if the image is above or below the marker
+                var lineMidX;
+                var lineMidY;
+                var lineStroke = '#DDDFE0';
+                //
+                // Image is SW of the marker
+                //
+                if ((markerX > imagePinX) && (markerY < imagePinY)) {
+                    lineMidX = imagePinX + ((markerX - imagePinX) / 2) + 20;
+                    lineMidY = markerY - (markerY - imagePinY) / 2;
+                    lineStroke = 'white';
+                }
+                // Image is NW of marker
+                else if ((markerX > imagePinX) && (markerY > imagePinY)){
+                    lineMidX = imagePinX + ((markerX - imagePinX) / 2 ) - 20;
+                    lineMidY = markerY - (markerY - imagePinY) / 2;
+                    lineStroke = 'white';
+                }
+                // Image is NE of marker
+                else if ((markerX < imagePinX) && (markerY > imagePinY)){
+                    lineMidX = markerX + ((imagePinX - markerX) / 2 ) + 20;
+                    lineMidY = markerY - (markerY - imagePinY) / 2;
+                }
+                // Image is SE of marker
+                else {
+                    lineMidX = markerX + ((imagePinX - markerX) / 2 ) - 5;
+                    lineMidY = markerY - (markerY - imagePinY) / 2;
+                    lineStroke = 'white';
+                }
+                //if (markerY > imagePinY) {
+                    //lineMidY = markerY - (markerY - imagePinY) / 2;
+                //} else {
+                    //lineMidY = imagePinY + (markerY - imagePinY) / 2 + 20;
+                //}
+
+                var lineData = [
+                    { 'x': markerX, 'y': markerY},
+                    { 'x': lineMidX, 'y': lineMidY},
+                    //{ 'x': (imagePosition[0] + 50), 'y': (imagePosition[1] + ((markerPosition[1] - imagePosition[1]) / 2))},
+                    { 'x': imagePosition[0], 'y': imagePinY}
+                ];
+                console.log('lineData - ', lineData);
+
+                var lineFunction = d3.svg.line()
+                    .x(function(d) { return d.x; })
+                    .y(function(d) { return d.y; })
+                    .interpolate('basis');
+
+                drawImage(svg, projection, markerPosition, imagePosition, image, i);
+
+                var line = svg.append('path')
+                    .attr('d', lineFunction(lineData))
+                    .attr('stroke-width', 1.2)
+                    .attr('fill', 'none')
+                    .attr('stroke', lineStroke);
+
+                var dot = svg.append('circle')
+                    .attr('r', 10)
+                    .attr('x', lineMidX)
+                    .attr('y', lineMidY)
+                    .attr('class', 'location-ref-marker');
+
             });
+
+            _.each(locations, function(location, i) {
+                drawLocation(svg, projection, location, i);
+            });
+
         }
     });
 
