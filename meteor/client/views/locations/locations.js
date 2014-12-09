@@ -259,7 +259,8 @@ Template.locations.rendered = function () {
     function drawLocation(svg, projection, location) {
 
         // Draw location pin
-        drawPin(svg, location);
+        var position = projection([location.longitude,location.latitude]);
+        drawPin(svg, position);
 
         /**
          * Dev text
@@ -281,10 +282,9 @@ Template.locations.rendered = function () {
 
     }
 
-    function drawPin(svg, location) {
+    function drawPin(svg, position) {
 
         // Pin location
-        var position = projection([location.longitude,location.latitude]);
 
         // Randomize the pin rotation
         var randPin = _.random(0, 2);
