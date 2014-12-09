@@ -233,11 +233,27 @@ Template.locations.rendered = function () {
 
                 drawImage(svg, projection, markerPosition, imagePosition, image, i);
 
-                var line = svg.append('path')
+                svg.append('path')
                     .attr('d', lineFunction(lineData))
                     .attr('stroke-width', 1.2)
                     .attr('fill', 'none')
                     .attr('stroke', lineStroke);
+
+                svg.append('defs')
+                    .append('filter')
+                    .attr('id', 'line-blur')
+                    .append('feGaussianBlur')
+                    .attr('stdDeviation', 4);
+                svg.append('path')
+                    .attr('d', lineFunction(lineData))
+                    .attr('stroke-width', 1.6)
+                    .attr('fill', 'none')
+                    .attr('stroke', 'black')
+                    .attr('transform', function (){
+                        var transform = 'translate(0,2)';
+                        return transform;
+                    })
+                    .attr('filter', 'url(#line-blur)');
 
                 var dot = svg.append('circle')
                     .attr('r', 10)
@@ -358,7 +374,7 @@ Template.locations.rendered = function () {
          *
          * 45 degree shadow for the pin body
          */
-        var pinShadowRot = 65;
+        var pinShadowRot = 140;
         var pinBodyShadowWidth = 2;
         var pinBodyShadow = pinGroup.append('rect')
             .attr('x', (0 - (pinBodyShadowWidth / 2)))
@@ -385,7 +401,7 @@ Template.locations.rendered = function () {
                 var transform = 'rotate(' + pinShadowRot + ', 0, 18)';
                 return transform;
             })
-            .attr('opacity', '.8')
+            .attr('opacity', '.4')
             .attr('filter', 'url(#pin-blur-loose)');
 
 
@@ -487,10 +503,10 @@ Template.locations.rendered = function () {
             .attr('stdDeviation', 5);
         pictureGroup.append('rect')
             .attr('width', image.thumbWidth + (imageBorder * 2))
-            .attr('height', image.thumbHeight + (imageBorder * 2))
+            .attr('height', image.thumbHeight + (imageBorder * 2) + 40)
             .attr('opacity', '1')
-            .attr('x', 0)
-            .attr('y', 0)
+            .attr('x', 3)
+            .attr('y', 3)
             .style('fill', '#000')
             .attr('filter', 'url(#blur)');
 
