@@ -92,21 +92,25 @@ Template.locations.rendered = function () {
                 var xOffset;
                 var yOffset;
 
-                if (image.dsLocId == '2') {
-                    xOffset = 0.1;
-                    yOffset = -0.5;
-                }
-                if (image.dsLocId == '3') {
-                    xOffset = -2.3;
+                if (image.dsLocId == '1') {
+                    xOffset = 0.3;
                     yOffset = -0.2;
                 }
-                if (image.dsLocId == '4') {
+                else if (image.dsLocId == '2') {
+                    xOffset = 0.1;
+                    yOffset = -0.2;
+                }
+                else if (image.dsLocId == '3') {
+                    xOffset = -0.1;
+                    yOffset = -0.2;
+                }
+                else if (image.dsLocId == '4') {
                     xOffset = 0.3;
                     yOffset = -0.2;
                 }
                 else if (image.dsLocId == '5') {
-                    xOffset = 0.3;
-                    yOffset = 0.2;
+                    xOffset = 0.4;
+                    yOffset = 0.05;
                 }
                 else if (image.dsLocId == '6') {
                     xOffset = -0.3;
@@ -125,8 +129,8 @@ Template.locations.rendered = function () {
                     yOffset = -0.3;
                 }
                 else if (image.dsLocId == '12') {
-                    xOffset = 0.6;
-                    yOffset = 0.4;
+                    xOffset = 0.3;
+                    yOffset = -0.1;
                 }
                 else if (image.dsLocId == '13') {
                     xOffset = -0.3;
@@ -146,7 +150,7 @@ Template.locations.rendered = function () {
                 }
                 else if (image.dsLocId == '18') {
                     xOffset = 0.4;
-                    yOffset = -0.1;
+                    yOffset = -0.3;
                 }
                 else if (image.dsLocId == '19') {
                     xOffset = -0.2;
@@ -154,7 +158,7 @@ Template.locations.rendered = function () {
                 }
                 else if (image.dsLocId == '20') {
                     xOffset = 0.1;
-                    yOffset = 0.6;
+                    yOffset = 0.1;
                 }
                 //else if (image.dsLocId == '20') {
                     //xOffset = 0.5;
