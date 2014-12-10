@@ -87,14 +87,14 @@ function renderLocation(timelineSVG, timelineImagesSVG, timelineBackgroundWidth,
     var imagesCount = imagesCursor.count();
     var images = imagesCursor.fetch();
     images = _.sortBy(images, function (image) {
-        return image.date;
+        return image.isoDate;
     });
 
     /**
      * Date information for the timeline
      */
-    var firstYear = _.first(images).date.substring(0,4);
-    var lastYear = _.last(images).date.substring(0,4);
+    var firstYear = _.first(images).isoDate.substring(0,4);
+    var lastYear = _.last(images).isoDate.substring(0,4);
 
     /**
      * Define some set attributes that we can't find in the loop
@@ -215,7 +215,7 @@ function drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHei
         .attr('class', 'picture-group ' + 'picture-' + i)
         .attr('data-index', i)
         .attr('data-id', image._id)
-        .attr('data-date', image.date)
+        .attr('data-date', image.isoDate)
         .attr('data-location', image.creationPlace)
         .attr('data-credit-line', image.creditLine)
         .attr('data-title', image.title)
@@ -440,7 +440,7 @@ function highlightImage(pointerX) {
     var hlImgDescription = hlImg.data('description');
     $('.image-detail span.image-description').text(hlImgDescription);
     $('.image-detail span.image-location').text(hlImg.data('location'));
-    $('.image-detail span.image-date').text(hlImg.data('date'));
+    $('.image-detail span.image-date').text(hlImg.data('isoDate'));
     $('.image-detail span.image-credit-line').text(hlImg.data('credit-line'));
 
     var hlImgId = hlImg.data('id');
