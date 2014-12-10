@@ -215,8 +215,8 @@ Template.locations.rendered = function () {
                 }
                 // Image is SE of marker
                 else {
-                    lineMidX = markerX + ((imagePinX - markerX) / 2 ) - 5;
-                    lineMidY = markerY - (markerY - imagePinY) / 2;
+                    lineMidX = markerX + ((imagePinX - markerX) / 2 );
+                    lineMidY = markerY + ((imagePinY - markerY) / 2 ) + 10;
                     lineStroke = 'white';
                 }
                 //if (markerY > imagePinY) {
