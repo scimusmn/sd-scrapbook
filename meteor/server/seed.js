@@ -177,8 +177,8 @@ if (Locations.find().count() === 0) {
     title: 'Los Angeles',
     link: 'los-angeles',
     description: '',
-    latitude: '34.0204989',
-    longitude: '-118.4117325',
+    latitude: '33.955025',
+    longitude: '-118.266164',
     dsLocId: '19'
   });
 
@@ -195,8 +195,8 @@ if (Locations.find().count() === 0) {
     title: 'Channel Islands',
     link: 'channel-islands',
     description: '',
-    latitude: '34.000155',
-    longitude: '-119.812440',
+    latitude: '34.007904',
+    longitude: '-119.745074',
     dsLocId: '21'
   });
 
