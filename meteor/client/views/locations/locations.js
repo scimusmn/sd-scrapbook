@@ -98,33 +98,36 @@ Template.locations.rendered = function () {
                     yOffset = -0.2;
                 }
                 else if (image.dsLocId == '2') {
-                    xOffset = 0.1;
-                    yOffset = -0.2;
+                    xOffset = 0.0;
+                    yOffset = -0.4;
                 }
                 else if (image.dsLocId == '3') {
                     xOffset = -0.1;
-                    yOffset = -0.2;
+                    yOffset = -0.3;
                 }
                 else if (image.dsLocId == '4') {
-                    xOffset = 0.3;
-                    yOffset = -0.2;
+                    //xOffset = 0.3;
+                    //yOffset = -0.2;
+                    xOffset = 0;
+                    yOffset = 0;
                 }
                 else if (image.dsLocId == '5') {
                     xOffset = 0.4;
                     yOffset = 0.05;
                 }
                 else if (image.dsLocId == '6') {
-                    xOffset = -0.3;
-                    yOffset = 0.4;
+                    xOffset = -0.4;
+                    yOffset = -0.05;
                 }
                 else if (image.dsLocId == '8') {
-                    xOffset = -0.4;
-                    yOffset = -0.1;
-                    oo
+                    //xOffset = -0.5;
+                    //yOffset = -0.2;
+                    xOffset = 0;
+                    yOffset = 0;
                 }
                 else if (image.dsLocId == '10') {
-                    xOffset = 0.2;
-                    yOffset = -0.3;
+                    xOffset = 0.4;
+                    yOffset = 0.1;
                 }
                 else if (image.dsLocId == '11') {
                     xOffset = 0.2;
