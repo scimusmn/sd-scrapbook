@@ -61,7 +61,7 @@ print term.yellow('Remove whitespace')
 temp_trimmed = os.path.abspath('temp-trimmed.csv')
 (csvfix['trim', '-t', temp_sorted_no_header] > temp_trimmed)()
 
-# Remove any rows where the primary ID is not present.
+# Remove any rows where the primary ID (DS-#####) is not present.
 # This cleans up some note rows.
 print term.yellow('Removing extra rows')
 temp_stripped = os.path.abspath('temp-stripped.csv')
@@ -71,6 +71,10 @@ writer = csv.writer(output)
 for row in csv.reader(input):
     if row:
         if not re.search('^$', row[5]):
+            # Limit the ID number to the first 8 char.
+            # This removes any in-house identifiers for the ID that the
+            # client might add.
+            row[5] = row[5][:8]
             writer.writerow(row)
 input.close()
 output.close()
