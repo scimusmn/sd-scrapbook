@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from plumbum import local
-from plumbum.cmd import cat, csvfix, in2csv, ls, sed, rm
+from plumbum.cmd import cat, csvfix, in2csv, sed, rm
 from blessings import Terminal
 import os
 import glob
