@@ -107,48 +107,97 @@ writer = csv.writer(output)
 for row in csv.reader(input):
     if row:
         date_string = row[8]
-        #no_uncertainty = re.compile('u').sub('z', date_string)
-        #parts = no_uncertainty.split('-')
+
         parts = date_string.split('-')
+
         year = parts[0]
 
         # Year only
         if len(parts) == 1:
-            month = '06'
-            day = '15'
-        # Year and month
-        if len(parts) == 2:
-            day = '15'
+            # Remove circa
+            if year.startswith('ca. '):
+                year = year[4:]
+            date_string = year
+            iso_date = str(str(year) + '-00-00')
+
         # If the month is present, process it
         if len(parts) == 2 or len(parts) == 3:
             month = parts[1]
-            dic = {
-                "Jan": "01",
-                "Feb": "02",
-                "Mar": "03",
-                "Apr": "04",
-                "May": "05",
-                "Jun": "06",
-                "Jul": "07",
-                "Aug": "08",
-                "Sep": "09",
-                "Oct": "10",
-                "Nov": "11",
-                "Dec": "12",
-                "uuu": "06",
+            stringDic = {
+                "Jan": "January",
+                "Feb": "February",
+                "Mar": "March",
+                "Apr": "April",
+                "May": "May",
+                "Jun": "June",
+                "Jul": "July",
+                "Aug": "August",
+                "Sep": "September",
+                "Oct": "October",
+                "Nov": "November",
+                "Dec": "December",
             }
-            for i, j in dic.iteritems():
+            for i, j in stringDic.iteritems():
                 month = month.replace(i, j)
+            date_string = month + ' ' + year
+
+            if month == 'January':
+                iso_month = '01'
+
+            if month == 'February':
+                iso_month = '02'
+
+            if month == 'March':
+                iso_month = '03'
+
+            if month == 'April':
+                iso_month = '04'
+
+            if month == 'May':
+                iso_month = '05'
+
+            if month == 'June':
+                iso_month = '06'
+
+            if month == 'July':
+                iso_month = '07'
+
+            if month == 'August':
+                iso_month = '08'
+
+            if month == 'September':
+                iso_month = '09'
+
+            if month == 'October':
+                iso_month = '10'
+
+            if month == 'November':
+                iso_month = '11'
+
+            if month == 'December':
+                iso_month = '12'
+
+            iso_date = str(str(year) + '-' + iso_month + '-00')
+
         if len(parts) == 3:
             day = parts[2]
+            date_string = month + ' ' + day + ', ' + year
+            iso_date = str(str(year) + '-' + iso_month + '-' + day)
 
         # Average the year if a range (e.g. 1969/1980)
         if re.search('/', year):
             range = year.split('/')
             yearlist = [float(x) for x in range]
             year = int(sum(yearlist) / float(len(range)))
+            iso_date = str(str(year) + '-00-00')
+            date_string = ('Between ' + str(int(yearlist[0])) + ' and ' +
+                           str(int(yearlist[1])))
 
-        row[8] = str(str(year) + '-' + str(month) + '-' + str(day))
+        # row.insert(8, str(str(year) + '-' + str(month) + '-' + str(day)))
+        row.insert(8, "a" + date_string)
+
+        row.insert(9, "z" + iso_date)
+
         writer.writerow(row)
 input.close()
 output.close()
