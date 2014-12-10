@@ -21,8 +21,7 @@ print rm('-rf', database_file_name + '.csv')
 # Get all the sheets into CSVs
 print term.yellow('Extracting the CSVs')
 
-#sheets = [ '1-Anza', '2-Cleve', '13-SDCst', '19-L.A.']
-sheets = [ '1-Anza', '2-Cleve', '13-SDCst', '19-L.A.', '7-Moj', '12-Bern',
+sheets = ['1-Anza', '2-Cleve', '13-SDCst', '19-L.A.', '7-Moj', '12-Bern',
           '3-Color', '4-Imp', '5-Josh', '6-Torr', '8-NorthSD', '9-OC',
           '10-Palo', '11-Salton', '14-SDIn', '15-Gabr', '16-Jac',
           '17-Mon', '18-SoSD', '20-River', '21-Channel']
@@ -35,7 +34,8 @@ sheet_csvs = []
 for sheet in sheets:
     sheet_csv = str.lower(sheet).replace('.', '') + '.csv'
     temp_sheet = 'temp-sheet-' + sheet_csv
-    (in2csv['--sheet', sheet, data_path + os.sep + database_file_name + '.xlsx'] > temp_sheet)()
+    (in2csv['--sheet', sheet, data_path + os.sep + database_file_name +
+            '.xlsx'] > temp_sheet)()
     sheet_csvs.append(os.path.abspath(temp_sheet))
 
 # Merge all the CSV files into a single file
@@ -54,9 +54,8 @@ temp_sorted = os.path.abspath('temp-sorted.csv')
 
 print term.red('Removing the header lines')
 temp_sorted_no_header = os.path.abspath('temp-sorted-no-header.csv')
-(sed['-e', "1," + str(len(sheets) + 1) + "d", temp_sorted] > temp_sorted_no_header)()
-
-
+(sed['-e', "1," + str(len(sheets) + 1) + "d", temp_sorted] >
+ temp_sorted_no_header)()
 
 print term.yellow('Remove whitespace')
 temp_trimmed = os.path.abspath('temp-trimmed.csv')
@@ -91,7 +90,7 @@ temp_dashless = os.path.abspath('temp-dashless.csv')
 #    ERROR: Character value 194 too big
 #
 # So I'm leaving it out for now.
-#csvfix edit -e 's/^$/ /g' temp-stripped.csv > temp-dashed.csv
+# csvfix edit -e 's/^$/ /g' temp-stripped.csv > temp-dashed.csv
 
 # Split the lat,long column into two columns
 # We want to store this as separate fields in the data base.
@@ -156,23 +155,24 @@ output.close()
 
 # Add the Piction data header
 print term.yellow('Adding a header row')
-piction_header  = os.path.abspath(data_path + os.sep + 'piction_header.csv')
-temp_header  = os.path.abspath('temp-header.csv')
+piction_header = os.path.abspath(data_path + os.sep + 'piction_header.csv')
+temp_header = os.path.abspath('temp-header.csv')
 (cat[piction_header, temp_dates] >> temp_header)()
 
 # Remove any columns outside our header scope
 print term.yellow('Removing extra columns')
-temp_scope  = os.path.abspath('temp-scope.csv')
+temp_scope = os.path.abspath('temp-scope.csv')
 (csvfix['order', '-f', '1:41', temp_header] > temp_scope)()
 
 # Build a dimensions file
 dimensions = os.path.abspath(data_path + os.sep + 'dimensions.csv')
-dimensions_header = os.path.abspath(data_path + os.sep + 'dimensions_header.csv')
+dimensions_header = os.path.abspath(
+    data_path + os.sep + 'dimensions_header.csv')
 temp_dimensions = os.path.abspath('temp-dimensions.csv')
 (cat[dimensions_header, dimensions] > temp_dimensions)()
 
 print term.yellow('Adding dimensions to piction file')
-piction  = os.path.abspath(data_path + os.sep + database_file_name + '.csv')
+piction = os.path.abspath(data_path + os.sep + database_file_name + '.csv')
 (csvfix['join', '-f', '6:1', temp_scope, temp_dimensions] > piction)()
 
 # Cleanup all our temp files
@@ -180,12 +180,12 @@ cwd = os.path.dirname(os.path.abspath(__file__))
 for fl in glob.glob(cwd + '/temp-*'):
     os.remove(fl)
 
-## This final step is manual and is only documented here for reference.
-## Once you've created this big CSV of all the images we need to add the image
-## dimension data into the table. We use imagemagick to do this, and then
-## merge the csv into the file with new headers
-##
-## Create the image dimension sheet
-## identify -format "%t,%w,%h,%[fx:w/h]\n" *.jpg > dimensions.csv
-##
-## Merge the dimensions.csv into the piction.csv
+# This final step is manual and is only documented here for reference.
+# Once you've created this big CSV of all the images we need to add the image
+# dimension data into the table. We use imagemagick to do this, and then
+# merge the csv into the file with new headers
+#
+# Create the image dimension sheet
+# identify -format "%t,%w,%h,%[fx:w/h]\n" *.jpg > dimensions.csv
+#
+# Merge the dimensions.csv into the piction.csv
