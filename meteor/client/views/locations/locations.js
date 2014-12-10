@@ -98,7 +98,7 @@ Template.locations.rendered = function () {
                     yOffset = -0.2;
                 }
                 else if (image.dsLocId == '2') {
-                    xOffset = 0.0;
+                    xOffset = -0.1;
                     yOffset = -0.4;
                 }
                 else if (image.dsLocId == '3') {
