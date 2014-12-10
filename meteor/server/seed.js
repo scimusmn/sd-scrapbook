@@ -65,6 +65,7 @@ if (Locations.find().count() === 0) {
     dsLocId: '6'
   });
 
+  // This isn't visible because of the map cropping
   var mojaveDesert = Locations.insert({
     title: 'Mojave Desert',
     link: 'mojave-desert',
