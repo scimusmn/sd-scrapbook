@@ -120,8 +120,10 @@ Template.locations.rendered = function () {
                     yOffset = -0.05;
                 }
                 else if (image.dsLocId == '8') {
-                    //xOffset = -0.5;
-                    //yOffset = -0.2;
+                    xOffset = 0;
+                    yOffset = 0;
+                }
+                else if (image.dsLocId == '9') {
                     xOffset = 0;
                     yOffset = 0;
                 }
@@ -150,7 +152,7 @@ Template.locations.rendered = function () {
                     yOffset = 0.05;
                 }
                 else if (image.dsLocId == '17') {
-                    xOffset = -0.2;
+                    xOffset = -0.1;
                     yOffset = -0.2;
                 }
                 else if (image.dsLocId == '18') {
@@ -171,7 +173,7 @@ Template.locations.rendered = function () {
                 //}
                 else if (image.dsLocId == '21') {
                     xOffset = 0.05;
-                    yOffset = -0.2;
+                    yOffset = -0.3;
                 }
                 else {
                     xOffset = 0;
