@@ -111,7 +111,7 @@ if (Locations.find().count() === 0) {
   });
 
   var sanBerardino = Locations.insert({
-    title: 'San Berardino Mountains',
+    title: 'San Bernardino Mountains',
     link: 'san-bernardino',
     description: '',
     latitude: '34.184340',
