@@ -227,10 +227,13 @@ Template.locations.rendered = function () {
 
                 var lineData = [
                     { 'x': markerX, 'y': markerY + 16.5 - 15},
-                    { 'x': lineMidX, 'y': lineMidY - 15},
+                    { 'x': lineMidX, 'y': lineMidY},
                     //{ 'x': (imagePosition[0] + 50), 'y': (imagePosition[1] + ((markerPosition[1] - imagePosition[1]) / 2))},
                     { 'x': imagePosition[0], 'y': imagePinY}
                 ];
+
+                // Curve type
+                // https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate
 
                 var lineFunction = d3.svg.line()
                     .x(function(d) { return d.x; })
@@ -239,27 +242,32 @@ Template.locations.rendered = function () {
 
                 drawImage(svg, projection, markerPosition, imagePosition, image, i);
 
-                svg.append('path')
-                    .attr('d', lineFunction(lineData))
-                    .attr('stroke-width', 1.2)
-                    .attr('fill', 'none')
-                    .attr('stroke', lineStroke);
+                /**
+                 * Only display pin lines if the offset isn't 0
+                 */
+                if (xOffset != 0 && yOffset != 0) {
+                    svg.append('path')
+                        .attr('d', lineFunction(lineData))
+                        .attr('stroke-width', 1.2)
+                        .attr('fill', 'none')
+                        .attr('stroke', lineStroke);
 
-                svg.append('defs')
-                    .append('filter')
-                    .attr('id', 'line-blur')
-                    .append('feGaussianBlur')
-                    .attr('stdDeviation', 4);
-                svg.append('path')
-                    .attr('d', lineFunction(lineData))
-                    .attr('stroke-width', 1.6)
-                    .attr('fill', 'none')
-                    .attr('stroke', 'black')
-                    .attr('transform', function (){
-                        var transform = 'translate(0,2)';
-                        return transform;
-                    })
-                    .attr('filter', 'url(#line-blur)');
+                    svg.append('defs')
+                        .append('filter')
+                        .attr('id', 'line-blur')
+                        .append('feGaussianBlur')
+                        .attr('stdDeviation', 4);
+                    svg.append('path')
+                        .attr('d', lineFunction(lineData))
+                        .attr('stroke-width', 1.6)
+                        .attr('fill', 'none')
+                        .attr('stroke', 'black')
+                        .attr('transform', function (){
+                            var transform = 'translate(0,2)';
+                            return transform;
+                        })
+                        .attr('filter', 'url(#line-blur)');
+                }
 
             });
 
