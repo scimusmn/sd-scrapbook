@@ -233,7 +233,7 @@ function drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHei
         /**
         * Picture drop shadow
         */
-        var filter = pictureGroup.append('defs')
+        pictureGroup.append('defs')
             .append('filter')
             .attr('id', 'blur')
             .append('feGaussianBlur')
