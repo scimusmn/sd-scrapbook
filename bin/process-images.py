@@ -51,7 +51,7 @@ mogrify_expanded_arguments = [
     '-path', photos_path + os.sep + 'processed-latest/expanded',
 
     # Thumbnail size
-    '-thumbnail', '1000x800',
+    '-thumbnail', '1500x1500',
 
     # Input directory
     photos_path + os.sep + 'source-latest/*.jpg',
