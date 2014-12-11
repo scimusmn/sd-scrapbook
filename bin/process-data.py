@@ -198,7 +198,7 @@ for row in csv.reader(input):
                            str(int(yearlist[1])))
 
         # row.insert(8, str(str(year) + '-' + str(month) + '-' + str(day)))
-        row.insert(8, date_string)
+        row.insert(8, "date-" + date_string)
 
         row.insert(9, iso_date)
 
