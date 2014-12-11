@@ -23,7 +23,7 @@ Template.location.rendered = function () {
     var locationContainer = $('.location');
 
     // Fade in the main location container
-    locationContainer.addClass('animated fadeIn92');
+    locationContainer.addClass('animated fadeIn');
 
     var locationWidth = locationContainer.width();
 
