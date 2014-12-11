@@ -215,13 +215,17 @@ function drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHei
         .attr('class', 'picture-group ' + 'picture-' + i)
         .attr('data-index', i)
         .attr('data-id', image._id)
-        .attr('data-date', image.isoDate)
+        .attr('data-iso-date', image.isoDate)
+        .attr('data-app-date', image.appDate)
         .attr('data-location', image.creationPlace)
         .attr('data-credit-line', image.creditLine)
         .attr('data-title', image.title)
         .attr('data-xh', image.expandedHeight)
+        .attr('data-xw', image.expandedWidth)
+        .attr('data-aspect', image.expandedAspectRatio)
         .attr('data-centerx', centerX)
         .attr('data-description', image.labelTextEnglish)
+        .attr('data-description-es', image.labelTextSpanish)
         .attr('transform', function (){
             return translate;
         });
@@ -438,19 +442,52 @@ function highlightImage(pointerX) {
     $('.image-detail h4').text(hlImgTitle);
 
     var hlImgDescription = hlImg.data('description');
-    $('.image-detail span.image-description').text(hlImgDescription);
-    $('.image-detail span.image-location').text(hlImg.data('location'));
-    $('.image-detail span.image-date').text(hlImg.data('isoDate'));
-    $('.image-detail span.image-credit-line').text(hlImg.data('credit-line'));
+    var hlImgDescriptionEs = hlImg.data('description-es');
+    $('.image-detail div.image-description').text(hlImgDescription);
+    $('.image-detail div.image-description-es').text(hlImgDescriptionEs);
+    $('.image-detail div.image-location').text(hlImg.data('location'));
+    $('.image-detail div.image-date').text(hlImg.data('app-date').substring(5));
+    $('.image-detail div.image-credit-line').text(hlImg.data('credit-line'));
 
     var hlImgId = hlImg.data('id');
-    var hlImgExHeight = hlImg.data('xh');
+    var hlImgExHeight = parseFloat(hlImg.data('xh'));
+    var hlImgExWidth = parseFloat(hlImg.data('xw'));
+    var hlImgAspect = parseFloat(hlImg.data('aspect'));
+
+    /**
+     * Portait - taller than narrow. Limit the height to 600px
+     */
+    var testVar;
+    var aspectR;
+    if (hlImgAspect < 1) {
+        if (hlImgExHeight > 800) {
+            hlImgExHeight = 800;
+        }
+        hlImgExWidth = hlImgExHeight * hlImgAspect;
+
+        aspectR = hlImgAspect;
+        testVar = 'portrait';
+    }
+    /**
+     * Landscape - wider than tall. Limit the width to 1000px
+     */
+    else {
+        if (hlImgExWidth > 1000) {
+            hlImgExWidth = 1000;
+        }
+        hlImgExHeight = hlImgExWidth / hlImgAspect;
+        aspectR = hlImgAspect;
+        testVar = 'landscape';
+    }
 
     // Only change the image when we need to
     var imagePath = '/images/expanded/' + hlImgId + '.jpg';
     if ($('.big-picture-image').attr('src') != imagePath) {
         $('.big-picture-image').attr('src', imagePath).stop(true, true).hide().fadeIn(400);
-        $('.big-picture-image').attr('height', (parseInt(hlImgExHeight) / 2));
+        $('.big-picture-image').attr('width', (hlImgExWidth));
+        $('.big-picture-image').attr('height', (hlImgExHeight));
+        $('.big-picture-image').attr('temp', testVar);
+        $('.big-picture-image').attr('aspect', aspectR);
     }
 
     /**

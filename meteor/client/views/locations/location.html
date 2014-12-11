@@ -5,19 +5,28 @@
     <div class="dev-mouse"></div>
 
     {{#with location}}
+      <h3 class="location-headline">{{title}}</h3>
       <div class="location">
 
-        <h3>{{title}}</h3>
-        <!--<p>{{description}}</p>-->
-
         <div class="image-detail">
-          <div class="big-picture"><img class="big-picture-image" src=""></div>
-          <h4 class="image-title"></h4>
-          <p><strong>About this photo: </strong><span class="image-description"></span></p>
-          <p><strong>Where: </strong><span class="image-location"></span></p>
-          <p><strong>When: </strong><span class="image-date"></span></p>
-          <p><strong>By: </strong><span class="image-credit-line"></span></p>
+          <!--<p><strong>About this photo: </strong><span class="image-description"></span></p>-->
+          <!--<p><strong>About this photo: </strong><span class="image-description-es"></span></p>-->
+          <!--<p><strong>Where: </strong><span class="image-location"></span></p>-->
+          <!--<p><strong>When: </strong><span class="image-date"></span></p>-->
+          <!--<p><strong>By: </strong><span class="image-credit-line"></span></p>-->
+          <div class="image-detail-contents">
+            <div class="info-heading">
+              <div class="image-location"></div>
+              <div class="image-date"></div>
+            </div>
+            <br>
+            <div class="image-description"></div>
+            <div class="image-description-es"></div>
+            <div class="image-credit-line"></div>
+          </div>
         </div>
+
+        <div class="big-picture"><img class="big-picture-image" src=""></div>
 
         <!-- Background for the timeline and the handle that moves witht the mouse -->
         <div class="timeline-background"><!-- Timeline SVG goes here --></div>
@@ -25,14 +34,15 @@
         <!-- Images along the timeline -->
         <div class="timeline-images"><!-- Timeline images SVG goes here --></div>
 
-        <div class="location-footer">
-          <a href="{{pathFor 'locations'}}">
-            <span class="glyphicon glyphicon-home"></span>
-          </a>
-        </div>
-
       </div>
+
     {{/with}}
+
+    <div class="location-footer">
+      <a href="{{pathFor 'locations'}}">
+        <span class="glyphicon glyphicon-home"></span>
+      </a>
+    </div>
 
   </div>
 </template>
