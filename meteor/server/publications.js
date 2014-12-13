@@ -59,12 +59,27 @@ Meteor.publish('allLocations', function() {
 
     });
 
+    var eachLocation = Locations.find(
+        {},
+        {
+            fields: {
+                dsLocId: 1, latitude: 1, longitude: 1, link: 1, title: 1
+            }
+        }
+    );
+    var randomLocationImages = Images.find(
+        query,
+        {
+            fields: {
+                _id: 1, dsLocId: 1, thumbHeight: 1, thumbWidth: 1,
+                generalLocationDs: 1
+            }
+        }
+    );
+
     return [
-        Locations.find(),
-        Images.find(query, { title: 1, dsLocId: 1, longitude: 1, latitude: 1, photographer: 1 })
-        // Old random method
-        // only pulled one image randomly form the entire list
-        //Images.find( {}, { title: 1, longitude: 1, latitude: 1, photographer: 1}).skip(randNum).limit(1)
+        eachLocation,
+        randomLocationImages
     ];
 
 });
