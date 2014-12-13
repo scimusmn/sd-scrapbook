@@ -91,10 +91,7 @@ Meteor.publish('singleLocation', function(link) {
                 thumbHeight: 1, labelTextEnglish: 1, labelTextSpanish: 1
             }
         }
-        // Return all data for now
-        //{dsLocId: 1, title: 1, photographer: 1}
     );
-    console.log('currentLocationImages - ', currentLocationImages.fetch());
     var returnObj = [
         currentLocation,
         currentLocationImages
