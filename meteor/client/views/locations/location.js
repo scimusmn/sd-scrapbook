@@ -30,18 +30,21 @@ Template.location.rendered = function () {
     /**
      * Setup timeline background
      */
+    var homeButtonWidth = 100;
     var timelineBackground = $('.timeline-background');
     var timelineBackgroundWidth = (
         locationWidth -
         timelineBackground.css('margin-left').replace('px', '') -
-        timelineBackground.css('margin-right').replace('px', '')
+        timelineBackground.css('margin-right').replace('px', '') -
+        homeButtonWidth - 150
     );
+    //$('.timeline-background').style('margin-left', homeButtonWidth)
     var timelineBackgroundHeight = timelineBackground.height();
     var timelineSVG  = d3.select('.timeline-background')
         .append('svg')
         .attr('class', 'timeline-background-svg')
-        .attr('width', timelineBackgroundWidth)
-        .attr('height', timelineBackgroundHeight);
+        .attr('width', timelineBackgroundWidth + 200)
+        .attr('height', timelineBackgroundHeight + 40);
 
     /**
      * Setup timeline images area
@@ -93,8 +96,8 @@ function renderLocation(timelineSVG, timelineImagesSVG, timelineBackgroundWidth,
     /**
      * Date information for the timeline
      */
-    var firstYear = _.first(images).isoDate.substring(0,4);
-    var lastYear = _.last(images).isoDate.substring(0,4);
+    var firstYear = _.first(images).isoDate.substring(4,8);
+    var lastYear = _.last(images).isoDate.substring(4,8);
 
     /**
      * Define some set attributes that we can't find in the loop
@@ -127,31 +130,114 @@ function renderLocation(timelineSVG, timelineImagesSVG, timelineBackgroundWidth,
     /**
      * Print the start and end years of the timeline
      */
-    // Start
+    // Start - Drop shadow
+    timelineSVG.append('defs')
+        .append('filter')
+        .attr('id', 'blur')
+        .append('feGaussianBlur')
+        .attr('stdDeviation', 5);
+
+    // Start - Rectangle
+    timelineSVG.append('rect')
+        .attr('x', 0)
+        .attr('y', 50)
+        .attr('width', 95)
+        .attr('height', 60)
+        .style('fill', '#000')
+        .attr('filter', 'url(#blur)');
+
+    timelineSVG
+        .append('rect')
+        .attr('x', 0)
+        .attr('y', 50)
+        .attr('width', 95)
+        .attr('height', 60)
+        .attr('fill', 'white');
+
+    // Start - Text
     timelineSVG
         .append('svg:text')
         .attr('x', 10)
-        .attr('y', 35)
+        .attr('y', 97)
         .attr('class', 'time-label-start')
         .text(firstYear);
 
-    // End
+    var position = [50, 55];
+    drawPin(timelineSVG, position);
+
+
+    // End - Drop shadow
+    timelineSVG.append('defs')
+        .append('filter')
+        .attr('id', 'blur')
+        .append('feGaussianBlur')
+        .attr('stdDeviation', 5);
+
+    // End - Rectangle
+    timelineSVG.append('rect')
+        .attr('x', (timelineBackgroundWidth + 50))
+        .attr('y', 50)
+        .attr('width', 95)
+        .attr('height', 60)
+        .style('fill', '#000')
+        .attr('filter', 'url(#blur)');
+
+    timelineSVG
+        .append('rect')
+        .attr('x', (timelineBackgroundWidth + 50))
+        .attr('y', 50)
+        .attr('width', 95)
+        .attr('height', 60)
+        .attr('fill', 'white');
+
+    // End - Text
     timelineSVG
         .append('svg:text')
-        .attr('x', (timelineBackgroundWidth - 90))
-        .attr('y', 35)
+        .attr('x', (timelineBackgroundWidth + 60))
+        .attr('y', 97)
         .attr('class', 'time-label-end')
         .text(lastYear);
+
+    position = [(timelineBackgroundWidth + 105), 55];
+    drawPin(timelineSVG, position);
+
+    // End
+    //timelineSVG
+        //.append('rect')
+        //.attr('x', (timelineBackgroundWidth - 100))
+        //.attr('y', 0)
+        //.attr('width', 95)
+        //.attr('height', 60)
+        //.attr('fill', 'white');
+
+    //timelineSVG
+        //.append('svg:text')
+        //.attr('x', (timelineBackgroundWidth - 90))
+        //.attr('y', 47)
+        //.attr('class', 'time-label-end')
+        //.text(lastYear);
 
     /**
      * Render the timeline handle
      */
-    timelineSVG .append('rect')
-        .attr('width', '50')
-        .attr('height', '50')
-        .attr('class', 'time-handle-rect')
-        .attr('x', 0)
-        .attr('y', 0);
+    //timelineSVG .append('rect')
+        //.attr('width', '50')
+        //.attr('height', '50')
+        //.attr('x', 0)
+        //.attr('y', 100);
+
+    timelineSVG.append('image')
+        .attr('xlink:href', '/images/hand-2.png')
+        .attr('width', 75)
+        .attr('height', 146)
+        .attr('class', 'time-handle-rect');
+
+    //timelineSVG.append('path')
+        //.style('stroke', '#E0D0B4')
+        //.style('fill', '#E0D0B4')
+        ////.attr('width', 300)
+        //.attr('class', 'time-handle-rect')
+        //.attr('d', 'M 0,50, L 25,0, L 50,50 Z');
 
 }
 
@@ -328,17 +414,23 @@ function highlightImage(pointerX) {
      */
     var handle = d3.select('.time-handle-rect');
     var handleWidthHalf = ( handle.attr('width') / 2 );
+    console.log('handleWidthHalf - ', handleWidthHalf);
     var handleX;
-    if (posX <= handleWidthHalf) {
-        handleX = handleWidthHalf;
+    if (posX <= (handleWidthHalf + 20)) {
+        handleX = handleWidthHalf + 20;
     }
-    if (posX >= timeline.width() - handleWidthHalf) {
-        handleX = (timeline.width() - handleWidthHalf);
+    if (posX >= (timeline.width() - handleWidthHalf - 40)) {
+        handleX = (timeline.width() - handleWidthHalf) - 40;
     }
     if ( ( posX > handleWidthHalf ) && ( posX < ( timeline.width() - handleWidthHalf ) ) ) {
         handleX = posX;
     }
-    handle.attr( 'x', ( handleX - handleWidthHalf ) );
+    handle.attr('transform', function (){
+        var transform = 'translate(' + ( handleX - 50) + ', 40)';
+        return transform;
+    });
+
+    //handle.attr( 'x', ( handleX - handleWidthHalf ) );
 
     /**
      * Scale the images based on mouse position
@@ -501,6 +593,187 @@ function highlightImage(pointerX) {
         );
     }
 
+}
+
+function drawPin(svg, position) {
+
+    // Randomize the pin rotation
+    var randPin = _.random(0, 2);
+    var pinRotate;
+    if (randPin === 0) {
+        pinRotate = 0;
+    }
+    else if (randPin == 1) {
+        pinRotate = -5;
+    }
+    else {
+        pinRotate = 5;
+    }
+
+
+    var pinGroup = svg.append('g');
+
+    pinGroup
+        .attr('width', '200')
+        .attr('height', '200');
+
+    var pinHeadRadius = 5;
+    var pinBodyWidth = 2;
+    var pinBodyHeight = 15;
+
+    /**
+        * Blur filters
+        *
+        * We make a couple filters of differing blurs
+        *
+        * We also make the filter bigger to be to prevent clipping
+        */
+    var filterLoose = pinGroup.append('defs')
+        .append('filter')
+        .attr('id', 'pin-blur-tight')
+        .attr('x', '-100')
+        .attr('y', '-100')
+        .attr('width', '200')
+        .attr('height', '200')
+        .append('feGaussianBlur')
+        .attr('stdDeviation', 2);
+
+    var filterTight = pinGroup.append('defs')
+        .append('filter')
+        .attr('id', 'pin-blur-loose')
+        .attr('x', '-100')
+        .attr('y', '-100')
+        .attr('width', '200')
+        .attr('height', '200')
+        .append('feGaussianBlur')
+        .attr('stdDeviation', 3);
+
+    /**
+        * Map depression
+        * Small ellipse shadow where the pin sticks into the map
+        */
+    pinGroup.append('ellipse')
+        .attr('cx', 0)
+        .attr('cy', pinBodyHeight + 4)
+        .attr('rx', 6.5)
+        .attr('ry', 1.5)
+        .attr('fill', 'black')
+        .attr('filter', 'url(#pin-blur-loose)')
+        .attr('opacity', '.8');
+
+    /**
+        * Pin Body shadow
+        *
+        * 45 degree shadow for the pin body
+        */
+    var pinShadowRot = 140;
+    var pinBodyShadowWidth = 2;
+    var pinBodyShadow = pinGroup.append('rect')
+        .attr('x', (0 - (pinBodyShadowWidth / 2)))
+        .attr('y', (pinHeadRadius / 2))
+        .attr('width', pinBodyShadowWidth)
+        .attr('height', 15)
+        .attr('fill', 'black')
+        .attr('transform', function (){
+            var transform = 'rotate(' + pinShadowRot + ', 0, 18)';
+            return transform;
+        })
+        .attr('filter', 'url(#pin-blur-tight)')
+        .attr('opacity', '.8');
+
+    /**
+        * Pin head shadow
+        */
+    pinGroup.append('circle')
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .attr('r', pinHeadRadius - 1)
+        .attr('fill', 'black')
+        .attr('transform', function (){
+            var transform = 'rotate(' + pinShadowRot + ', 0, 18)';
+            return transform;
+        })
+        .attr('opacity', '.4')
+        .attr('filter', 'url(#pin-blur-loose)');
+
+
+    /**
+        * Pin body
+        *
+        * silver gradient rectangle for the body of the pin
+        */
+    var gradientPinBody = pinGroup.append('svg:defs')
+        .append('svg:linearGradient')
+        .attr('id', 'gradientPinBody')
+        .attr('x1', '0%')
+        .attr('y1', '0%')
+        .attr('x2', '100%')
+        .attr('y2', '100%')
+        .attr('spreadMethod', 'pad');
+
+    // Light gradient color
+    gradientPinBody.append('svg:stop')
+        .attr('offset', '0%')
+        .attr('stop-color', '#EAECEC')
+        .attr('stop-opacity', 1);
+
+    // Dark gradient color
+    gradientPinBody.append('svg:stop')
+        .attr('offset', '100%')
+        .attr('stop-color', '#8E9093')
+        .attr('stop-opacity', 1);
+
+    pinGroup.append('rect')
+        .attr('x', (0 - (pinBodyWidth / 2)))
+        .attr('y', (pinHeadRadius / 2))
+        .attr('width', pinBodyWidth)
+        .attr('height', pinBodyHeight)
+        .attr('fill', 'url(#gradientPinBody)');
+
+    /**
+        * Pin head
+        *
+        * Red radial gradient in a circle for the pin top
+        */
+    var gradientPinHead = pinGroup.append('svg:defs')
+        .append('svg:linearGradient')
+        .attr('id', 'gradientPinHead')
+        .attr('x1', '0%')
+        .attr('y1', '0%')
+        .attr('x2', '100%')
+        .attr('y2', '100%')
+        .attr('spreadMethod', 'pad');
+
+    gradientPinHead.append('svg:stop')
+        .attr('offset', '0%')
+        .attr('stop-color', '#aa0000')
+        .attr('stop-opacity', 1);
+
+    gradientPinHead.append('svg:stop')
+        .attr('offset', '100%')
+        .attr('stop-color', '#3D0000')
+        .attr('stop-opacity', 1);
+
+    var pinHead = pinGroup.append('circle')
+        //.attr('cx', position[0] + 3.8)
+        //.attr('cy', position[1] - 16)
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .attr('r', pinHeadRadius)
+        .attr('fill', 'url(#gradientPinHead)');
+
+    /**
+        * Position the pin
+        *
+        * We transform the entire pin group into the marker location
+        */
+    pinGroup
+        .attr('class', 'pin-group')
+        .attr('transform', function (){
+            var transform = 'translate(' + (position[0]) + ', ' + ((position[1]) - pinBodyHeight) + ')' +
+                'rotate(' + pinRotate + ', 0, 0)';
+            return transform;
+        });
 }
 
 Template.location.events({
