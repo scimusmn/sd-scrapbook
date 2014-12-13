@@ -200,7 +200,7 @@ for row in csv.reader(input):
         # row.insert(8, str(str(year) + '-' + str(month) + '-' + str(day)))
         row.insert(8, "date-" + date_string)
 
-        row.insert(9, iso_date)
+        row.insert(9, "iso-" + iso_date)
 
         writer.writerow(row)
 input.close()
