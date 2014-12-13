@@ -19,12 +19,12 @@ Template.locations.rendered = function () {
      */
     if (typeof(Router.current().params) != "undefined") {
         saverEnabled = Router.current().params.saver;
-        //if (saverEnabled) {
-            //console.log('Enabling screensaver');
-            //$('#screensaver').removeClass('animated fadeOut');
-            //$('#screensaver').addClass('animated fadeIn');
-            //$('#screensaver').show();
-        //}
+        if (saverEnabled) {
+            console.log('Enabling screensaver');
+            $('#screensaver').removeClass('animated fadeOut');
+            $('#screensaver').addClass('animated fadeIn');
+            $('#screensaver').show();
+        }
     }
 
     //var saverEnabled = Router.current().params.query.saver;
@@ -79,7 +79,7 @@ Template.locations.rendered = function () {
         //
         window.setTimeout(function() {
             renderLocations();
-        }, 1000);
+        }, 500);
 
         function renderLocations() {
 
@@ -709,9 +709,7 @@ Template.locations.events({
 
         function goDestination() {
             // Get the clicked location string from the COM data-location attribute
-            console.log('e - ', e);
             var imageLocation = String($(e.currentTarget).data('locid'));
-            console.log('imageLocation - ', imageLocation);
             var clickedImage  = $(e.currentTarget).data('id');
             // Query Mongo for a location with a matching title
             var clickedLocation = Locations.findOne( {dsLocId: imageLocation });

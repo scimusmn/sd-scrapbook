@@ -18,6 +18,32 @@ var dur = 500; // Milliseconds for the image animation
 Template.location.rendered = function () {
 
     /**
+     * We have to do our D3 stuff in here because of Meteor's client server
+     * stuff. I don't exactly understand...
+     *
+     * TODO: Research
+     */
+    Deps.autorun(function () {
+        /**
+         * Wait for a half-second to let the collections load.
+         *
+         * TODO: figure out why we need to do this. Before I was doing this,
+         * the image counts would get set three times with successively
+         * increasing numbers.
+         */
+        window.setTimeout(function () {
+            renderLocation();
+        }, 200);
+
+    });
+
+};
+
+/**
+ * Render the location page
+ */
+function renderLocation() {
+    /**
      * Setup image area
      */
     var locationContainer = $('.location');
@@ -38,7 +64,6 @@ Template.location.rendered = function () {
         timelineBackground.css('margin-right').replace('px', '') -
         homeButtonWidth - 150
     );
-    //$('.timeline-background').style('margin-left', homeButtonWidth)
     var timelineBackgroundHeight = timelineBackground.height();
     var timelineSVG  = d3.select('.timeline-background')
         .append('svg')
@@ -57,32 +82,6 @@ Template.location.rendered = function () {
         .attr('width', timelineBackgroundWidth)
         .attr('height', timelineImagesHeight);
 
-    /**
-     * We have to do our D3 stuff in here because of Meteor's client server
-     * stuff. I don't exactly understand...
-     *
-     * TODO: Research
-     */
-    Deps.autorun(function () {
-        /**
-         * Wait for a half-second to let the collections load.
-         *
-         * TODO: figure out why we need to do this. Before I was doing this,
-         * the image counts would get set three times with successively
-         * increasing numbers.
-         */
-        window.setTimeout(function () {
-            renderLocation(timelineSVG, timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight);
-        }, 500);
-
-    });
-
-};
-
-/**
- * Render the location page
- */
-function renderLocation(timelineSVG, timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight) {
     /**
      * Gather image data from the Meteor collection
      */
@@ -414,7 +413,6 @@ function highlightImage(pointerX) {
      */
     var handle = d3.select('.time-handle-rect');
     var handleWidthHalf = ( handle.attr('width') / 2 );
-    console.log('handleWidthHalf - ', handleWidthHalf);
     var handleX;
     if (posX <= (handleWidthHalf + 20)) {
         handleX = handleWidthHalf + 20;
@@ -779,7 +777,6 @@ function drawPin(svg, position) {
 Template.location.events({
     // Desired functionality, but disabled for testing
     'mousemove .container': function (e) {
-    //'click .container': function (e) {
         highlightImage(e.pageX);
     },
 
