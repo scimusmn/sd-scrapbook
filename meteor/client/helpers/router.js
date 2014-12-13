@@ -14,31 +14,10 @@ Router.configure({
   notFoundTemplate: 'notFound',
 });
 
-// Filters
-
-var filters = {
-
-  myFilter: function () {
-    // do something
-  },
-
-  isLoggedIn: function() {
-    if (!(Meteor.loggingIn() || Meteor.user())) {
-      alert('Please Log In First.');
-      this.stop();
-    }
-  }
-
-};
-
-Router.onBeforeAction(filters.myFilter, {only: ['locations']});
-
 // Routes
-
 Router.map(function() {
 
   // Locations
-
   this.route('locations', {
     path: '/',
     waitOn: function () {
@@ -49,9 +28,13 @@ Router.map(function() {
         locations: Locations.find(),
         images: Images.find()
       };
+    },
+    action: function() {
+        this.render();
     }
   });
 
+  // Single Location
   this.route('location', {
     path: '/location/:link',
     waitOn: function () {
@@ -61,17 +44,10 @@ Router.map(function() {
       return {
         location: Locations.findOne({ 'link': this.params.link })
       };
+    },
+    action: function() {
+        this.render();
     }
   });
-
-  this.route('content');
-
-  // Users
-
-  this.route('login');
-
-  this.route('signup');
-
-  this.route('forgot');
 
 });
