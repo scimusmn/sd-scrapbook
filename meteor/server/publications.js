@@ -35,7 +35,7 @@ Meteor.publish('allLocations', function() {
      */
     function padNumberMath(number, pad) {
         var N = Math.pow(10, pad);
-        return number < N ? ("" + (N + number)).slice(1) : "" + number;
+        return number < N ? ('' + (N + number)).slice(1) : '' + number;
     }
 
     /**
