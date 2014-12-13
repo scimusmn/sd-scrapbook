@@ -1,6 +1,7 @@
 .DS_Store
 meteor/.meteor/.id
 meteor/public/fonts
+meteor/public/video
 meteor/public/images/source-photos
 data/photos/*/*.jpg
 data/photos/*/*.JPG

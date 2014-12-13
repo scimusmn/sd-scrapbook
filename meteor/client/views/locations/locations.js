@@ -15,6 +15,26 @@ var devMarkers = false;
 Template.locations.rendered = function () {
 
     /**
+     * Define without the var to make this accessible across the events
+     */
+    if (typeof(Router.current().params) != "undefined") {
+        saverEnabled = Router.current().params.saver;
+        //if (saverEnabled) {
+            //console.log('Enabling screensaver');
+            //$('#screensaver').removeClass('animated fadeOut');
+            //$('#screensaver').addClass('animated fadeIn');
+            //$('#screensaver').show();
+        //}
+    }
+
+    //var saverEnabled = Router.current().params.query.saver;
+    //if (saverEnabled) {
+        //$('#screensaver').removeClass('animated fadeOut');
+        //$('#screensaver').addClass('animated fadeIn');
+        //$('#screensaver').show();
+    //}
+
+    /**
      * Set the map projection to a Southern California focus
      *
      * This will need to be reprojected if the background map raster changes
@@ -689,7 +709,9 @@ Template.locations.events({
 
         function goDestination() {
             // Get the clicked location string from the COM data-location attribute
+            console.log('e - ', e);
             var imageLocation = String($(e.currentTarget).data('locid'));
+            console.log('imageLocation - ', imageLocation);
             var clickedImage  = $(e.currentTarget).data('id');
             // Query Mongo for a location with a matching title
             var clickedLocation = Locations.findOne( {dsLocId: imageLocation });

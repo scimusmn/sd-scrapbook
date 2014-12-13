@@ -1,0 +1,11 @@
+{
+    "public": {
+        "homeItem": "bat",
+        "ga": {
+            "id": "UA-YY-X",
+            "create": {
+                "cookieDomain": "none"
+            }
+        }
+    }
+}
