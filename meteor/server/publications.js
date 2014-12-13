@@ -81,13 +81,25 @@ Meteor.publish('singleLocation', function(link) {
     var currentLocation = Locations.find( { 'link': link });
     var currentLocationObject = currentLocation.fetch();
     var currentLocationTitle = currentLocationObject[0].title;
-    return [
+    var currentLocationImages = Images.find(
+        {generalLocationDs: currentLocationTitle},
+        {
+            fields: {
+                _id: 1, dsLocId: 1, title: 1, isoDate: 1, appDate: 1,
+                creationPlace: 1, creditLine: 1, expandedHeight: 1,
+                expandedWidth: 1, expandedAspectRatio: 1, thumbWidth: 1,
+                thumbHeight: 1, labelTextEnglish: 1, labelTextSpanish: 1
+            }
+        }
+        // Return all data for now
+        //{dsLocId: 1, title: 1, photographer: 1}
+    );
+    console.log('currentLocationImages - ', currentLocationImages.fetch());
+    var returnObj = [
         currentLocation,
-        Images.find(
-            {generalLocationDs: currentLocationTitle},
-            {dsLocId: 1, title: 1, photographer: 1}
-        )
+        currentLocationImages
     ];
+    return returnObj;
 });
 
 /**
