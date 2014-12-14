@@ -123,7 +123,7 @@ function renderLocation() {
     var clickedImageDom = $('g[data-id=' + clickedImage + ']');
     var clickedImageLeft = clickedImageDom.position().left;
     window.setTimeout(function () {
-        highlightImage(clickedImageLeft + 140);
+        highlightImage(clickedImageLeft + 280);
     }, 500);
 
     /**
