@@ -121,10 +121,10 @@ function renderLocation() {
      */
     var clickedImage = Router.current().params.image;
     var clickedImageDom = $('g[data-id=' + clickedImage + ']');
-    var clickedImageLeft = clickedImageDom.position().left;
-    window.setTimeout(function () {
-        highlightImage(clickedImageLeft + 280);
-    }, 500);
+    //var clickedImageLeft = clickedImageDom.position().left;
+    //window.setTimeout(function () {
+        //highlightImage(clickedImageLeft + 280);
+    //}, 500);
 
     /**
      * Print the start and end years of the timeline
