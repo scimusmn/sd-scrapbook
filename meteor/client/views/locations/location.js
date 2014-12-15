@@ -77,11 +77,6 @@ function renderLocation() {
         timelineBackground.css('margin-left').replace('px', '') -
         timelineBackground.css('margin-right').replace('px', '') - 250
     );
-    var timelineSVG  = d3.select('.timeline-background')
-        .append('svg')
-        .attr('class', 'timeline-background-svg')
-        .attr('width', timelineBackgroundWidth + 200)
-        .attr('height', timelineBackground.height() + 40);
 
     /**
      * Setup timeline images area
@@ -104,21 +99,32 @@ function renderLocation() {
         return image.isoDate;
     });
 
-    /**
-     * Date information for the timeline
-     */
-    var firstYear = _.first(images).isoDate.substring(4,8);
-    var lastYear = _.last(images).isoDate.substring(4,8);
+    var timelineSVG  = d3.select('.timeline-background')
+        .append('svg')
+        .attr('class', 'timeline-background-svg')
+        .attr('width', timelineBackgroundWidth + 200)
+        .attr('height', timelineBackground.height() + 40);
 
     /**
-     * Define some set attributes that we can't find within the loop
+     * Draw year markers at the start and end of the timeline
+     */
+    var firstYear = _.first(images).isoDate.substring(4,8);
+    drawYearMarker(timelineSVG, 0, 50, 50, 55, firstYear);
+    var lastYear = _.last(images).isoDate.substring(4,8);
+    drawYearMarker(timelineSVG, (timelineBackgroundWidth + 50), 50, (timelineBackgroundWidth + 105), 55, lastYear);
+
+    /**
+     * Draw selection handle
+     */
+    drawTimelineHandle(timelineSVG);
+
+    /**
+     * Render each image along the timeline
+     *
+     * We have to find first and last image information outside the loop
      */
     var firstImageWidth = images[0].thumbWidth;
     var lastImageWidth = images[parseInt(imagesCount - 1)].thumbWidth;
-
-    /**
-     * Render each image from the Meteor collection data along the timeline
-     */
     _.each(images, function(image, i) {
         drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth);
     });
@@ -138,87 +144,16 @@ function renderLocation() {
         highlightImage(clickedImageLeft + 280);
     }, 500);
 
-    /**
-     * Print the start and end years of the timeline
-     */
-    // Start - Drop shadow
-    timelineSVG.append('defs')
-        .append('filter')
-        .attr('id', 'blur')
-        .append('feGaussianBlur')
-        .attr('stdDeviation', 5);
+}
 
-    // Start - Rectangle
-    timelineSVG.append('rect')
-        .attr('x', 0)
-        .attr('y', 50)
-        .attr('width', 95)
-        .attr('height', 60)
-        .style('fill', '#000')
-        .attr('filter', 'url(#blur)');
-
-    timelineSVG
-        .append('rect')
-        .attr('x', 0)
-        .attr('y', 50)
-        .attr('width', 95)
-        .attr('height', 60)
-        .attr('fill', 'white');
-
-    // Start - Text
-    timelineSVG
-        .append('svg:text')
-        .attr('x', 10)
-        .attr('y', 97)
-        .attr('class', 'time-label-start')
-        .text(firstYear);
-
-    var position = [50, 55];
-    drawPin(timelineSVG, position);
-
-
-    // End - Drop shadow
-    timelineSVG.append('defs')
-        .append('filter')
-        .attr('id', 'blur')
-        .append('feGaussianBlur')
-        .attr('stdDeviation', 5);
-
-    // End - Rectangle
-    timelineSVG.append('rect')
-        .attr('x', (timelineBackgroundWidth + 50))
-        .attr('y', 50)
-        .attr('width', 95)
-        .attr('height', 60)
-        .style('fill', '#000')
-        .attr('filter', 'url(#blur)');
-
-    timelineSVG
-        .append('rect')
-        .attr('x', (timelineBackgroundWidth + 50))
-        .attr('y', 50)
-        .attr('width', 95)
-        .attr('height', 60)
-        .attr('fill', 'white');
-
-    // End - Text
-    timelineSVG
-        .append('svg:text')
-        .attr('x', (timelineBackgroundWidth + 60))
-        .attr('y', 97)
-        .attr('class', 'time-label-end')
-        .text(lastYear);
-
-    position = [(timelineBackgroundWidth + 105), 55];
-    drawPin(timelineSVG, position);
-
-    /**
-     * Render the timeline handle
-     *
-     * Leave the options here until the client is sure that they like the
-     * new pointer
-     */
-    timelineSVG.append('image')
+/**
+ * Draw the timeline handle
+ *
+ * Leave the options here until the client is sure that they like the
+ * new pointer
+ */
+function drawTimelineHandle(svg) {
+    svg.append('image')
         .attr('xlink:href', '/images/hand-2.png')
         .attr('width', 75)
         .attr('height', 146)
@@ -227,7 +162,7 @@ function renderLocation() {
     //
     // Square option
     //
-    //timelineSVG .append('rect')
+    //svg .append('rect')
         //.attr('width', '50')
         //.attr('height', '50')
         //.attr('x', 0)
@@ -236,13 +171,53 @@ function renderLocation() {
     //
     // Triangle option
     //
-    //timelineSVG.append('path')
+    //svg.append('path')
         //.style('stroke', '#E0D0B4')
         //.style('fill', '#E0D0B4')
         ////.attr('width', 300)
         //.attr('class', 'time-handle-rect')
         //.attr('d', 'M 0,50, L 25,0, L 50,50 Z');
 
+}
+
+/**
+ * Draw the start and end years for the timeline
+ */
+function drawYearMarker(svg, x, y, posX, posY, year) {
+    // Background drop shadow filter
+    svg.append('defs')
+        .append('filter')
+        .attr('id', 'blur')
+        .append('feGaussianBlur')
+        .attr('stdDeviation', 5);
+
+    // Background drop shadow rectangle
+    svg.append('rect')
+        .attr('x', x)
+        .attr('y', y)
+        .attr('width', 95)
+        .attr('height', 60)
+        .style('fill', '#000')
+        .attr('filter', 'url(#blur)');
+
+    // Background rectangle
+    svg.append('rect')
+        .attr('x', x)
+        .attr('y', y)
+        .attr('width', 95)
+        .attr('height', 60)
+        .attr('fill', 'white');
+
+    // Year text
+    svg.append('svg:text')
+        .attr('x', x + 10)
+        .attr('y', y + 47)
+        .attr('class', 'time-label-start')
+        .text(year);
+
+    // Pin
+    var position = [posX, posY];
+    drawPin(svg, position);
 }
 
 /**
