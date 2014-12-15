@@ -48,28 +48,27 @@ function renderLocation() {
      */
     var locationContainer = $('.location');
 
+    //
     // Fade in the main location container
+    //
+    // The location element contains all the main content on this page
+    //
     locationContainer.addClass('animated fadeIn');
 
-    var locationWidth = locationContainer.width();
-
     /**
-     * Setup timeline background
+     * Setup the timeline
      */
-    var homeButtonWidth = 100;
     var timelineBackground = $('.timeline-background');
     var timelineBackgroundWidth = (
-        locationWidth -
+        locationContainer.width() -
         timelineBackground.css('margin-left').replace('px', '') -
-        timelineBackground.css('margin-right').replace('px', '') -
-        homeButtonWidth - 150
+        timelineBackground.css('margin-right').replace('px', '') - 250
     );
-    var timelineBackgroundHeight = timelineBackground.height();
     var timelineSVG  = d3.select('.timeline-background')
         .append('svg')
         .attr('class', 'timeline-background-svg')
         .attr('width', timelineBackgroundWidth + 200)
-        .attr('height', timelineBackgroundHeight + 40);
+        .attr('height', timelineBackground.height() + 40);
 
     /**
      * Setup timeline images area
@@ -83,7 +82,7 @@ function renderLocation() {
         .attr('height', timelineImagesHeight);
 
     /**
-     * Gather image data from the Meteor collection
+     * Gather image data from the Meteor collection and sort by year
      */
     var imagesCursor = Images.find();
     var imagesCount = imagesCursor.count();
@@ -99,7 +98,7 @@ function renderLocation() {
     var lastYear = _.last(images).isoDate.substring(4,8);
 
     /**
-     * Define some set attributes that we can't find in the loop
+     * Define some set attributes that we can't find within the loop
      */
     var firstImageWidth = images[0].thumbWidth;
     var lastImageWidth = images[parseInt(imagesCount - 1)].thumbWidth;
@@ -119,12 +118,12 @@ function renderLocation() {
      *
      * Figure out a better non-positional way to do this.
      */
-    var clickedImage = Router.current().params.image;
-    var clickedImageDom = $('g[data-id=' + clickedImage + ']');
-    //var clickedImageLeft = clickedImageDom.position().left;
-    //window.setTimeout(function () {
-        //highlightImage(clickedImageLeft + 280);
-    //}, 500);
+    window.setTimeout(function () {
+        var clickedImage = Router.current().params.query.image;
+        var clickedImageDom = $('g[data-id=' + clickedImage + ']');
+        var clickedImageLeft = clickedImageDom.position().left;
+        highlightImage(clickedImageLeft + 280);
+    }, 500);
 
     /**
      * Print the start and end years of the timeline
@@ -200,43 +199,36 @@ function renderLocation() {
     position = [(timelineBackgroundWidth + 105), 55];
     drawPin(timelineSVG, position);
 
-    // End
-    //timelineSVG
-        //.append('rect')
-        //.attr('x', (timelineBackgroundWidth - 100))
-        //.attr('y', 0)
-        //.attr('width', 95)
-        //.attr('height', 60)
-        //.attr('fill', 'white');
-
-    //timelineSVG
-        //.append('svg:text')
-        //.attr('x', (timelineBackgroundWidth - 90))
-        //.attr('y', 47)
-        //.attr('class', 'time-label-end')
-        //.text(lastYear);
-
     /**
      * Render the timeline handle
+     *
+     * Leave the options here until the client is sure that they like the
+     * new pointer
      */
+    //
+    // Square option
+    //
     //timelineSVG .append('rect')
         //.attr('width', '50')
         //.attr('height', '50')
         //.attr('x', 0)
         //.attr('y', 100);
 
-    timelineSVG.append('image')
-        .attr('xlink:href', '/images/hand-2.png')
-        .attr('width', 75)
-        .attr('height', 146)
-        .attr('class', 'time-handle-rect');
-
+    //
+    // Triangle option
+    //
     //timelineSVG.append('path')
         //.style('stroke', '#E0D0B4')
         //.style('fill', '#E0D0B4')
         ////.attr('width', 300)
         //.attr('class', 'time-handle-rect')
         //.attr('d', 'M 0,50, L 25,0, L 50,50 Z');
+
+    timelineSVG.append('image')
+        .attr('xlink:href', '/images/hand-2.png')
+        .attr('width', 75)
+        .attr('height', 146)
+        .attr('class', 'time-handle-rect');
 
 }
 
