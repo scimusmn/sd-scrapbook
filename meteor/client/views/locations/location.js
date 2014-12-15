@@ -57,15 +57,21 @@ Template.location.events({
  */
 function renderLocation() {
     /**
-     * Setup image area
+     * Gather image data from the Meteor collection and sort by year
+     */
+    var imagesCursor = Images.find();
+    var imagesCount = imagesCursor.count();
+    var images = imagesCursor.fetch();
+    images = _.sortBy(images, function (image) {
+        return image.isoDate;
+    });
+
+    /**
+     * Setup the location element, and fade it in on page load.
+     *
+     * The location element contains all the main content on this page.
      */
     var locationContainer = $('.location');
-
-    //
-    // Fade in the main location container
-    //
-    // The location element contains all the main content on this page
-    //
     locationContainer.addClass('animated fadeIn');
 
     /**
@@ -77,28 +83,6 @@ function renderLocation() {
         timelineBackground.css('margin-left').replace('px', '') -
         timelineBackground.css('margin-right').replace('px', '') - 250
     );
-
-    /**
-     * Setup timeline images area
-     */
-    var timelineImages = $('.timeline-images');
-    var timelineImagesHeight = timelineImages.height();
-    var timelineImagesSVG = d3.select('.timeline-images')
-        .append('svg')
-        .attr('class', 'timeline-images-svg')
-        .attr('width', timelineBackgroundWidth)
-        .attr('height', timelineImagesHeight);
-
-    /**
-     * Gather image data from the Meteor collection and sort by year
-     */
-    var imagesCursor = Images.find();
-    var imagesCount = imagesCursor.count();
-    var images = imagesCursor.fetch();
-    images = _.sortBy(images, function (image) {
-        return image.isoDate;
-    });
-
     var timelineSVG  = d3.select('.timeline-background')
         .append('svg')
         .attr('class', 'timeline-background-svg')
@@ -123,6 +107,12 @@ function renderLocation() {
      *
      * We have to find first and last image information outside the loop
      */
+    var timelineImagesHeight = $('.timeline-images').height();
+    var timelineImagesSVG = d3.select('.timeline-images')
+        .append('svg')
+        .attr('class', 'timeline-images-svg')
+        .attr('width', timelineBackgroundWidth)
+        .attr('height', timelineImagesHeight);
     var firstImageWidth = images[0].thumbWidth;
     var lastImageWidth = images[parseInt(imagesCount - 1)].thumbWidth;
     _.each(images, function(image, i) {
