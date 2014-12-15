@@ -585,17 +585,6 @@ function highlightImage(pointerX) {
             $('.big-picture-image').attr('temp', testVar);
             $('.big-picture-image').attr('aspect', aspectR);
         }
-
-        /**
-         * Dev mouse position data
-         */
-        if (dev) {
-            $('.dev-mouse').html(
-                'Rel pointer X = ' + posX + '<br>' +
-                'Interval width = ' + intervalWidth + '<br>' +
-                'Pos interval = ' + posInterval + '<br>'
-            );
-        }
     }
 }
 
