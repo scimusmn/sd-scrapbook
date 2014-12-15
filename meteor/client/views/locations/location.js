@@ -601,7 +601,6 @@ function highlightImage(pointerX) {
 
 function drawPin(svg, position) {
 
-
     var pinGroup = svg.append('g');
 
     pinGroup
@@ -613,36 +612,14 @@ function drawPin(svg, position) {
     var pinBodyHeight = 15;
 
     /**
-        * Blur filters
-        *
-        * We make a couple filters of differing blurs
-        *
-        * We also make the filter bigger to be to prevent clipping
-        */
-    var filterLoose = pinGroup.append('defs')
-        .append('filter')
-        .attr('id', 'pin-blur-tight')
-        .attr('x', '-100')
-        .attr('y', '-100')
-        .attr('width', '200')
-        .attr('height', '200')
-        .append('feGaussianBlur')
-        .attr('stdDeviation', 2);
-
-    var filterTight = pinGroup.append('defs')
-        .append('filter')
-        .attr('id', 'pin-blur-loose')
-        .attr('x', '-100')
-        .attr('y', '-100')
-        .attr('width', '200')
-        .attr('height', '200')
-        .append('feGaussianBlur')
-        .attr('stdDeviation', 3);
+     * Create blurs for shadows
+     */
+    defineBlurs(pinGroup);
 
     /**
-        * Map depression
-        * Small ellipse shadow where the pin sticks into the map
-        */
+     * Draw map depression
+     * Small ellipse shadow where the pin sticks into the map
+     */
     pinGroup.append('ellipse')
         .attr('cx', 0)
         .attr('cy', pinBodyHeight + 4)
@@ -653,10 +630,10 @@ function drawPin(svg, position) {
         .attr('opacity', '.8');
 
     /**
-        * Pin Body shadow
-        *
-        * 45 degree shadow for the pin body
-        */
+     * Pin Body shadow
+     *
+     * Rotated shadow for the pin body
+     */
     var pinShadowRot = 140;
     var pinBodyShadowWidth = 2;
     var pinBodyShadow = pinGroup.append('rect')
@@ -673,8 +650,8 @@ function drawPin(svg, position) {
         .attr('opacity', '.8');
 
     /**
-        * Pin head shadow
-        */
+     * Pin head shadow
+     */
     pinGroup.append('circle')
         .attr('cx', 0)
         .attr('cy', 0)
@@ -687,12 +664,11 @@ function drawPin(svg, position) {
         .attr('opacity', '.4')
         .attr('filter', 'url(#pin-blur-loose)');
 
-
     /**
-        * Pin body
-        *
-        * silver gradient rectangle for the body of the pin
-        */
+     * Pin body
+     *
+     * silver gradient rectangle for the body of the pin
+     */
     var gradientPinBody = pinGroup.append('svg:defs')
         .append('svg:linearGradient')
         .attr('id', 'gradientPinBody')
@@ -722,10 +698,10 @@ function drawPin(svg, position) {
         .attr('fill', 'url(#gradientPinBody)');
 
     /**
-        * Pin head
-        *
-        * Red radial gradient in a circle for the pin top
-        */
+     * Pin head
+     *
+     * Red radial gradient in a circle for the pin top
+     */
     var gradientPinHead = pinGroup.append('svg:defs')
         .append('svg:linearGradient')
         .attr('id', 'gradientPinHead')
@@ -746,8 +722,6 @@ function drawPin(svg, position) {
         .attr('stop-opacity', 1);
 
     var pinHead = pinGroup.append('circle')
-        //.attr('cx', position[0] + 3.8)
-        //.attr('cy', position[1] - 16)
         .attr('cx', 0)
         .attr('cy', 0)
         .attr('r', pinHeadRadius)
@@ -785,4 +759,31 @@ function randRotate() {
     }
 
     return pinRotate;
+}
+
+/**
+ * Define some gradient blur filters for shadows
+ */
+function defineBlurs(svg) {
+
+    var filterLoose = svg.append('defs')
+        .append('filter')
+        .attr('id', 'pin-blur-tight')
+        .attr('x', '-100')
+        .attr('y', '-100')
+        .attr('width', '200')
+        .attr('height', '200')
+        .append('feGaussianBlur')
+        .attr('stdDeviation', 2);
+
+    var filterTight = svg.append('defs')
+        .append('filter')
+        .attr('id', 'pin-blur-loose')
+        .attr('x', '-100')
+        .attr('y', '-100')
+        .attr('width', '200')
+        .attr('height', '200')
+        .append('feGaussianBlur')
+        .attr('stdDeviation', 3);
+
 }
