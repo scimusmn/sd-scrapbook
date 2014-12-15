@@ -588,19 +588,6 @@ function highlightImage(pointerX) {
 
 function drawPin(svg, position) {
 
-    // Randomize the pin rotation
-    var randPin = _.random(0, 2);
-    var pinRotate;
-    if (randPin === 0) {
-        pinRotate = 0;
-    }
-    else if (randPin == 1) {
-        pinRotate = -5;
-    }
-    else {
-        pinRotate = 5;
-    }
-
 
     var pinGroup = svg.append('g');
 
@@ -754,18 +741,40 @@ function drawPin(svg, position) {
         .attr('fill', 'url(#gradientPinHead)');
 
     /**
-        * Position the pin
-        *
-        * We transform the entire pin group into the marker location
-        */
+     * Position the pin
+     *
+     * We transform the entire pin group into the marker location
+     */
     pinGroup
         .attr('class', 'pin-group')
         .attr('transform', function (){
             var transform = 'translate(' + (position[0]) + ', ' + ((position[1]) - pinBodyHeight) + ')' +
-                'rotate(' + pinRotate + ', 0, 0)';
+                'rotate(' + randRotate() + ', 0, 0)';
             return transform;
         });
 }
+
+/**
+ * Randomize the pin rotation
+ */
+function randRotate() {
+    var randPin = _.random(0, 2);
+
+    var pinRotate;
+    if (randPin === 0) {
+        pinRotate = 0;
+    }
+    else if (randPin == 1) {
+        pinRotate = -5;
+    }
+    else {
+        pinRotate = 5;
+    }
+
+    return pinRotate;
+}
+
+
 
 /**
  * Events
