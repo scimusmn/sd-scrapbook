@@ -218,6 +218,12 @@ function renderLocation() {
      * Leave the options here until the client is sure that they like the
      * new pointer
      */
+    timelineSVG.append('image')
+        .attr('xlink:href', '/images/hand-2.png')
+        .attr('width', 75)
+        .attr('height', 146)
+        .attr('class', 'time-handle-rect');
+
     //
     // Square option
     //
@@ -236,12 +242,6 @@ function renderLocation() {
         ////.attr('width', 300)
         //.attr('class', 'time-handle-rect')
         //.attr('d', 'M 0,50, L 25,0, L 50,50 Z');
-
-    timelineSVG.append('image')
-        .attr('xlink:href', '/images/hand-2.png')
-        .attr('width', 75)
-        .attr('height', 146)
-        .attr('class', 'time-handle-rect');
 
 }
 
