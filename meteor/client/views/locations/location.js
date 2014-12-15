@@ -767,14 +767,12 @@ function drawPin(svg, position) {
         });
 }
 
+/**
+ * Events
+ */
 Template.location.events({
-    // Desired functionality, but disabled for testing
+    // Highlight images when you tap anywhere on the screen
     'mousemove .container': function (e) {
         highlightImage(e.pageX);
-    },
-
-    'click .back': function(e, instance){
-        console.clear();
-    },
-
+    }
 });
