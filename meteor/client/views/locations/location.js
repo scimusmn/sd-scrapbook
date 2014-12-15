@@ -15,6 +15,9 @@ var imageBottomPadding = 10; // Whitespace below images
 var delay = 5; // Milliseconds to delay the animation per image
 var dur = 500; // Milliseconds for the image animation
 
+/**
+ * Template render
+ */
 Template.location.rendered = function () {
 
     /**
@@ -38,6 +41,16 @@ Template.location.rendered = function () {
     });
 
 };
+
+/**
+ * Template Events
+ */
+Template.location.events({
+    // Highlight images when you tap anywhere on the screen
+    'mousemove .container': function (e) {
+        highlightImage(e.pageX);
+    }
+});
 
 /**
  * Render the location page
@@ -773,15 +786,3 @@ function randRotate() {
 
     return pinRotate;
 }
-
-
-
-/**
- * Events
- */
-Template.location.events({
-    // Highlight images when you tap anywhere on the screen
-    'mousemove .container': function (e) {
-        highlightImage(e.pageX);
-    }
-});
