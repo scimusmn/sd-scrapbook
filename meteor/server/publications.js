@@ -46,15 +46,24 @@ Meteor.publish('allLocations', function() {
         $or: []
     };
 
+    /**
+     * Currently a hack
+     *
+     * Sometimes this will return and empoty result.
+     *
+     * I need to pull the random numbers from a specific list of horizontal images.
+     * But for now this returns enough images to work for some of the other issues.
+     */
     _.each(activeLocIds, function(activeLocId, i) {
         // Count the images in each location and pick a random one
         result = Images.find({dsLocId: activeLocId}).count();
         var randNum = padNumberMath(Math.floor((Math.random() * (result - 1) ) + 1), 3);
+        console.log('randNum - ', randNum);
 
         // Add to our query, selecting for the location and random number
         // using the _id
         query['$or'].push({
-            $and: [ { dsLocId: activeLocId }, { _id: { $regex: randNum + '(now$|then$|r$|$)', $options: 'i'}}]
+            $and: [ { dsLocId: activeLocId }, { thumbAspectRatio: { $gt: 1 } } , { _id: { $regex: randNum + '(now$|then$|r$|$)', $options: 'i'}}]
         });
 
     });
