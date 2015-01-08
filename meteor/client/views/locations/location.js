@@ -508,8 +508,11 @@ function highlightImage(pointerX) {
         $('.image-detail div.image-description-es').text(hlImgDescriptionEs);
         $('.image-detail div.image-location').text(hlImg.data('location'));
         $('.image-detail div.image-date').text(hlImg.data('app-date').substring(5));
-        $('.image-detail div.image-credit-line').text('Courtesy of ' + hlImg.data('credit-line'));
-
+        if ((hlImg.data('credit-line')).length) {
+            $('.image-detail div.image-credit-line').text('Courtesy of ' + hlImg.data('credit-line'));
+        } else {
+            $('.image-detail div.image-credit-line').text('');
+        }
         var hlImgId = hlImg.data('id');
         var hlImgExHeight = parseFloat(hlImg.data('xh'));
         var hlImgExWidth = parseFloat(hlImg.data('xw'));
