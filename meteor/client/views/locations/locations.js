@@ -570,6 +570,7 @@ Template.locations.rendered = function () {
         pictureGroup
             .attr('opacity', '0')
             .attr('class', 'picture-group')
+            .attr('data-locid', image.dsLocId)
             .attr('transform', function (){
                 return 'scale(.1), translate(' + (centerX / 0.1) + ', ' + (centerY / 0.1) + ')';
             });
@@ -655,7 +656,7 @@ Template.locations.events({
     /**
      * Image click
      */
-    'click image':function(e){
+    'click g.picture-group':function(e){
 
         var animateContentOut = function() {
 
