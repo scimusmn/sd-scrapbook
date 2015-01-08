@@ -249,7 +249,7 @@ Template.locations.rendered = function () {
                 /**
                  * Only display pin lines if the offset isn't 0
                  */
-                if (xOffset != 0 && yOffset != 0) {
+                if (xOffset !== 0 && yOffset !== 0) {
                     svg.append('path')
                         .attr('d', lineFunction(lineData))
                         .attr('stroke-width', 1.2)
@@ -348,7 +348,7 @@ Template.locations.rendered = function () {
          *
          * We also make the filter bigger to be to prevent clipping
          */
-        var filterLoose = pinGroup.append('defs')
+        pinGroup.append('defs')
             .append('filter')
             .attr('id', 'pin-blur-tight')
             .attr('x', '-100')
@@ -358,7 +358,7 @@ Template.locations.rendered = function () {
             .append('feGaussianBlur')
             .attr('stdDeviation', 2);
 
-        var filterTight = pinGroup.append('defs')
+        pinGroup.append('defs')
             .append('filter')
             .attr('id', 'pin-blur-loose')
             .attr('x', '-100')
@@ -388,7 +388,7 @@ Template.locations.rendered = function () {
          */
         var pinShadowRot = 140;
         var pinBodyShadowWidth = 2;
-        var pinBodyShadow = pinGroup.append('rect')
+        pinGroup.append('rect')
             .attr('x', (0 - (pinBodyShadowWidth / 2)))
             .attr('y', (pinHeadRadius / 2))
             .attr('width', pinBodyShadowWidth)
@@ -474,7 +474,7 @@ Template.locations.rendered = function () {
             .attr('stop-color', '#3D0000')
             .attr('stop-opacity', 1);
 
-        var pinHead = pinGroup.append('circle')
+        pinGroup.append('circle')
             //.attr('cx', position[0] + 3.8)
             //.attr('cy', position[1] - 16)
             .attr('cx', 0)
@@ -508,7 +508,7 @@ Template.locations.rendered = function () {
         var pictureGroup = svg.append('g');
 
         // Drop shadow rectangle
-        var filter = pictureGroup.append('defs')
+        pictureGroup.append('defs')
             .append('filter')
             .attr('id', 'blur')
             .append('feGaussianBlur')
