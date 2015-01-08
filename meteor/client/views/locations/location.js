@@ -508,7 +508,7 @@ function highlightImage(pointerX) {
         $('.image-detail div.image-description-es').text(hlImgDescriptionEs);
         $('.image-detail div.image-location').text(hlImg.data('location'));
         $('.image-detail div.image-date').text(hlImg.data('app-date').substring(5));
-        $('.image-detail div.image-credit-line').text(hlImg.data('credit-line'));
+        $('.image-detail div.image-credit-line').text('Courtesy of ' + hlImg.data('credit-line'));
 
         var hlImgId = hlImg.data('id');
         var hlImgExHeight = parseFloat(hlImg.data('xh'));
