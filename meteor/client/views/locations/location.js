@@ -593,7 +593,7 @@ function drawPin(svg, position) {
      */
     var pinShadowRot = 140;
     var pinBodyShadowWidth = 2;
-    var pinBodyShadow = pinGroup.append('rect')
+    pinGroup.append('rect')
         .attr('x', (0 - (pinBodyShadowWidth / 2)))
         .attr('y', (pinHeadRadius / 2))
         .attr('width', pinBodyShadowWidth)
@@ -678,7 +678,7 @@ function drawPin(svg, position) {
         .attr('stop-color', '#3D0000')
         .attr('stop-opacity', 1);
 
-    var pinHead = pinGroup.append('circle')
+    pinGroup.append('circle')
         .attr('cx', 0)
         .attr('cy', 0)
         .attr('r', pinHeadRadius)
@@ -723,7 +723,7 @@ function randRotate() {
  */
 function defineBlurs(svg) {
 
-    var filterLoose = svg.append('defs')
+    svg.append('defs')
         .append('filter')
         .attr('id', 'pin-blur-tight')
         .attr('x', '-100')
@@ -733,7 +733,7 @@ function defineBlurs(svg) {
         .append('feGaussianBlur')
         .attr('stdDeviation', 2);
 
-    var filterTight = svg.append('defs')
+    svg.append('defs')
         .append('filter')
         .attr('id', 'pin-blur-loose')
         .attr('x', '-100')
