@@ -344,32 +344,36 @@ Template.locations.rendered = function () {
         var xOffset;
         var yOffset;
         if (locId == '1') {
-            xOffset = 0.3;
-            yOffset = -0.2;
+            xOffset = 0;
+            yOffset = 0;
+            //xOffset = 0.3;
+            //yOffset = -0.2;
         }
         else if (locId == '2') {
-            xOffset = -0.1;
-            yOffset = -0.4;
+            xOffset = 0;
+            yOffset = 0;
         }
         else if (locId == '3') {
-            xOffset = -0.1;
-            yOffset = -0.3;
+            xOffset = 0;
+            yOffset = 0;
+            //xOffset = -0.1;
+            //yOffset = -0.3;
         }
         else if (locId == '4') {
             xOffset = 0;
             yOffset = 0;
         }
         else if (locId == '5') {
-            xOffset = 0.4;
-            yOffset = 0.05;
+            xOffset = 0;
+            yOffset = 0;
         }
         else if (locId == '6') {
-            xOffset = -0.4;
-            yOffset = -0.05;
+            xOffset = -0.45;
+            yOffset = 0.2;
         }
         else if (locId == '7') {
-            xOffset = 0.6;
-            yOffset = -1.5;
+            xOffset = 0;
+            yOffset = 0;
         }
         else if (locId == '8') {
             xOffset = 0;
@@ -380,48 +384,48 @@ Template.locations.rendered = function () {
             yOffset = 0;
         }
         else if (locId == '10') {
-            xOffset = 0.4;
-            yOffset = 0.1;
+            xOffset = 0;
+            yOffset = 0;
         }
         else if (locId == '11') {
-            xOffset = 0.2;
-            yOffset = -0.3;
+            xOffset = 0;
+            yOffset = 0;
         }
         else if (locId == '12') {
-            xOffset = 0.35;
-            yOffset = 0.1;
+            xOffset = 0;
+            yOffset = 0;
         }
         else if (locId == '13') {
-            xOffset = -0.2;
-            yOffset = -0.35;
-        }
-        else if (locId == '14') {
-            xOffset = -1.1;
-            yOffset = -0.3;
-        }
-        else if (locId == '15') {
-            xOffset = -0.4;
-            yOffset = 0.05;
-        }
-        else if (locId == '17') {
-            xOffset = -0.1;
-            yOffset = -0.2;
-        }
-        else if (locId == '18') {
-            xOffset = 0.4;
-            yOffset = -0.3;
-        }
-        else if (locId == '19') {
-            xOffset = -0.2;
+            xOffset = -0.15;
             yOffset = -0.4;
         }
+        else if (locId == '14') {
+            xOffset = -0.5;
+            yOffset = -0.1;
+        }
+        else if (locId == '15') {
+            xOffset = 0;
+            yOffset = 0;
+        }
+        else if (locId == '17') {
+            xOffset = 0;
+            yOffset = 0;
+        }
+        else if (locId == '18') {
+            xOffset = 0;
+            yOffset = 0;
+        }
+        else if (locId == '19') {
+            xOffset = 0;
+            yOffset = 0;
+        }
         else if (locId == '20') {
-            xOffset = 0.2;
-            yOffset = 0.3;
+            xOffset = 0;
+            yOffset = 0;
         }
         else if (locId == '21') {
-            xOffset = 0.05;
-            yOffset = -0.3;
+            xOffset = 0;
+            yOffset = 0;
         }
         else {
             xOffset = 0;

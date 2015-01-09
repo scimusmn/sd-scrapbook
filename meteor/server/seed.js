@@ -9,14 +9,15 @@ Fill in the app with dummy data if database is empty.
 /**
  * Locations
  */
+Locations.remove({});
 if (Locations.find().count() === 0) {
 
   var anzaBorrego = Locations.insert({
     title: 'Anza Borrego',
     link: 'anza-borrego',
     description: 'Anza-Borrego Desert State Park (ABDSP) is a state park located within the Colorado Desert of southern California, United States.',
-    latitude: '33.9863839',
-    longitude: '-116.0195514',
+    latitude: '33.100595',
+    longitude: '-116.151306',
     dsLocId: '1'
   });
 
@@ -24,8 +25,8 @@ if (Locations.find().count() === 0) {
     title: 'Cleveland National Forest',
     link: 'cleveland-nat',
     description: 'Cleveland National Forest encompasses 460,000 acres (720 sq mi (1,900 km2)), mostly of chaparral, with a few riparian areas.',
-    latitude: '32.810463',
-    longitude: '-116.673912',
+    latitude: '32.758856',
+    longitude: '-116.674749',
     dsLocId: '2'
   });
 
@@ -33,8 +34,8 @@ if (Locations.find().count() === 0) {
     title: 'Colorado River',
     link: 'colorado-river',
     description: '',
-    latitude: '33.499948',
-    longitude: '-114.591832',
+    latitude: '33.410193',
+    longitude: '-114.693563',
     dsLocId: '3'
   });
 
@@ -42,8 +43,8 @@ if (Locations.find().count() === 0) {
     title: 'Imperial Valley',
     link: 'imperial-valley',
     description: '',
-    latitude: '32.7375477',
-    longitude: '-114.9633007',
+    latitude: '32.793580',
+    longitude: '-114.973715',
     dsLocId: '4'
   });
 
@@ -51,8 +52,8 @@ if (Locations.find().count() === 0) {
     title: 'Joshua Tree',
     link: 'joshua-tree',
     description: '',
-    latitude: '33.714274',
-    longitude: '-115.313118',
+    latitude: '33.795570',
+    longitude: '-115.621892',
     dsLocId: '5'
   });
 
@@ -60,7 +61,7 @@ if (Locations.find().count() === 0) {
     title: 'San Diego - North Coast',
     link: 'san-diego-north',
     description: '',
-    latitude: '32.868837',
+    latitude: '32.968837',
     longitude: '-117.254309',
     dsLocId: '6'
   });
@@ -70,8 +71,8 @@ if (Locations.find().count() === 0) {
     title: 'Mojave Desert',
     link: 'mojave-desert',
     description: '',
-    latitude: '35.8413084',
-    longitude: '-116.3521761',
+    latitude: '34.336705',
+    longitude: '-115.899297',
     dsLocId: '7'
   });
 
@@ -97,8 +98,8 @@ if (Locations.find().count() === 0) {
     title: 'Palomar Mountain',
     link: 'palomar-mountain',
     description: '',
-    latitude: '33.389664',
-    longitude: '-116.895629',
+    latitude: '33.398098',
+    longitude: '-116.781367',
     dsLocId: '10'
   });
 
@@ -106,8 +107,8 @@ if (Locations.find().count() === 0) {
     title: 'Salton Sea',
     link: 'salton-sea',
     description: '',
-    latitude: '33.3093964',
-    longitude: '-115.8392996',
+    latitude: '33.287301',
+    longitude: '-115.529622',
     dsLocId: '11'
   });
 
@@ -115,8 +116,8 @@ if (Locations.find().count() === 0) {
     title: 'San Bernardino Mountains',
     link: 'san-bernardino',
     description: '',
-    latitude: '34.184340',
-    longitude: '-117.089876',
+    latitude: '34.131438',
+    longitude: '-116.538973',
     dsLocId: '12'
   });
 
@@ -133,7 +134,7 @@ if (Locations.find().count() === 0) {
     title: 'San Diego - Inland',
     link: 'san-diego-inland',
     description: '',
-    latitude: '32.732099',
+    latitude: '32.832099',
     longitude: '-117.147372',
     dsLocId: '14'
   });
@@ -142,8 +143,8 @@ if (Locations.find().count() === 0) {
     title: 'San Gabriel Mountains',
     link: 'san-gabriel',
     description: '',
-    latitude: '34.2888927',
-    longitude: '-117.64672',
+    latitude: '34.3288927',
+    longitude: '-118.04672',
     dsLocId: '15'
   });
 
@@ -152,7 +153,7 @@ if (Locations.find().count() === 0) {
     link: 'san-jacinto',
     description: '',
     latitude: '33.8418194',
-    longitude: '-117.1809458',
+    longitude: '-116.9809458',
     dsLocId: '16'
   });
 
@@ -160,8 +161,8 @@ if (Locations.find().count() === 0) {
     title: 'Santa Monica Mountains and Coast',
     link: 'santa-monica',
     description: '',
-    latitude: '34.1202995',
-    longitude: '-118.9318',
+    latitude: '33.923742',
+    longitude: '-118.816882',
     dsLocId: '17'
   });
 
@@ -169,8 +170,8 @@ if (Locations.find().count() === 0) {
     title: 'South San Diego County',
     link: 'south-san-diego',
     description: '',
-    latitude: '32.622338',
-    longitude: '-116.442152',
+    latitude: '32.536355',
+    longitude: '-116.301214',
     dsLocId: '18'
   });
 
@@ -178,8 +179,8 @@ if (Locations.find().count() === 0) {
     title: 'Los Angeles',
     link: 'los-angeles',
     description: '',
-    latitude: '33.955025',
-    longitude: '-118.266164',
+    latitude: '33.663533',
+    longitude: '-118.293658',
     dsLocId: '19'
   });
 
@@ -187,7 +188,7 @@ if (Locations.find().count() === 0) {
     title: 'Riverside',
     link: 'riverside',
     description: '',
-    latitude: '33.994096',
+    latitude: '33.894096',
     longitude: '-117.357879',
     dsLocId: '20'
   });
@@ -196,8 +197,8 @@ if (Locations.find().count() === 0) {
     title: 'Channel Islands',
     link: 'channel-islands',
     description: '',
-    latitude: '34.007904',
-    longitude: '-119.745074',
+    latitude: '33.823736',
+    longitude: '-119.687298',
     dsLocId: '21'
   });
 
