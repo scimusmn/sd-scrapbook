@@ -41,7 +41,8 @@ Template.locations.rendered = function () {
     // TODO: read this in from the LESS
     var width = 1920;
     var height = 1080;
-    var svg = d3.select('.container').append('svg')
+    var svg = d3.select('.container')
+        .append('svg')
         .attr('class', 'svg-canvas')
         .attr('width', width)
         .attr('height', height);
@@ -51,15 +52,7 @@ Template.locations.rendered = function () {
      */
     Deps.autorun(function () {
 
-        //
-        // Not sure why but we need to wait a few milliseconds before
-        // asking for the images object from MiniMongo. otherwise we'll Get
-        // the previous page's collection, which includes all the images for
-        // that location, resulting in tens of images animating into place
-        //
-        window.setTimeout(function() {
-            renderLocations();
-        }, 500);
+        renderLocations();
 
         function renderLocations() {
 
@@ -416,7 +409,6 @@ Template.locations.rendered = function () {
             .attr('opacity', '.4')
             .attr('filter', 'url(#pin-blur-loose)');
 
-
         /**
          * Pin body
          *
@@ -577,7 +569,6 @@ Template.locations.rendered = function () {
 
         imagePosition = [imagePosition[0], ((imagePosition[1] - (image.thumbHeight/ 2) - 5) + 15)];
         drawPin(svg, imagePosition);
-
 
         // Animate picture group to full size
         pictureGroup
