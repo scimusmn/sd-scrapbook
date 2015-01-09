@@ -92,11 +92,12 @@ function drawLocation() {
      *
      * We have to find first and last image information outside the loop
      */
+    var timelineImagesWidth = $('.timeline-images').width();
     var timelineImagesHeight = $('.timeline-images').height();
     var timelineImagesSVG = d3.select('.timeline-images')
         .append('svg')
         .attr('class', 'timeline-images-svg')
-        .attr('width', timelineBackgroundWidth)
+        .attr('width', timelineImagesWidth)
         .attr('height', timelineImagesHeight);
     var firstImageWidth = _.first(images).thumbWidth;
     var lastImageWidth = _.last(images).thumbWidth;
