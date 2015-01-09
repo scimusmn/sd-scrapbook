@@ -22,10 +22,7 @@ Meteor.publish('allLocations', function() {
      * Establish the size of the image collection so that we can select random
      * elements within it.
      */
-    // Devel approach to Location query
-    // Eventually I'll add in a find to discover the active locations later.
-    // TODO - don't do this
-    var activeLocIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
+    var activeLocIds = _.range(1,22);
     var result = '';
 
     /**
