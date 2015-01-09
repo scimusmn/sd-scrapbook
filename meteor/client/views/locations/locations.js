@@ -703,7 +703,8 @@ Template.locations.events({
         function goDestination() {
             // Get the clicked location string from the COM data-location attribute
             var imageLocation = String($(e.currentTarget).data('locid'));
-            var clickedImage  = $(e.currentTarget).data('id');
+            var clickedImage = $('image[data-locid="' + imageLocation + '"]').data('id');
+
             // Query Mongo for a location with a matching title
             var clickedLocation = Locations.findOne( {dsLocId: imageLocation });
             // Navigate to the Location with the matching _id
