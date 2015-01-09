@@ -701,26 +701,26 @@ Template.locations.events({
                     .delay(i * 20)
                     .attr('opacity', '0')
                     .attr('transform', transformString)
-                    .duration(200);
+                    .duration(400);
                 d3.selectAll('.pin-group')
                     .transition()
                     .delay(i * 20)
                     .attr('opacity', '0')
                     .attr('transform', transformString)
-                    .duration(200);
+                    .duration(400);
                 d3.select(this.parentNode)
                     .transition()
                     .delay(i * 20)
                     .attr('opacity', '0')
                     .attr('transform', transformString)
-                    .duration(200);
+                    .duration(400);
             });
         };
         animateContentOut();
 
         window.setTimeout(function() {
             goDestination();
-        }, 800);
+        }, 600);
 
         function goDestination() {
             // Get the clicked location string from the COM data-location attribute
