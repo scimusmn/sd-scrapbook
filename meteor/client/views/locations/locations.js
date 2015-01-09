@@ -51,7 +51,7 @@ Template.locations.rendered = function () {
         .attr('height', height);
 
     /**
-     * Load the meteor collection for Locations and Images
+     * Wait for Meteor to finish loading server data
      */
     Deps.autorun(function () {
 
@@ -67,119 +67,84 @@ Template.locations.rendered = function () {
         /**
          * Images
          *
-         * Draw one image for each location
+         * Draw all the images, one for each location.
          */
         var images = Images.find().fetch();
 
+        // Shuffle images so that they animate in, in a random order
         //
-        // Shuffle images so that they draw in a random order
-        //
-        images = _.shuffle(images);
+        // TODO If we're going to do this, we should probably do it for the whole image element, no just the picture
+        //images = _.shuffle(images);
+
+        drawImages(projection, svg, positions, images);
+
+
+    });
+
+    /**
+     * Draw each location
+     *
+     * Returns and object of the Location IDs with pixel equivelemtns
+     * of their lat, long coordinates
+     */
+    function drawLocations(projection, svg, locations) {
+        var positions = [];
+        _.each(locations, function(location) {
+
+            // Define the position
+            var position = projection([location.longitude,location.latitude]);
+
+            // Draw a pin at the location position
+            drawPin(svg, position);
+
+            positions[location.dsLocId] = {
+                latitude: location.latitude,
+                longitude: location.longitude
+            };
+
+            /**
+             * Dev location IDs
+             *
+             * This prints the location ID near each location marker for development work.
+             *
+             * This is disabled in production.
+             */
+            if (enableDevLocIds) {
+                svg.append('text')
+                .attr('x', position[0] - 5)
+                .attr('y', position[1] - 2)
+                .text(location.dsLocId)
+                .attr('font-family', 'Courier')
+                .attr('font-size', '20px')
+                .attr('fill', 'white')
+                .attr('stroke-width', 1.5)
+                .attr('stroke', '#000');
+            }
+
+        });
+        return positions;
+    }
+
+    function drawImages(projection, svg, positions, images) {
 
         _.each(images, function(image, i) {
+
+            // Location marker position
             var latitude = positions[image.dsLocId].latitude;
             var longitude = positions[image.dsLocId].longitude;
-
-            //
-            // Position images using custom offsets for each location
-            //
-            var xOffset;
-            var yOffset;
-            if (image.dsLocId == '1') {
-                xOffset = 0.3;
-                yOffset = -0.2;
-            }
-            else if (image.dsLocId == '2') {
-                xOffset = -0.1;
-                yOffset = -0.4;
-            }
-            else if (image.dsLocId == '3') {
-                xOffset = -0.1;
-                yOffset = -0.3;
-            }
-            else if (image.dsLocId == '4') {
-                xOffset = 0;
-                yOffset = 0;
-            }
-            else if (image.dsLocId == '5') {
-                xOffset = 0.4;
-                yOffset = 0.05;
-            }
-            else if (image.dsLocId == '6') {
-                xOffset = -0.4;
-                yOffset = -0.05;
-            }
-            else if (image.dsLocId == '7') {
-                xOffset = 0.6;
-                yOffset = -1.5;
-            }
-            else if (image.dsLocId == '8') {
-                xOffset = 0;
-                yOffset = 0;
-            }
-            else if (image.dsLocId == '9') {
-                xOffset = 0;
-                yOffset = 0;
-            }
-            else if (image.dsLocId == '10') {
-                xOffset = 0.4;
-                yOffset = 0.1;
-            }
-            else if (image.dsLocId == '11') {
-                xOffset = 0.2;
-                yOffset = -0.3;
-            }
-            else if (image.dsLocId == '12') {
-                xOffset = 0.35;
-                yOffset = 0.1;
-            }
-            else if (image.dsLocId == '13') {
-                xOffset = -0.2;
-                yOffset = -0.35;
-            }
-            else if (image.dsLocId == '14') {
-                xOffset = -1.1;
-                yOffset = -0.3;
-            }
-            else if (image.dsLocId == '15') {
-                xOffset = -0.4;
-                yOffset = 0.05;
-            }
-            else if (image.dsLocId == '17') {
-                xOffset = -0.1;
-                yOffset = -0.2;
-            }
-            else if (image.dsLocId == '18') {
-                xOffset = 0.4;
-                yOffset = -0.3;
-            }
-            else if (image.dsLocId == '19') {
-                xOffset = -0.2;
-                yOffset = -0.4;
-            }
-            else if (image.dsLocId == '20') {
-                xOffset = 0.2;
-                yOffset = 0.3;
-            }
-            else if (image.dsLocId == '21') {
-                xOffset = 0.05;
-                yOffset = -0.3;
-            }
-            else {
-                xOffset = 0;
-                yOffset = 0;
-            }
-
-            /**
-             * Define positions for image and the marker
-             */
             var markerPosition = projection([longitude, latitude]);
-            var imagePosition = projection([(parseFloat(longitude) + xOffset), (parseFloat(latitude) + yOffset)]);
 
-            /**
-             * Draw the image
-             */
-            drawImage(svg, projection, markerPosition, imagePosition, image, i);
+            // Image position
+            var offsets = defineImageOffsets(image.dsLocId);
+            var xOffset = offsets[0];
+            var yOffset = offsets[1];
+            var imagePosition = projection([
+                (parseFloat(longitude) + xOffset),
+                (parseFloat(latitude) + yOffset)
+            ]);
+
+            // Draw the individual image
+            drawImage(projection, svg, markerPosition, imagePosition, image, i);
 
             /**
              * Draw the line connecting the marker pin and the image pin
@@ -263,51 +228,101 @@ Template.locations.rendered = function () {
             }
 
         });
-
-    });
+    }
 
     /**
-     * Draw each location
-     *
-     * Returns and object of the Location IDs with pixel equivelemtns
-     * of their lat, long coordinates
+     * Define manual offsets for each specific location
      */
-    function drawLocations(projection, svg, locations) {
-        var positions = [];
-        _.each(locations, function(location) {
+    function defineImageOffsets(locId) {
+        var xOffset;
+        var yOffset;
+        if (locId == '1') {
+            xOffset = 0.3;
+            yOffset = -0.2;
+        }
+        else if (locId == '2') {
+            xOffset = -0.1;
+            yOffset = -0.4;
+        }
+        else if (locId == '3') {
+            xOffset = -0.1;
+            yOffset = -0.3;
+        }
+        else if (locId == '4') {
+            xOffset = 0;
+            yOffset = 0;
+        }
+        else if (locId == '5') {
+            xOffset = 0.4;
+            yOffset = 0.05;
+        }
+        else if (locId == '6') {
+            xOffset = -0.4;
+            yOffset = -0.05;
+        }
+        else if (locId == '7') {
+            xOffset = 0.6;
+            yOffset = -1.5;
+        }
+        else if (locId == '8') {
+            xOffset = 0;
+            yOffset = 0;
+        }
+        else if (locId == '9') {
+            xOffset = 0;
+            yOffset = 0;
+        }
+        else if (locId == '10') {
+            xOffset = 0.4;
+            yOffset = 0.1;
+        }
+        else if (locId == '11') {
+            xOffset = 0.2;
+            yOffset = -0.3;
+        }
+        else if (locId == '12') {
+            xOffset = 0.35;
+            yOffset = 0.1;
+        }
+        else if (locId == '13') {
+            xOffset = -0.2;
+            yOffset = -0.35;
+        }
+        else if (locId == '14') {
+            xOffset = -1.1;
+            yOffset = -0.3;
+        }
+        else if (locId == '15') {
+            xOffset = -0.4;
+            yOffset = 0.05;
+        }
+        else if (locId == '17') {
+            xOffset = -0.1;
+            yOffset = -0.2;
+        }
+        else if (locId == '18') {
+            xOffset = 0.4;
+            yOffset = -0.3;
+        }
+        else if (locId == '19') {
+            xOffset = -0.2;
+            yOffset = -0.4;
+        }
+        else if (locId == '20') {
+            xOffset = 0.2;
+            yOffset = 0.3;
+        }
+        else if (locId == '21') {
+            xOffset = 0.05;
+            yOffset = -0.3;
+        }
+        else {
+            xOffset = 0;
+            yOffset = 0;
+        }
 
-            // Define the position
-            var position = projection([location.longitude,location.latitude]);
-
-            // Draw a pin at the location position
-            drawPin(svg, position);
-
-            positions[location.dsLocId] = {
-                latitude: location.latitude,
-                longitude: location.longitude
-            };
-
-            /**
-             * Dev location IDs
-             *
-             * This prints the location ID near each location marker for development work.
-             *
-             * This is disabled in production.
-             */
-            if (enableDevLocIds) {
-                svg.append('text')
-                .attr('x', position[0] - 5)
-                .attr('y', position[1] - 2)
-                .text(location.dsLocId)
-                .attr('font-family', 'Courier')
-                .attr('font-size', '20px')
-                .attr('fill', 'white')
-                .attr('stroke-width', 1.5)
-                .attr('stroke', '#000');
-            }
-
-        });
-        return positions;
+        var offsets = [xOffset, yOffset];
+        return offsets;
     }
 
     function drawPin(svg, position) {
@@ -495,7 +510,7 @@ Template.locations.rendered = function () {
 
     }
 
-    function drawImage(svg, projection, markerPosition, imagePosition, image, i) {
+    function drawImage(projection, svg, markerPosition, imagePosition, image, i) {
 
         // Old skool border width
         var imageBorder = 5;
