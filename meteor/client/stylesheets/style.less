@@ -69,7 +69,7 @@ body {
 .location {
   opacity: 1;
   width: 1870px;
-  height: 960px;
+  height: 980px;
   position: absolute;
   top: 100px;
   left: 0px;
@@ -216,35 +216,19 @@ h3.location-headline {
  * ----------------------------------------------------------------------------
  */
 
-@timeline-background-height: 90px;
-@timeline-background-bottom: 24px;
+@timeline-background-width: 1730px;
+@timeline-background-height: 150px;
+@timeline-background-bottom: 0px;
 @timeline-images-bottom: @timeline-background-height + @timeline-background-bottom;
-
-/*.timeline-paper {*/
-  /*background:*/
-   /*linear-gradient(*/
-      /*rgba(255, 255, 255, 0.45), */
-      /*rgba(255, 255, 255, 0.45)*/
-    /*),*/
-    /*url("/images/lightpaperfibers.jpg");*/
-/*position: absolute;*/
-/*height: 290px;*/
-/*width: 1740px;*/
-/*bottom: -30px;*/
-/*left: 140px;*/
-/*opacity: .8;*/
-
-/*}*/
 
 .timeline-background {
   position: absolute;
   background: transparent;
   font-size: 30px;
+  width: @timeline-background-width;
   height: @timeline-background-height;
   bottom: @timeline-background-bottom;
   left: 140px;
-  /*box-shadow: inset 0 0 10px #000000;*/
-  /*border: 1px solid @attic-maroon;*/
   z-index: 3000;
 }
 

@@ -54,6 +54,9 @@ function drawLocation() {
      * Setup the location element, and fade it in on page load.
      *
      * The location element contains all the main content on this page.
+     *
+     * TODO
+     * Maybe wait to fade it in until the images and the timeline are loaded?
      */
     var locationContainer = $('.location');
     locationContainer.addClass('animated fadeIn');
@@ -62,16 +65,13 @@ function drawLocation() {
      * Setup the timeline
      */
     var timelineBackground = $('.timeline-background');
-    var timelineBackgroundWidth = (
-        locationContainer.width() -
-        timelineBackground.css('margin-left').replace('px', '') -
-        timelineBackground.css('margin-right').replace('px', '') - 250
-    );
+    var timelineBackgroundWidth = timelineBackground.width();
+    var timelineBackgroundHeight = timelineBackground.height();
     var timelineSVG  = d3.select('.timeline-background')
         .append('svg')
         .attr('class', 'timeline-background-svg')
-        .attr('width', timelineBackgroundWidth + 200)
-        .attr('height', timelineBackground.height() + 40);
+        .attr('width', timelineBackgroundWidth )
+        .attr('height', timelineBackgroundHeight);
 
     /**
      * Draw year markers at the start and end of the timeline
@@ -79,7 +79,7 @@ function drawLocation() {
     var firstYear = _.first(images).isoDate.substring(4,8);
     drawYearMarker(timelineSVG, 0, 50, 50, 55, firstYear);
     var lastYear = _.last(images).isoDate.substring(4,8);
-    drawYearMarker(timelineSVG, (timelineBackgroundWidth + 50), 50, (timelineBackgroundWidth + 105), 55, lastYear);
+    drawYearMarker(timelineSVG, (timelineBackgroundWidth - 100), 50, (timelineBackgroundWidth - 55), 55, lastYear);
 
     /**
      * Draw selection handle
@@ -485,7 +485,6 @@ function highlightImage(pointerX) {
         /**
          * Portait - taller than narrow. Limit the height to 600px
          */
-        var testVar;
         var aspectR;
         if (hlImgAspect < 1) {
             if (hlImgExHeight > 800) {
@@ -494,7 +493,6 @@ function highlightImage(pointerX) {
             hlImgExWidth = hlImgExHeight * hlImgAspect;
 
             aspectR = hlImgAspect;
-            testVar = 'portrait';
         }
         /**
          * Landscape - wider than tall. Limit the width to 1000px
@@ -505,7 +503,6 @@ function highlightImage(pointerX) {
             }
             hlImgExHeight = hlImgExWidth / hlImgAspect;
             aspectR = hlImgAspect;
-            testVar = 'landscape';
         }
 
         // Only change the image when we need to
@@ -514,7 +511,6 @@ function highlightImage(pointerX) {
             $('.image-fullsize-image').attr('src', imagePath).stop(true, true).hide().fadeIn(400);
             $('.image-fullsize-image').attr('width', (hlImgExWidth));
             $('.image-fullsize-image').attr('height', (hlImgExHeight));
-            $('.image-fullsize-image').attr('temp', testVar);
             $('.image-fullsize-image').attr('aspect', aspectR);
         }
     }
