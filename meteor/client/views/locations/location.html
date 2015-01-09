@@ -5,9 +5,13 @@
     <div class="dev-mouse"></div>
 
     {{#with location}}
+
+      <!-- Locaiton title -->
       <h3 class="location-headline">{{title}}</h3>
+
       <div class="location">
 
+        <!-- Highlighted picture text information -->
         <div class="image-detail">
           <div class="image-detail-contents">
             <div class="info-heading">
@@ -21,20 +25,22 @@
           </div>
         </div>
 
-        <div class="big-picture"><img class="big-picture-image" src=""></div>
+        <!-- Highlighted picture full size -->
+        <div class="image-fullsize">
+          <img class="image-fullsize-image" src="">
+        </div>
 
-        <!-- Background for the timeline and the handle that moves witht the mouse -->
-        <!--<div class="timeline-paper">-->
-          <div class="timeline-background"><!-- Timeline SVG goes here --></div>
-        <!--</div>-->
+        <!-- Background for the timeline -->
+        <div class="timeline-background"></div>
 
         <!-- Images along the timeline -->
-        <div class="timeline-images"><!-- Timeline images SVG goes here --></div>
+        <div class="timeline-images"></div>
 
       </div>
 
     {{/with}}
 
+    <!-- Home button -->
     <div class="location-footer">
       <a href="{{pathFor 'locations'}}">
         <span class="glyphicon glyphicon-home"></span>

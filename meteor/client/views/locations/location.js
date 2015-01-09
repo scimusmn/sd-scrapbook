@@ -510,12 +510,12 @@ function highlightImage(pointerX) {
 
         // Only change the image when we need to
         var imagePath = '/images/expanded/' + hlImgId + '.jpg';
-        if ($('.big-picture-image').attr('src') != imagePath) {
-            $('.big-picture-image').attr('src', imagePath).stop(true, true).hide().fadeIn(400);
-            $('.big-picture-image').attr('width', (hlImgExWidth));
-            $('.big-picture-image').attr('height', (hlImgExHeight));
-            $('.big-picture-image').attr('temp', testVar);
-            $('.big-picture-image').attr('aspect', aspectR);
+        if ($('.image-fullsize-image').attr('src') != imagePath) {
+            $('.image-fullsize-image').attr('src', imagePath).stop(true, true).hide().fadeIn(400);
+            $('.image-fullsize-image').attr('width', (hlImgExWidth));
+            $('.image-fullsize-image').attr('height', (hlImgExHeight));
+            $('.image-fullsize-image').attr('temp', testVar);
+            $('.image-fullsize-image').attr('aspect', aspectR);
         }
     }
 }
