@@ -6,8 +6,8 @@
  */
 
 // Enable dev features
-var dev = false;
-var devMarkers = false;
+var enableDevMap = false;
+var enableDevLocIds = false;
 
 /**
  * Code executed once the page is loaded and rendered
@@ -29,9 +29,12 @@ Template.locations.rendered = function () {
     /**
      * Dev map features
      *
-     * Useful for dev map registrion. Normally disabled.
+     * These are a set of lines and points that are useful for setting the
+     * projection values if the map scale or pan changes.
+     *
+     * These are disabled in prodcution.
      */
-    if (dev) {
+    if (enableDevMap) {
         devMapFeatures(d3, projection);
     }
 
@@ -53,35 +56,35 @@ Template.locations.rendered = function () {
     Deps.autorun(function () {
 
         /**
-         * Draw each location
+         * Locations
+         *
+         * Loop through each location, drawing pins and defining
+         * the positional details which we'll use for the images
          */
-        var positions = [];
         var locations = Locations.find().fetch();
-        _.each(locations, function(location, i) {
-
-            var position = projection([location.longitude,location.latitude]);
-            drawPin(svg, position);
-
-            //drawLocation(svg, projection, location, i);
-
-            positions[location.dsLocId] = {
-                latitude: location.latitude,
-                longitude: location.longitude
-            };
-        });
+        var positions = drawLocations(projection, svg, locations);
 
         /**
-         * Draw each image
+         * Images
+         *
+         * Draw one image for each location
          */
         var images = Images.find().fetch();
+
+        //
+        // Shuffle images so that they draw in a random order
+        //
         images = _.shuffle(images);
+
         _.each(images, function(image, i) {
             var latitude = positions[image.dsLocId].latitude;
             var longitude = positions[image.dsLocId].longitude;
 
+            //
+            // Position images using custom offsets for each location
+            //
             var xOffset;
             var yOffset;
-
             if (image.dsLocId == '1') {
                 xOffset = 0.3;
                 yOffset = -0.2;
@@ -95,8 +98,6 @@ Template.locations.rendered = function () {
                 yOffset = -0.3;
             }
             else if (image.dsLocId == '4') {
-                //xOffset = 0.3;
-                //yOffset = -0.2;
                 xOffset = 0;
                 yOffset = 0;
             }
@@ -160,10 +161,6 @@ Template.locations.rendered = function () {
                 xOffset = 0.2;
                 yOffset = 0.3;
             }
-            //else if (image.dsLocId == '20') {
-                //xOffset = 0.5;
-                //yOffset = 0.4;
-            //}
             else if (image.dsLocId == '21') {
                 xOffset = 0.05;
                 yOffset = -0.3;
@@ -173,10 +170,20 @@ Template.locations.rendered = function () {
                 yOffset = 0;
             }
 
-            // Our original location before offset
+            /**
+             * Define positions for image and the marker
+             */
             var markerPosition = projection([longitude, latitude]);
             var imagePosition = projection([(parseFloat(longitude) + xOffset), (parseFloat(latitude) + yOffset)]);
 
+            /**
+             * Draw the image
+             */
+            drawImage(svg, projection, markerPosition, imagePosition, image, i);
+
+            /**
+             * Draw the line connecting the marker pin and the image pin
+             */
             var markerX = parseFloat(markerPosition[0]);
             var markerY = parseFloat(markerPosition[1]);
 
@@ -212,11 +219,6 @@ Template.locations.rendered = function () {
                 lineMidY = markerY + ((imagePinY - markerY) / 2 ) + 10;
                 lineStroke = 'white';
             }
-            //if (markerY > imagePinY) {
-                //lineMidY = markerY - (markerY - imagePinY) / 2;
-            //} else {
-                //lineMidY = imagePinY + (markerY - imagePinY) / 2 + 20;
-            //}
 
             var lineData = [
                 { 'x': markerX, 'y': markerY + 16.5 - 15},
@@ -232,8 +234,6 @@ Template.locations.rendered = function () {
                 .x(function(d) { return d.x; })
                 .y(function(d) { return d.y; })
                 .interpolate('basis');
-
-            drawImage(svg, projection, markerPosition, imagePosition, image, i);
 
             /**
              * Only display pin lines if the offset isn't 0
@@ -267,34 +267,47 @@ Template.locations.rendered = function () {
     });
 
     /**
-     * TODO Remove this.
+     * Draw each location
      *
-     * We aren't using locations any longer, I don't think
-     *
-     * Or make it a dev function for testing
+     * Returns and object of the Location IDs with pixel equivelemtns
+     * of their lat, long coordinates
      */
-    function drawLocation(svg, projection, location) {
+    function drawLocations(projection, svg, locations) {
+        var positions = [];
+        _.each(locations, function(location) {
 
-        // Draw location pin
-
-        /**
-         * Dev text
-         *
-         * This is for marker placement and should be disabled for production.
-         */
-        if (devMarkers) {
+            // Define the position
             var position = projection([location.longitude,location.latitude]);
-            svg.append('text')
-            .attr('x', position[0] - 5)
-            .attr('y', position[1] - 2)
-            .text(location.dsLocId)
-            .attr('font-family', 'Courier')
-            .attr('font-size', '20px')
-            .attr('fill', 'white')
-            .attr('stroke-width', 1.5)
-            .attr('stroke', '#000');
-        }
 
+            // Draw a pin at the location position
+            drawPin(svg, position);
+
+            positions[location.dsLocId] = {
+                latitude: location.latitude,
+                longitude: location.longitude
+            };
+
+            /**
+             * Dev location IDs
+             *
+             * This prints the location ID near each location marker for development work.
+             *
+             * This is disabled in production.
+             */
+            if (enableDevLocIds) {
+                svg.append('text')
+                .attr('x', position[0] - 5)
+                .attr('y', position[1] - 2)
+                .text(location.dsLocId)
+                .attr('font-family', 'Courier')
+                .attr('font-size', '20px')
+                .attr('fill', 'white')
+                .attr('stroke-width', 1.5)
+                .attr('stroke', '#000');
+            }
+
+        });
+        return positions;
     }
 
     function drawPin(svg, position) {
