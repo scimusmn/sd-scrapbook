@@ -157,11 +157,16 @@ Template.locations.rendered = function () {
 
         // Old skool border width
         var imageBorder = 5;
+        // Max character length in location name
+        var locationLength = 20;
 
         var centerX = imagePosition[0];
         var centerY = imagePosition[1];
         // Group for all the picture elements
         var pictureGroup = svg.append('g');
+
+        var boxWidth = image.thumbWidth + (imageBorder * 2);
+        var boxHeight = image.thumbHeight + (imageBorder * 2) + 40;
 
         // Drop shadow rectangle
         pictureGroup.append('defs')
@@ -170,8 +175,8 @@ Template.locations.rendered = function () {
             .append('feGaussianBlur')
             .attr('stdDeviation', 5);
         pictureGroup.append('rect')
-            .attr('width', image.thumbWidth + (imageBorder * 2))
-            .attr('height', image.thumbHeight + (imageBorder * 2) + 40)
+            .attr('width', boxWidth)
+            .attr('height', boxHeight)
             .attr('opacity', '1')
             .attr('x', 3)
             .attr('y', 3)
@@ -182,22 +187,22 @@ Template.locations.rendered = function () {
         pictureGroup.append('rect')
             .attr('x', 0)
             .attr('y', 0)
-            .attr('width', image.thumbWidth + (imageBorder * 2))
-            .attr('height', image.thumbHeight + (imageBorder * 2) + 40)
+            .attr('width', boxWidth)
+            .attr('height', boxHeight)
             .attr('opacity', '1')
             .attr('class', 'location-matte');
 
+        // Write a short version of the locaiton name
         var imageName = image.generalLocationDs;
-        if (imageName.length > 15 ) {
-            imageName = imageName.substring(0,15) + '...';
+        if (imageName.length > locationLength ) {
+            imageName = imageName.substring(0,locationLength) + '...';
         }
-
         pictureGroup.append('text')
             .attr('x', 10)
             .attr('y', image.thumbHeight + 37)
             .text(imageName)
             .attr('font-family', 'Amatic SC')
-            .attr('font-size', '30px')
+            .attr('font-size', '26px')
             .attr('fill', '#663233');
 
         // Image
@@ -211,16 +216,6 @@ Template.locations.rendered = function () {
             .attr('data-id', image._id)
             .attr('data-locid', image.dsLocId)
             .attr('data-location', image.generalLocationDs);
-
-        //pictureGroup.append('text')
-            //.attr('x', (image.thumbWidth/ 2))
-            //.attr('y', (image.thumbHeight/ 2))
-            //.text(image.dsLocId)
-            //.attr('font-family', 'Courier')
-            //.attr('font-size', '50px')
-            //.attr('fill', '#FFF')
-            //.attr('stroke-width', 2)
-            //.attr('stroke', '#000');
 
         // Starting state for picture group
         pictureGroup
@@ -251,8 +246,8 @@ Template.locations.rendered = function () {
                     ')';
                 return transform;
             })
-            .duration(400)
-            .delay(i * 50); // Stagger the markers animating in
+            .duration(300)
+            .delay(i * 30); // Stagger the markers animating in
     }
 
     function drawString(projection, svg, markerPosition, imagePosition, xOffset, yOffset, image) {
@@ -693,16 +688,17 @@ Template.locations.events({
                 var transformString = t.toString();
                 d3.select(this.parentNode)
                     .transition()
-                    .delay(i * 75)
+                    .delay(i * 20)
+                    .attr('opacity', '0')
                     .attr('transform', transformString)
-                    .duration(500);
+                    .duration(200);
             });
         };
         animateContentOut();
 
         window.setTimeout(function() {
             goDestination();
-        }, 500);
+        }, 800);
 
         function goDestination() {
             // Get the clicked location string from the COM data-location attribute
