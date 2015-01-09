@@ -306,18 +306,20 @@ Template.locations.rendered = function () {
          * Only display pin lines if the offset isn't 0
          */
         if (xOffset !== 0 && yOffset !== 0) {
-            svg.append('path')
+            var stringGroup = svg.append('g');
+
+            stringGroup.append('path')
                 .attr('d', lineFunction(lineData))
                 .attr('stroke-width', 1.2)
                 .attr('fill', 'none')
                 .attr('stroke', lineStroke);
 
-            svg.append('defs')
+            stringGroup.append('defs')
                 .append('filter')
                 .attr('id', 'line-blur')
                 .append('feGaussianBlur')
                 .attr('stdDeviation', 4);
-            svg.append('path')
+            stringGroup.append('path')
                 .attr('d', lineFunction(lineData))
                 .attr('stroke-width', 1.6)
                 .attr('fill', 'none')
@@ -327,6 +329,10 @@ Template.locations.rendered = function () {
                     return transform;
                 })
                 .attr('filter', 'url(#line-blur)');
+
+            stringGroup
+                .attr('class', 'string-group');
+
         }
     }
 
@@ -686,6 +692,18 @@ Template.locations.events({
                 t.translate[0] = t.translate[0] + ( width / 2 );
                 t.translate[1] = t.translate[1] + ( height / 2 );
                 var transformString = t.toString();
+                d3.selectAll('.string-group')
+                    .transition()
+                    .delay(i * 20)
+                    .attr('opacity', '0')
+                    .attr('transform', transformString)
+                    .duration(200);
+                d3.selectAll('.pin-group')
+                    .transition()
+                    .delay(i * 20)
+                    .attr('opacity', '0')
+                    .attr('transform', transformString)
+                    .duration(200);
                 d3.select(this.parentNode)
                     .transition()
                     .delay(i * 20)
