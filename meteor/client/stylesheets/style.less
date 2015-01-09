@@ -219,7 +219,7 @@ h3.location-headline {
 @timeline-background-width: 1730px;
 @timeline-background-height: 150px;
 @timeline-background-bottom: 0px;
-@timeline-images-bottom: @timeline-background-height + @timeline-background-bottom;
+@timeline-left: 140px;
 
 .timeline-background {
   position: absolute;
@@ -228,15 +228,15 @@ h3.location-headline {
   width: @timeline-background-width;
   height: @timeline-background-height;
   bottom: @timeline-background-bottom;
-  left: 140px;
+  left: @timeline-left;
   z-index: 3000;
 }
 
 .timeline-images {
   position: absolute;
   height: 300px;
-  bottom: 20px;
-  left: 210px;
+  bottom: 30px;
+  left: @timeline-left;
 }
 
 .time-handle-rect {

@@ -67,6 +67,7 @@ function drawLocation() {
     var timelineBackground = $('.timeline-background');
     var timelineBackgroundWidth = timelineBackground.width();
     var timelineBackgroundHeight = timelineBackground.height();
+    var timelineBackgroundLeft = parseInt(timelineBackground.css('left'));
     var timelineSVG  = d3.select('.timeline-background')
         .append('svg')
         .attr('class', 'timeline-background-svg')
@@ -97,11 +98,12 @@ function drawLocation() {
         .attr('class', 'timeline-images-svg')
         .attr('width', timelineBackgroundWidth)
         .attr('height', timelineImagesHeight);
-    var firstImageWidth = images[0].thumbWidth;
-    var lastImageWidth = images[parseInt(imagesCount - 1)].thumbWidth;
+    var firstImageWidth = _.first(images).thumbWidth;
+    var lastImageWidth = _.last(images).thumbWidth;
     _.each(images, function(image, i) {
         drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth);
     });
+    highlightImage(500);
 
     /**
      * Find the clicked image and highlight it
@@ -112,11 +114,14 @@ function drawLocation() {
      * Figure out a better non-positional way to do this.
      */
     window.setTimeout(function () {
+        // Get clicked image from URL
         var clickedImage = Router.current().params.query.image;
-        var clickedImageDom = $('g[data-id=' + clickedImage + ']');
-        var clickedImageLeft = clickedImageDom.position().left;
-        highlightImage(clickedImageLeft + 280);
-    }, 500);
+        // Get the current transform (left position) for the image
+        var groupObj = d3.selectAll('g[data-id=' + clickedImage + ']');
+        var t = d3.transform(groupObj.attr('transform'));
+        // Highlight the image based on the position
+        highlightImage(timelineBackgroundLeft + t.translate[0]);
+    }, 1000);
 
 }
 
