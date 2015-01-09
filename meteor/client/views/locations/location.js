@@ -4,9 +4,6 @@
  * This shows all the images in a timeline for the selected location.
  */
 
-// Enable dev features
-var dev = false;
-
 /**
  * Image properties
  */
