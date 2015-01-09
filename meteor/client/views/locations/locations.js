@@ -70,19 +70,12 @@ Template.locations.rendered = function () {
          * Draw all the images, one for each location.
          */
         var images = Images.find().fetch();
-
-        // Shuffle images so that they animate in, in a random order
-        //
-        // TODO If we're going to do this, we should probably do it for the whole image element, no just the picture
-        //images = _.shuffle(images);
-
         drawImages(projection, svg, positions, images);
-
 
     });
 
     /**
-     * Draw each location
+     * Draw all locations
      *
      * Returns and object of the Location IDs with pixel equivelemtns
      * of their lat, long coordinates
@@ -125,6 +118,9 @@ Template.locations.rendered = function () {
         return positions;
     }
 
+    /**
+     * Draw all images
+     */
     function drawImages(projection, svg, positions, images) {
 
         _.each(images, function(image, i) {
@@ -149,86 +145,196 @@ Template.locations.rendered = function () {
             /**
              * Draw the line connecting the marker pin and the image pin
              */
-            var markerX = parseFloat(markerPosition[0]);
-            var markerY = parseFloat(markerPosition[1]);
-
-            var imagePinX = imagePosition[0];
-            var imagePinY = (imagePosition[1] - (2*(image.thumbHeight / 5)));
-
-            // Check to see if the image is above or below the marker
-            var lineMidX;
-            var lineMidY;
-            var lineStroke = '#DDDFE0';
-            //
-            // Image is SW of the marker
-            //
-            if ((markerX > imagePinX) && (markerY < imagePinY)) {
-                lineMidX = imagePinX + ((markerX - imagePinX) / 2) + 20;
-                lineMidY = markerY - (markerY - imagePinY) / 2;
-                lineStroke = 'white';
-            }
-            // Image is NW of marker
-            else if ((markerX > imagePinX) && (markerY > imagePinY)){
-                lineMidX = imagePinX + ((markerX - imagePinX) / 2 ) - 20;
-                lineMidY = markerY - (markerY - imagePinY) / 2;
-                lineStroke = 'white';
-            }
-            // Image is NE of marker
-            else if ((markerX < imagePinX) && (markerY > imagePinY)){
-                lineMidX = markerX + ((imagePinX - markerX) / 2 ) + 20;
-                lineMidY = markerY - (markerY - imagePinY) / 2;
-            }
-            // Image is SE of marker
-            else {
-                lineMidX = markerX + ((imagePinX - markerX) / 2 );
-                lineMidY = markerY + ((imagePinY - markerY) / 2 ) + 10;
-                lineStroke = 'white';
-            }
-
-            var lineData = [
-                { 'x': markerX, 'y': markerY + 16.5 - 15},
-                { 'x': lineMidX, 'y': lineMidY},
-                //{ 'x': (imagePosition[0] + 50), 'y': (imagePosition[1] + ((markerPosition[1] - imagePosition[1]) / 2))},
-                { 'x': imagePosition[0], 'y': imagePinY}
-            ];
-
-            // Curve type
-            // https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate
-
-            var lineFunction = d3.svg.line()
-                .x(function(d) { return d.x; })
-                .y(function(d) { return d.y; })
-                .interpolate('basis');
-
-            /**
-             * Only display pin lines if the offset isn't 0
-             */
-            if (xOffset !== 0 && yOffset !== 0) {
-                svg.append('path')
-                    .attr('d', lineFunction(lineData))
-                    .attr('stroke-width', 1.2)
-                    .attr('fill', 'none')
-                    .attr('stroke', lineStroke);
-
-                svg.append('defs')
-                    .append('filter')
-                    .attr('id', 'line-blur')
-                    .append('feGaussianBlur')
-                    .attr('stdDeviation', 4);
-                svg.append('path')
-                    .attr('d', lineFunction(lineData))
-                    .attr('stroke-width', 1.6)
-                    .attr('fill', 'none')
-                    .attr('stroke', 'black')
-                    .attr('transform', function (){
-                        var transform = 'translate(0,2)';
-                        return transform;
-                    })
-                    .attr('filter', 'url(#line-blur)');
-            }
+            drawString(projection, svg, markerPosition, imagePosition, xOffset, yOffset, image)
 
         });
     }
+
+    /**
+     * Draw one image
+     */
+    function drawImage(projection, svg, markerPosition, imagePosition, image, i) {
+
+        // Old skool border width
+        var imageBorder = 5;
+
+        var centerX = imagePosition[0];
+        var centerY = imagePosition[1];
+        // Group for all the picture elements
+        var pictureGroup = svg.append('g');
+
+        // Drop shadow rectangle
+        pictureGroup.append('defs')
+            .append('filter')
+            .attr('id', 'blur')
+            .append('feGaussianBlur')
+            .attr('stdDeviation', 5);
+        pictureGroup.append('rect')
+            .attr('width', image.thumbWidth + (imageBorder * 2))
+            .attr('height', image.thumbHeight + (imageBorder * 2) + 40)
+            .attr('opacity', '1')
+            .attr('x', 3)
+            .attr('y', 3)
+            .style('fill', '#000')
+            .attr('filter', 'url(#blur)');
+
+        // White border rectangle
+        pictureGroup.append('rect')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', image.thumbWidth + (imageBorder * 2))
+            .attr('height', image.thumbHeight + (imageBorder * 2) + 40)
+            .attr('opacity', '1')
+            .attr('class', 'location-matte');
+
+        var imageName = image.generalLocationDs;
+        if (imageName.length > 15 ) {
+            imageName = imageName.substring(0,15) + '...';
+        }
+
+        pictureGroup.append('text')
+            .attr('x', 10)
+            .attr('y', image.thumbHeight + 37)
+            .text(imageName)
+            .attr('font-family', 'Amatic SC')
+            .attr('font-size', '30px')
+            .attr('fill', '#663233');
+
+        // Image
+        pictureGroup.append('image')
+            .attr('x', imageBorder)
+            .attr('y', imageBorder)
+            .attr('width', image.thumbWidth)
+            .attr('height', image.thumbHeight)
+            .attr('opacity', '1')
+            .attr('xlink:href', '/images/thumbnails/' + image._id + '.jpg')
+            .attr('data-id', image._id)
+            .attr('data-locid', image.dsLocId)
+            .attr('data-location', image.generalLocationDs);
+
+        //pictureGroup.append('text')
+            //.attr('x', (image.thumbWidth/ 2))
+            //.attr('y', (image.thumbHeight/ 2))
+            //.text(image.dsLocId)
+            //.attr('font-family', 'Courier')
+            //.attr('font-size', '50px')
+            //.attr('fill', '#FFF')
+            //.attr('stroke-width', 2)
+            //.attr('stroke', '#000');
+
+        // Starting state for picture group
+        pictureGroup
+            .attr('opacity', '0')
+            .attr('class', 'picture-group')
+            .attr('data-locid', image.dsLocId)
+            .attr('transform', function (){
+                return 'scale(.1), translate(' + (centerX / 0.1) + ', ' + (centerY / 0.1) + ')';
+            });
+
+        imagePosition = [imagePosition[0], ((imagePosition[1] - (image.thumbHeight/ 2) - 5) + 15)];
+        drawPin(svg, imagePosition);
+
+        // Animate picture group to full size
+        pictureGroup
+            .transition()
+            .attr('opacity', '1')
+            .attr('transform', function (){
+                var transform =
+                    'rotate(' + _.random(-2,2) + ', ' +
+                        ( centerX - ( image.thumbWidth / 2 ) ) + ', ' +
+                        ( centerY - ( image.thumbHeight / 2 ) ) +
+                    '),' +
+                    'scale(1),' +
+                    'translate(' +
+                        ( centerX - ( image.thumbWidth / 2 ) ) + ', ' +
+                        ( centerY - ( image.thumbHeight / 2 ) ) +
+                    ')';
+                return transform;
+            })
+            .duration(400)
+            .delay(i * 50); // Stagger the markers animating in
+    }
+
+    function drawString(projection, svg, markerPosition, imagePosition, xOffset, yOffset, image) {
+        var markerX = parseFloat(markerPosition[0]);
+        var markerY = parseFloat(markerPosition[1]);
+
+        var imagePinX = imagePosition[0];
+        var imagePinY = (imagePosition[1] - (2*(image.thumbHeight / 5)));
+
+        // Check to see if the image is above or below the marker
+        var lineMidX;
+        var lineMidY;
+        var lineStroke = '#DDDFE0';
+        //
+        // Image is SW of the marker
+        //
+        if ((markerX > imagePinX) && (markerY < imagePinY)) {
+            lineMidX = imagePinX + ((markerX - imagePinX) / 2) + 20;
+            lineMidY = markerY - (markerY - imagePinY) / 2;
+            lineStroke = 'white';
+        }
+        // Image is NW of marker
+        else if ((markerX > imagePinX) && (markerY > imagePinY)){
+            lineMidX = imagePinX + ((markerX - imagePinX) / 2 ) - 20;
+            lineMidY = markerY - (markerY - imagePinY) / 2;
+            lineStroke = 'white';
+        }
+        // Image is NE of marker
+        else if ((markerX < imagePinX) && (markerY > imagePinY)){
+            lineMidX = markerX + ((imagePinX - markerX) / 2 ) + 20;
+            lineMidY = markerY - (markerY - imagePinY) / 2;
+        }
+        // Image is SE of marker
+        else {
+            lineMidX = markerX + ((imagePinX - markerX) / 2 );
+            lineMidY = markerY + ((imagePinY - markerY) / 2 ) + 10;
+            lineStroke = 'white';
+        }
+
+        var lineData = [
+            { 'x': markerX, 'y': markerY + 16.5 - 15},
+            { 'x': lineMidX, 'y': lineMidY},
+            //{ 'x': (imagePosition[0] + 50), 'y': (imagePosition[1] + ((markerPosition[1] - imagePosition[1]) / 2))},
+            { 'x': imagePosition[0], 'y': imagePinY}
+        ];
+
+        // Curve type
+        // https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate
+
+        var lineFunction = d3.svg.line()
+            .x(function(d) { return d.x; })
+            .y(function(d) { return d.y; })
+            .interpolate('basis');
+
+        /**
+         * Only display pin lines if the offset isn't 0
+         */
+        if (xOffset !== 0 && yOffset !== 0) {
+            svg.append('path')
+                .attr('d', lineFunction(lineData))
+                .attr('stroke-width', 1.2)
+                .attr('fill', 'none')
+                .attr('stroke', lineStroke);
+
+            svg.append('defs')
+                .append('filter')
+                .attr('id', 'line-blur')
+                .append('feGaussianBlur')
+                .attr('stdDeviation', 4);
+            svg.append('path')
+                .attr('d', lineFunction(lineData))
+                .attr('stroke-width', 1.6)
+                .attr('fill', 'none')
+                .attr('stroke', 'black')
+                .attr('transform', function (){
+                    var transform = 'translate(0,2)';
+                    return transform;
+                })
+                .attr('filter', 'url(#line-blur)');
+        }
+    }
+
 
     /**
      * Define manual offsets for each specific location
@@ -508,108 +614,6 @@ Template.locations.rendered = function () {
                 return transform;
             });
 
-    }
-
-    function drawImage(projection, svg, markerPosition, imagePosition, image, i) {
-
-        // Old skool border width
-        var imageBorder = 5;
-
-        var centerX = imagePosition[0];
-        var centerY = imagePosition[1];
-        // Group for all the picture elements
-        var pictureGroup = svg.append('g');
-
-        // Drop shadow rectangle
-        pictureGroup.append('defs')
-            .append('filter')
-            .attr('id', 'blur')
-            .append('feGaussianBlur')
-            .attr('stdDeviation', 5);
-        pictureGroup.append('rect')
-            .attr('width', image.thumbWidth + (imageBorder * 2))
-            .attr('height', image.thumbHeight + (imageBorder * 2) + 40)
-            .attr('opacity', '1')
-            .attr('x', 3)
-            .attr('y', 3)
-            .style('fill', '#000')
-            .attr('filter', 'url(#blur)');
-
-        // White border rectangle
-        pictureGroup.append('rect')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('width', image.thumbWidth + (imageBorder * 2))
-            .attr('height', image.thumbHeight + (imageBorder * 2) + 40)
-            .attr('opacity', '1')
-            .attr('class', 'location-matte');
-
-        var imageName = image.generalLocationDs;
-        if (imageName.length > 15 ) {
-            imageName = imageName.substring(0,15) + '...';
-        }
-
-        pictureGroup.append('text')
-            .attr('x', 10)
-            .attr('y', image.thumbHeight + 37)
-            .text(imageName)
-            .attr('font-family', 'Amatic SC')
-            .attr('font-size', '30px')
-            .attr('fill', '#663233');
-
-        // Image
-        pictureGroup.append('image')
-            .attr('x', imageBorder)
-            .attr('y', imageBorder)
-            .attr('width', image.thumbWidth)
-            .attr('height', image.thumbHeight)
-            .attr('opacity', '1')
-            .attr('xlink:href', '/images/thumbnails/' + image._id + '.jpg')
-            .attr('data-id', image._id)
-            .attr('data-locid', image.dsLocId)
-            .attr('data-location', image.generalLocationDs);
-
-        //pictureGroup.append('text')
-            //.attr('x', (image.thumbWidth/ 2))
-            //.attr('y', (image.thumbHeight/ 2))
-            //.text(image.dsLocId)
-            //.attr('font-family', 'Courier')
-            //.attr('font-size', '50px')
-            //.attr('fill', '#FFF')
-            //.attr('stroke-width', 2)
-            //.attr('stroke', '#000');
-
-        // Starting state for picture group
-        pictureGroup
-            .attr('opacity', '0')
-            .attr('class', 'picture-group')
-            .attr('data-locid', image.dsLocId)
-            .attr('transform', function (){
-                return 'scale(.1), translate(' + (centerX / 0.1) + ', ' + (centerY / 0.1) + ')';
-            });
-
-        imagePosition = [imagePosition[0], ((imagePosition[1] - (image.thumbHeight/ 2) - 5) + 15)];
-        drawPin(svg, imagePosition);
-
-        // Animate picture group to full size
-        pictureGroup
-            .transition()
-            .attr('opacity', '1')
-            .attr('transform', function (){
-                var transform =
-                    'rotate(' + _.random(-2,2) + ', ' +
-                        ( centerX - ( image.thumbWidth / 2 ) ) + ', ' +
-                        ( centerY - ( image.thumbHeight / 2 ) ) +
-                    '),' +
-                    'scale(1),' +
-                    'translate(' +
-                        ( centerX - ( image.thumbWidth / 2 ) ) + ', ' +
-                        ( centerY - ( image.thumbHeight / 2 ) ) +
-                    ')';
-                return transform;
-            })
-            .duration(400)
-            .delay(i * 50); // Stagger the markers animating in
     }
 
     function devMapFeatures(d3, projection) {
