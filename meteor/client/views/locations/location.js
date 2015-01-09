@@ -132,26 +132,6 @@ function drawTimelineHandle(svg) {
         .attr('width', 75)
         .attr('height', 146)
         .attr('class', 'time-handle-rect');
-
-    //
-    // Square option
-    //
-    //svg .append('rect')
-        //.attr('width', '50')
-        //.attr('height', '50')
-        //.attr('x', 0)
-        //.attr('y', 100);
-
-    //
-    // Triangle option
-    //
-    //svg.append('path')
-        //.style('stroke', '#E0D0B4')
-        //.style('fill', '#E0D0B4')
-        ////.attr('width', 300)
-        //.attr('class', 'time-handle-rect')
-        //.attr('d', 'M 0,50, L 25,0, L 50,50 Z');
-
 }
 
 /**
