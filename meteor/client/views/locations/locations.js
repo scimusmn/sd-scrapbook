@@ -87,9 +87,6 @@ Template.locations.rendered = function () {
             // Define the position
             var position = projection([location.longitude,location.latitude]);
 
-            // Draw a pin at the location position
-            drawPin(svg, position);
-
             positions[location.dsLocId] = {
                 latitude: location.latitude,
                 longitude: location.longitude
@@ -306,6 +303,9 @@ Template.locations.rendered = function () {
          * Only display pin lines if the offset isn't 0
          */
         if (xOffset !== 0 && yOffset !== 0) {
+            // Draw a pin at the location position
+            drawPin(svg, [markerX, markerY]);
+
             var stringGroup = svg.append('g');
 
             stringGroup.append('path')
