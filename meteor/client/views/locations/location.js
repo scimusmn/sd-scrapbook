@@ -32,11 +32,10 @@ Template.location.rendered = function () {
          * increasing numbers.
          */
         window.setTimeout(function () {
-            renderLocation();
+            drawLocation();
         }, 200);
 
     });
-
 };
 
 /**
@@ -50,9 +49,9 @@ Template.location.events({
 });
 
 /**
- * Render the location page
+ * Draw the location page
  */
-function renderLocation() {
+function drawLocation() {
     /**
      * Gather image data from the Meteor collection and sort by year
      */
