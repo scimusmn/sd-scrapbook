@@ -69,8 +69,11 @@ Template.locations.rendered = function () {
          *
          * Draw all the images, one for each location.
          */
-        var images = Images.find().fetch();
-        drawImages(projection, svg, positions, images);
+        window.setTimeout(function() {
+            var images = Images.find().fetch();
+            drawImages(projection, svg, positions, images);
+        }, 300);
+
 
     });
 
