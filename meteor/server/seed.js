@@ -48,7 +48,7 @@ if (Locations.find().count() === 0) {
   });
 
   var joshuaTree = Locations.insert({
-    title: 'Joshua Tree and eastern Colorado desert',
+    title: 'Joshua Tree',
     link: 'joshua-tree',
     description: '',
     latitude: '33.714274',
