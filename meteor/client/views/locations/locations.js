@@ -52,223 +52,218 @@ Template.locations.rendered = function () {
      */
     Deps.autorun(function () {
 
-        renderLocations();
+        /**
+         * Draw each location
+         */
+        var positions = [];
+        var locations = Locations.find().fetch();
+        _.each(locations, function(location, i) {
 
-        function renderLocations() {
+            var position = projection([location.longitude,location.latitude]);
+            drawPin(svg, position);
+
+            //drawLocation(svg, projection, location, i);
+
+            positions[location.dsLocId] = {
+                latitude: location.latitude,
+                longitude: location.longitude
+            };
+        });
+
+        /**
+         * Draw each image
+         */
+        var images = Images.find().fetch();
+        images = _.shuffle(images);
+        _.each(images, function(image, i) {
+            var latitude = positions[image.dsLocId].latitude;
+            var longitude = positions[image.dsLocId].longitude;
+
+            var xOffset;
+            var yOffset;
+
+            if (image.dsLocId == '1') {
+                xOffset = 0.3;
+                yOffset = -0.2;
+            }
+            else if (image.dsLocId == '2') {
+                xOffset = -0.1;
+                yOffset = -0.4;
+            }
+            else if (image.dsLocId == '3') {
+                xOffset = -0.1;
+                yOffset = -0.3;
+            }
+            else if (image.dsLocId == '4') {
+                //xOffset = 0.3;
+                //yOffset = -0.2;
+                xOffset = 0;
+                yOffset = 0;
+            }
+            else if (image.dsLocId == '5') {
+                xOffset = 0.4;
+                yOffset = 0.05;
+            }
+            else if (image.dsLocId == '6') {
+                xOffset = -0.4;
+                yOffset = -0.05;
+            }
+            else if (image.dsLocId == '7') {
+                xOffset = 0.6;
+                yOffset = -1.5;
+            }
+            else if (image.dsLocId == '8') {
+                xOffset = 0;
+                yOffset = 0;
+            }
+            else if (image.dsLocId == '9') {
+                xOffset = 0;
+                yOffset = 0;
+            }
+            else if (image.dsLocId == '10') {
+                xOffset = 0.4;
+                yOffset = 0.1;
+            }
+            else if (image.dsLocId == '11') {
+                xOffset = 0.2;
+                yOffset = -0.3;
+            }
+            else if (image.dsLocId == '12') {
+                xOffset = 0.35;
+                yOffset = 0.1;
+            }
+            else if (image.dsLocId == '13') {
+                xOffset = -0.2;
+                yOffset = -0.35;
+            }
+            else if (image.dsLocId == '14') {
+                xOffset = -1.1;
+                yOffset = -0.3;
+            }
+            else if (image.dsLocId == '15') {
+                xOffset = -0.4;
+                yOffset = 0.05;
+            }
+            else if (image.dsLocId == '17') {
+                xOffset = -0.1;
+                yOffset = -0.2;
+            }
+            else if (image.dsLocId == '18') {
+                xOffset = 0.4;
+                yOffset = -0.3;
+            }
+            else if (image.dsLocId == '19') {
+                xOffset = -0.2;
+                yOffset = -0.4;
+            }
+            else if (image.dsLocId == '20') {
+                xOffset = 0.2;
+                yOffset = 0.3;
+            }
+            //else if (image.dsLocId == '20') {
+                //xOffset = 0.5;
+                //yOffset = 0.4;
+            //}
+            else if (image.dsLocId == '21') {
+                xOffset = 0.05;
+                yOffset = -0.3;
+            }
+            else {
+                xOffset = 0;
+                yOffset = 0;
+            }
+
+            // Our original location before offset
+            var markerPosition = projection([longitude, latitude]);
+            var imagePosition = projection([(parseFloat(longitude) + xOffset), (parseFloat(latitude) + yOffset)]);
+
+            var markerX = parseFloat(markerPosition[0]);
+            var markerY = parseFloat(markerPosition[1]);
+
+            var imagePinX = imagePosition[0];
+            var imagePinY = (imagePosition[1] - (2*(image.thumbHeight / 5)));
+
+            // Check to see if the image is above or below the marker
+            var lineMidX;
+            var lineMidY;
+            var lineStroke = '#DDDFE0';
+            //
+            // Image is SW of the marker
+            //
+            if ((markerX > imagePinX) && (markerY < imagePinY)) {
+                lineMidX = imagePinX + ((markerX - imagePinX) / 2) + 20;
+                lineMidY = markerY - (markerY - imagePinY) / 2;
+                lineStroke = 'white';
+            }
+            // Image is NW of marker
+            else if ((markerX > imagePinX) && (markerY > imagePinY)){
+                lineMidX = imagePinX + ((markerX - imagePinX) / 2 ) - 20;
+                lineMidY = markerY - (markerY - imagePinY) / 2;
+                lineStroke = 'white';
+            }
+            // Image is NE of marker
+            else if ((markerX < imagePinX) && (markerY > imagePinY)){
+                lineMidX = markerX + ((imagePinX - markerX) / 2 ) + 20;
+                lineMidY = markerY - (markerY - imagePinY) / 2;
+            }
+            // Image is SE of marker
+            else {
+                lineMidX = markerX + ((imagePinX - markerX) / 2 );
+                lineMidY = markerY + ((imagePinY - markerY) / 2 ) + 10;
+                lineStroke = 'white';
+            }
+            //if (markerY > imagePinY) {
+                //lineMidY = markerY - (markerY - imagePinY) / 2;
+            //} else {
+                //lineMidY = imagePinY + (markerY - imagePinY) / 2 + 20;
+            //}
+
+            var lineData = [
+                { 'x': markerX, 'y': markerY + 16.5 - 15},
+                { 'x': lineMidX, 'y': lineMidY},
+                //{ 'x': (imagePosition[0] + 50), 'y': (imagePosition[1] + ((markerPosition[1] - imagePosition[1]) / 2))},
+                { 'x': imagePosition[0], 'y': imagePinY}
+            ];
+
+            // Curve type
+            // https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate
+
+            var lineFunction = d3.svg.line()
+                .x(function(d) { return d.x; })
+                .y(function(d) { return d.y; })
+                .interpolate('basis');
+
+            drawImage(svg, projection, markerPosition, imagePosition, image, i);
 
             /**
-             * Draw each location
+             * Only display pin lines if the offset isn't 0
              */
-            var positions = [];
-            var locations = Locations.find().fetch();
-            _.each(locations, function(location, i) {
-                drawLocation(svg, projection, location, i);
-                positions[location.dsLocId] = {
-                    latitude: location.latitude,
-                    longitude: location.longitude
-                };
-            });
+            if (xOffset !== 0 && yOffset !== 0) {
+                svg.append('path')
+                    .attr('d', lineFunction(lineData))
+                    .attr('stroke-width', 1.2)
+                    .attr('fill', 'none')
+                    .attr('stroke', lineStroke);
 
-            /**
-             * Draw each image
-             *
-             * TODO:
-             * Actually I think that this will be our primary collection. I might
-             * move this into a seperate collection at some point.
-             *
-             */
-            var images = Images.find().fetch();
-            images = _.shuffle(images);
-            _.each(images, function(image, i) {
-                var latitude = positions[image.dsLocId].latitude;
-                var longitude = positions[image.dsLocId].longitude;
+                svg.append('defs')
+                    .append('filter')
+                    .attr('id', 'line-blur')
+                    .append('feGaussianBlur')
+                    .attr('stdDeviation', 4);
+                svg.append('path')
+                    .attr('d', lineFunction(lineData))
+                    .attr('stroke-width', 1.6)
+                    .attr('fill', 'none')
+                    .attr('stroke', 'black')
+                    .attr('transform', function (){
+                        var transform = 'translate(0,2)';
+                        return transform;
+                    })
+                    .attr('filter', 'url(#line-blur)');
+            }
 
-                var xOffset;
-                var yOffset;
+        });
 
-                if (image.dsLocId == '1') {
-                    xOffset = 0.3;
-                    yOffset = -0.2;
-                }
-                else if (image.dsLocId == '2') {
-                    xOffset = -0.1;
-                    yOffset = -0.4;
-                }
-                else if (image.dsLocId == '3') {
-                    xOffset = -0.1;
-                    yOffset = -0.3;
-                }
-                else if (image.dsLocId == '4') {
-                    //xOffset = 0.3;
-                    //yOffset = -0.2;
-                    xOffset = 0;
-                    yOffset = 0;
-                }
-                else if (image.dsLocId == '5') {
-                    xOffset = 0.4;
-                    yOffset = 0.05;
-                }
-                else if (image.dsLocId == '6') {
-                    xOffset = -0.4;
-                    yOffset = -0.05;
-                }
-                else if (image.dsLocId == '7') {
-                    xOffset = 0.6;
-                    yOffset = -1.5;
-                }
-                else if (image.dsLocId == '8') {
-                    xOffset = 0;
-                    yOffset = 0;
-                }
-                else if (image.dsLocId == '9') {
-                    xOffset = 0;
-                    yOffset = 0;
-                }
-                else if (image.dsLocId == '10') {
-                    xOffset = 0.4;
-                    yOffset = 0.1;
-                }
-                else if (image.dsLocId == '11') {
-                    xOffset = 0.2;
-                    yOffset = -0.3;
-                }
-                else if (image.dsLocId == '12') {
-                    xOffset = 0.35;
-                    yOffset = 0.1;
-                }
-                else if (image.dsLocId == '13') {
-                    xOffset = -0.2;
-                    yOffset = -0.35;
-                }
-                else if (image.dsLocId == '14') {
-                    xOffset = -1.1;
-                    yOffset = -0.3;
-                }
-                else if (image.dsLocId == '15') {
-                    xOffset = -0.4;
-                    yOffset = 0.05;
-                }
-                else if (image.dsLocId == '17') {
-                    xOffset = -0.1;
-                    yOffset = -0.2;
-                }
-                else if (image.dsLocId == '18') {
-                    xOffset = 0.4;
-                    yOffset = -0.3;
-                }
-                else if (image.dsLocId == '19') {
-                    xOffset = -0.2;
-                    yOffset = -0.4;
-                }
-                else if (image.dsLocId == '20') {
-                    xOffset = 0.2;
-                    yOffset = 0.3;
-                }
-                //else if (image.dsLocId == '20') {
-                    //xOffset = 0.5;
-                    //yOffset = 0.4;
-                //}
-                else if (image.dsLocId == '21') {
-                    xOffset = 0.05;
-                    yOffset = -0.3;
-                }
-                else {
-                    xOffset = 0;
-                    yOffset = 0;
-                }
-
-                // Our original location before offset
-                var markerPosition = projection([longitude, latitude]);
-                var imagePosition = projection([(parseFloat(longitude) + xOffset), (parseFloat(latitude) + yOffset)]);
-
-                var markerX = parseFloat(markerPosition[0]);
-                var markerY = parseFloat(markerPosition[1]);
-
-                var imagePinX = imagePosition[0];
-                var imagePinY = (imagePosition[1] - (2*(image.thumbHeight / 5)));
-
-                // Check to see if the image is above or below the marker
-                var lineMidX;
-                var lineMidY;
-                var lineStroke = '#DDDFE0';
-                //
-                // Image is SW of the marker
-                //
-                if ((markerX > imagePinX) && (markerY < imagePinY)) {
-                    lineMidX = imagePinX + ((markerX - imagePinX) / 2) + 20;
-                    lineMidY = markerY - (markerY - imagePinY) / 2;
-                    lineStroke = 'white';
-                }
-                // Image is NW of marker
-                else if ((markerX > imagePinX) && (markerY > imagePinY)){
-                    lineMidX = imagePinX + ((markerX - imagePinX) / 2 ) - 20;
-                    lineMidY = markerY - (markerY - imagePinY) / 2;
-                    lineStroke = 'white';
-                }
-                // Image is NE of marker
-                else if ((markerX < imagePinX) && (markerY > imagePinY)){
-                    lineMidX = markerX + ((imagePinX - markerX) / 2 ) + 20;
-                    lineMidY = markerY - (markerY - imagePinY) / 2;
-                }
-                // Image is SE of marker
-                else {
-                    lineMidX = markerX + ((imagePinX - markerX) / 2 );
-                    lineMidY = markerY + ((imagePinY - markerY) / 2 ) + 10;
-                    lineStroke = 'white';
-                }
-                //if (markerY > imagePinY) {
-                    //lineMidY = markerY - (markerY - imagePinY) / 2;
-                //} else {
-                    //lineMidY = imagePinY + (markerY - imagePinY) / 2 + 20;
-                //}
-
-                var lineData = [
-                    { 'x': markerX, 'y': markerY + 16.5 - 15},
-                    { 'x': lineMidX, 'y': lineMidY},
-                    //{ 'x': (imagePosition[0] + 50), 'y': (imagePosition[1] + ((markerPosition[1] - imagePosition[1]) / 2))},
-                    { 'x': imagePosition[0], 'y': imagePinY}
-                ];
-
-                // Curve type
-                // https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate
-
-                var lineFunction = d3.svg.line()
-                    .x(function(d) { return d.x; })
-                    .y(function(d) { return d.y; })
-                    .interpolate('basis');
-
-                drawImage(svg, projection, markerPosition, imagePosition, image, i);
-
-                /**
-                 * Only display pin lines if the offset isn't 0
-                 */
-                if (xOffset !== 0 && yOffset !== 0) {
-                    svg.append('path')
-                        .attr('d', lineFunction(lineData))
-                        .attr('stroke-width', 1.2)
-                        .attr('fill', 'none')
-                        .attr('stroke', lineStroke);
-
-                    svg.append('defs')
-                        .append('filter')
-                        .attr('id', 'line-blur')
-                        .append('feGaussianBlur')
-                        .attr('stdDeviation', 4);
-                    svg.append('path')
-                        .attr('d', lineFunction(lineData))
-                        .attr('stroke-width', 1.6)
-                        .attr('fill', 'none')
-                        .attr('stroke', 'black')
-                        .attr('transform', function (){
-                            var transform = 'translate(0,2)';
-                            return transform;
-                        })
-                        .attr('filter', 'url(#line-blur)');
-                }
-
-            });
-
-        }
     });
 
     /**
@@ -281,8 +276,6 @@ Template.locations.rendered = function () {
     function drawLocation(svg, projection, location) {
 
         // Draw location pin
-        var position = projection([location.longitude,location.latitude]);
-        drawPin(svg, position);
 
         /**
          * Dev text
