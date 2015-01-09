@@ -16,25 +16,13 @@ var dur = 500; // Milliseconds for the image animation
  * Template render
  */
 Template.location.rendered = function () {
-
     /**
-     * We have to do our D3 stuff in here because of Meteor's client server
-     * stuff. I don't exactly understand...
+     * Wait for Meteor to finish loading server data.
      *
-     * TODO: Research
+     * Draw the location page.
      */
     Deps.autorun(function () {
-        /**
-         * Wait for a half-second to let the collections load.
-         *
-         * TODO: figure out why we need to do this. Before I was doing this,
-         * the image counts would get set three times with successively
-         * increasing numbers.
-         */
-        window.setTimeout(function () {
-            drawLocation();
-        }, 200);
-
+        drawLocation();
     });
 };
 
