@@ -104,7 +104,7 @@ function drawLocation() {
     var firstImageWidth = _.first(images).thumbWidth;
     var lastImageWidth = _.last(images).thumbWidth;
     _.each(images, function(image, i) {
-        drawImage(timelineImagesSVG, timelineImagesWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth);
+        drawTimelineImage(timelineImagesSVG, timelineImagesWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth);
     });
 
     /**
@@ -183,7 +183,7 @@ function drawYearMarker(svg, x, y, posX, posY, year) {
 /**
  * Render each image
  */
-function drawImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth) {
+function drawTimelineImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth) {
     var centerX;
     var leftX;
     var translateX;
