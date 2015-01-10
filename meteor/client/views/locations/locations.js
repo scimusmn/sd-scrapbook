@@ -143,7 +143,7 @@ Template.locations.rendered = function () {
             /**
              * Draw the line connecting the marker pin and the image pin
              */
-            drawString(projection, svg, markerPosition, imagePosition, xOffset, yOffset, image)
+            drawString(projection, svg, markerPosition, imagePosition, xOffset, yOffset, image);
 
         });
     }
