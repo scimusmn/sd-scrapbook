@@ -21,13 +21,11 @@ Template.location.rendered = function () {
      *
      * Draw the location page.
      */
-    Deps.autorun(function () {
-        window.setTimeout(function () {
-            var locationContainer = $('.location');
-            locationContainer.css('opacity', 0);
-            drawLocation();
-        }, 300);
-    });
+    window.setTimeout(function () {
+        var locationContainer = $('.location');
+        locationContainer.css('opacity', 0);
+        drawLocation();
+    }, 300);
 };
 
 /**
