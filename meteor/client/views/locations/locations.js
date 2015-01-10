@@ -515,11 +515,12 @@ Template.locations.events({
                 t.translate[0] = t.translate[0] + ( width / 2 );
                 t.translate[1] = t.translate[1] + ( height / 2 );
                 var transformString = t.toString();
+
+                // Only this one has problems
                 d3.selectAll('.string-group')
                     .transition()
                     .delay(i * 20)
                     .attr('opacity', '0')
-                    .attr('transform', transformString)
                     .duration(400);
                 d3.selectAll('.pin-group')
                     .transition()
