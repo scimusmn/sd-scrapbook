@@ -53,29 +53,27 @@ Template.locations.rendered = function () {
     /**
      * Wait for Meteor to finish loading server data
      */
-    Deps.autorun(function () {
 
-        /**
-         * Locations
-         *
-         * Loop through each location, drawing pins and defining
-         * the positional details which we'll use for the images
-         */
-        var locations = Locations.find().fetch();
-        var positions = drawLocations(projection, svg, locations);
+    /**
+     * Locations
+     *
+     * Loop through each location, drawing pins and defining
+     * the positional details which we'll use for the images
+     */
+    var locations = Locations.find().fetch();
+    var positions = drawLocations(projection, svg, locations);
 
-        /**
-         * Images
-         *
-         * Draw all the images, one for each location.
-         */
-        window.setTimeout(function() {
-            var images = Images.find().fetch();
-            drawImages(projection, svg, positions, images);
-        }, 300);
+    /**
+     * Images
+     *
+     * Draw all the images, one for each location.
+     */
+    window.setTimeout(function() {
+        var images = Images.find().fetch();
+        drawImages(projection, svg, positions, images);
+    }, 300);
 
 
-    });
 
     /**
      * Draw all locations
