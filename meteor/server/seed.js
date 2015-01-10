@@ -135,7 +135,7 @@ if (Locations.find().count() === 0) {
     link: 'san-diego-inland',
     description: '',
     latitude: '32.832099',
-    longitude: '-117.147372',
+    longitude: '-117.097372',
     dsLocId: '14'
   });
 
