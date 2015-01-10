@@ -314,194 +314,199 @@ function highlightImage(pointerX) {
      */
     var timeline = $('.timeline-images-svg');
 
-    /**
-     * Determine which image to highlight based on pointer position
-     */
-    var posX = pointerX - timeline.parent().offset().left;
-
-    var imagesCount = d3.selectAll('.picture-group')[0].length;
-    var intervalWidth = (
-            timeline.width() /
-            imagesCount);
-
-    /**
-     * Timeline handle
-     *
-     * Position the handle center on our pointer, but prevent it
-     * from going off the edge of the timeline.
-     */
-    var handle = d3.select('.time-handle-rect');
-
-    // This positions the hand graphic correctly. The mouse position
-    // will exactly match up with the index finger on the graphic.
-    var handleFingerOffset = 16;
-    var handleX = posX - handleFingerOffset;
-
-    // Prevent the handle from going off the edge of the area
-    // Left edge
-    if (posX <= 20) {
-        posX = 20;
-        handleX = posX - handleFingerOffset;
-    }
-    // Right edge
-    if (posX >= 1620) {
-        posX = 1620;
-        handleX = posX;
-    }
-
-    // Move handle
-    handle.attr('transform', function (){
-        var transform = 'translate(' + ( handleX ) + ', 40)';
-        return transform;
-    });
-
-    /**
-     * Scale the images based on mouse position
-     *
-     * Make the images nearest the cursor the biggest
-     */
-    var posInterval = Math.floor(posX / intervalWidth);
-    d3.selectAll('.picture-group').each( function(d, i){
+    var timelineOffset = timeline.parent().offset();
+    if (typeof timelineOffset !== 'undefined') {
 
         /**
-         * Determine a scale value based on mouse position
-         */
-        i = Number(d3.select(this).attr('data-index'));
-        var distance = posInterval - i;
-        var distanceScale;
-        if (distance === 0) {
-            distanceScale = 1;
+        * Determine which image to highlight based on pointer position
+        */
+        var posX = pointerX - timelineOffset.left;
+
+        var imagesCount = d3.selectAll('.picture-group')[0].length;
+        var intervalWidth = (
+                timeline.width() /
+                imagesCount);
+
+        /**
+        * Timeline handle
+        *
+        * Position the handle center on our pointer, but prevent it
+        * from going off the edge of the timeline.
+        */
+        var handle = d3.select('.time-handle-rect');
+
+        // This positions the hand graphic correctly. The mouse position
+        // will exactly match up with the index finger on the graphic.
+        var handleFingerOffset = 16;
+        var handleX = posX - handleFingerOffset;
+
+        // Prevent the handle from going off the edge of the area
+        // Left edge
+        if (posX <= 20) {
+            posX = 20;
+            handleX = posX - handleFingerOffset;
         }
+        // Right edge
+        if (posX >= 1620) {
+            posX = 1620;
+            handleX = posX;
+        }
+
+        // Move handle
+        handle.attr('transform', function (){
+            var transform = 'translate(' + ( handleX ) + ', 40)';
+            return transform;
+        });
+
+        /**
+        * Scale the images based on mouse position
+        *
+        * Make the images nearest the cursor the biggest
+        */
+        var posInterval = Math.floor(posX / intervalWidth);
+        d3.selectAll('.picture-group').each( function(d, i){
+
+            /**
+            * Determine a scale value based on mouse position
+            */
+            i = Number(d3.select(this).attr('data-index'));
+            var distance = posInterval - i;
+            var distanceScale;
+            if (distance === 0) {
+                distanceScale = 1;
+            }
+            else {
+                var minVal = 0.5;
+                var maxVal = 0.7;
+                distanceScale = ( minVal + (maxVal - minVal) * (1 / (Math.abs(posInterval - i))));
+            }
+
+            /**
+            * Transform the picture group
+            */
+            var pictureGroup = d3.select(this);
+            var imageInGroup = pictureGroup.select('image');
+            var imageHeight = imageInGroup
+                .attr('height');
+            var imageWidth = imageInGroup
+                .attr('width');
+            // Get the current transform object
+            var dataCenterX = pictureGroup.attr('data-centerx');
+            var t = d3.transform(pictureGroup.attr('transform'));
+            // Set the scale value, without changing other attributes
+            // This allows the image to stay at its current X,Y position
+            // while scaling.
+            t.scale = [distanceScale, distanceScale];
+
+            var timelineImages = $('.timeline-images');
+            var timelineImagesHeight = timelineImages.height();
+
+            /**
+            * X position
+            *
+            * Position the image off its center, scaled by the size of the
+            * image. Push the image right or left for the image border
+            * based on whether it's on the left or the right side.
+            */
+            var imageBorderTranslate = imageBorder;
+            if ( i >= ( imagesCount / 2 ) ) {
+                imageBorderTranslate = imageBorder * -1;
+            }
+            var translateX = dataCenterX - ((imageWidth * distanceScale) / 2) + imageBorderTranslate;
+
+            /**
+            * Y position
+            *
+            * Highlight the current image by moving it up
+            */
+            var highlightHeight;
+            if (posInterval == i) {
+                highlightHeight = 50;
+            }
+            else {
+                highlightHeight = 0;
+            }
+            var translateY = (
+                    timelineImagesHeight -
+                    ( imageHeight * distanceScale ) -
+                    imageBorder -
+                    imageBottomPadding -
+                    highlightHeight);
+
+            /**
+            * Transform the image
+            *
+            * Turn the transform back into a string for SVG
+            */
+            t.translate = [
+                translateX,
+                translateY
+                    ];
+            var transformString = t.toString();
+            pictureGroup
+                .transition()
+                .duration(100)
+                .ease('circle-out')
+                .attr('transform', transformString);
+        });
+
+        /**
+        * Display detail information about the photograph
+        */
+        // Get the image data from the thumbnail data objects
+        var hlImg = $('g[data-index=' + posInterval + ']');
+
+        // Set the title
+        var hlImgTitle = hlImg.data('title');
+        $('.image-detail h4').text(hlImgTitle);
+
+        var hlImgDescription = hlImg.data('description');
+        var hlImgDescriptionEs = hlImg.data('description-es');
+        $('.image-detail div.image-description').text(hlImgDescription);
+        $('.image-detail div.image-description-es').text(hlImgDescriptionEs);
+        $('.image-detail div.image-location').text(hlImg.data('location'));
+        $('.image-detail div.image-date').text(hlImg.data('app-date').substring(5));
+        if ((hlImg.data('credit-line')).length) {
+            $('.image-detail div.image-credit-line').text('Courtesy of ' + hlImg.data('credit-line'));
+        } else {
+            $('.image-detail div.image-credit-line').text('');
+        }
+        var hlImgId = hlImg.data('id');
+        var hlImgExHeight = parseFloat(hlImg.data('xh'));
+        var hlImgExWidth = parseFloat(hlImg.data('xw'));
+        var hlImgAspect = parseFloat(hlImg.data('aspect'));
+
+        /**
+        * Portait - taller than narrow. Limit the height to 600px
+        */
+        var aspectR;
+        if (hlImgAspect < 1) {
+            if (hlImgExHeight > 800) {
+                hlImgExHeight = 800;
+            }
+            hlImgExWidth = hlImgExHeight * hlImgAspect;
+
+            aspectR = hlImgAspect;
+        }
+        /**
+        * Landscape - wider than tall. Limit the width to 1000px
+        */
         else {
-            var minVal = 0.5;
-            var maxVal = 0.7;
-            distanceScale = ( minVal + (maxVal - minVal) * (1 / (Math.abs(posInterval - i))));
+            if (hlImgExWidth > 1000) {
+                hlImgExWidth = 1000;
+            }
+            hlImgExHeight = hlImgExWidth / hlImgAspect;
+            aspectR = hlImgAspect;
         }
 
-        /**
-         * Transform the picture group
-         */
-        var pictureGroup = d3.select(this);
-        var imageInGroup = pictureGroup.select('image');
-        var imageHeight = imageInGroup
-            .attr('height');
-        var imageWidth = imageInGroup
-            .attr('width');
-        // Get the current transform object
-        var dataCenterX = pictureGroup.attr('data-centerx');
-        var t = d3.transform(pictureGroup.attr('transform'));
-        // Set the scale value, without changing other attributes
-        // This allows the image to stay at its current X,Y position
-        // while scaling.
-        t.scale = [distanceScale, distanceScale];
-
-        var timelineImages = $('.timeline-images');
-        var timelineImagesHeight = timelineImages.height();
-
-        /**
-         * X position
-         *
-         * Position the image off its center, scaled by the size of the
-         * image. Push the image right or left for the image border
-         * based on whether it's on the left or the right side.
-         */
-        var imageBorderTranslate = imageBorder;
-        if ( i >= ( imagesCount / 2 ) ) {
-            imageBorderTranslate = imageBorder * -1;
+        // Only change the image when we need to
+        var imagePath = '/images/expanded/' + hlImgId + '.jpg';
+        if ($('.image-fullsize-image').attr('src') != imagePath) {
+            $('.image-fullsize-image').attr('src', imagePath).stop(true, true).hide().fadeIn(400);
+            $('.image-fullsize-image').attr('width', (hlImgExWidth));
+            $('.image-fullsize-image').attr('height', (hlImgExHeight));
+            $('.image-fullsize-image').attr('aspect', aspectR);
         }
-        var translateX = dataCenterX - ((imageWidth * distanceScale) / 2) + imageBorderTranslate;
 
-        /**
-         * Y position
-         *
-         * Highlight the current image by moving it up
-         */
-        var highlightHeight;
-        if (posInterval == i) {
-            highlightHeight = 50;
-        }
-        else {
-            highlightHeight = 0;
-        }
-        var translateY = (
-                timelineImagesHeight -
-                ( imageHeight * distanceScale ) -
-                imageBorder -
-                imageBottomPadding -
-                highlightHeight);
-
-        /**
-         * Transform the image
-         *
-         * Turn the transform back into a string for SVG
-         */
-        t.translate = [
-            translateX,
-            translateY
-                ];
-        var transformString = t.toString();
-        pictureGroup
-            .transition()
-            .duration(100)
-            .ease('circle-out')
-            .attr('transform', transformString);
-    });
-
-    /**
-     * Display detail information about the photograph
-     */
-    // Get the image data from the thumbnail data objects
-    var hlImg = $('g[data-index=' + posInterval + ']');
-
-    // Set the title
-    var hlImgTitle = hlImg.data('title');
-    $('.image-detail h4').text(hlImgTitle);
-
-    var hlImgDescription = hlImg.data('description');
-    var hlImgDescriptionEs = hlImg.data('description-es');
-    $('.image-detail div.image-description').text(hlImgDescription);
-    $('.image-detail div.image-description-es').text(hlImgDescriptionEs);
-    $('.image-detail div.image-location').text(hlImg.data('location'));
-    $('.image-detail div.image-date').text(hlImg.data('app-date').substring(5));
-    if ((hlImg.data('credit-line')).length) {
-        $('.image-detail div.image-credit-line').text('Courtesy of ' + hlImg.data('credit-line'));
-    } else {
-        $('.image-detail div.image-credit-line').text('');
-    }
-    var hlImgId = hlImg.data('id');
-    var hlImgExHeight = parseFloat(hlImg.data('xh'));
-    var hlImgExWidth = parseFloat(hlImg.data('xw'));
-    var hlImgAspect = parseFloat(hlImg.data('aspect'));
-
-    /**
-     * Portait - taller than narrow. Limit the height to 600px
-     */
-    var aspectR;
-    if (hlImgAspect < 1) {
-        if (hlImgExHeight > 800) {
-            hlImgExHeight = 800;
-        }
-        hlImgExWidth = hlImgExHeight * hlImgAspect;
-
-        aspectR = hlImgAspect;
-    }
-    /**
-     * Landscape - wider than tall. Limit the width to 1000px
-     */
-    else {
-        if (hlImgExWidth > 1000) {
-            hlImgExWidth = 1000;
-        }
-        hlImgExHeight = hlImgExWidth / hlImgAspect;
-        aspectR = hlImgAspect;
-    }
-
-    // Only change the image when we need to
-    var imagePath = '/images/expanded/' + hlImgId + '.jpg';
-    if ($('.image-fullsize-image').attr('src') != imagePath) {
-        $('.image-fullsize-image').attr('src', imagePath).stop(true, true).hide().fadeIn(400);
-        $('.image-fullsize-image').attr('width', (hlImgExWidth));
-        $('.image-fullsize-image').attr('height', (hlImgExHeight));
-        $('.image-fullsize-image').attr('aspect', aspectR);
     }
 }
