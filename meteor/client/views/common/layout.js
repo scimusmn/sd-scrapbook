@@ -49,6 +49,10 @@ Template.layout.events({
         saveScreen(sSaverTimeout);
 
     },
+
+    'dragstart': function(e) {
+        e.preventDefault();
+    }
 });
 
 /**
