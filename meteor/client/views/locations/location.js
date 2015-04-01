@@ -32,9 +32,19 @@ Template.location.rendered = function () {
  * Template Events
  */
 Template.location.events({
-    // Highlight images when you tap anywhere on the screen
+    /**
+     * Highlight images when you press on the bottom part of the screen
+     *
+     * We only highlight the images on the bottom part of the screen
+     */
     'mousemove .container': function (e) {
-        highlightImage(e.pageX);
+        if (e.pageY >= 840) {
+            console.log('Highlighting');
+            highlightImage(e.pageX);
+        }
+    },
+    'click .prev-next-buttons circle': function (e) {
+        console.log('Clicked e - ', e);
     }
 });
 
@@ -108,7 +118,7 @@ function drawLocation() {
     });
 
     /**
-     * Find the clicked image and highlight it
+     * Special the clicked image and highlight it
      *
      * TODO - This is a hack. We're looking up the x position for the
      * image clicked and then passing it to the mousemove function.
@@ -124,7 +134,66 @@ function drawLocation() {
     var posX = parseInt(timeline.parent().offset().left) + parseInt(groupObj.attr('data-centerx'));
     highlightImage(posX);
 
+    /**
+     * Draw circle
+     */
+    //var locationContainer = $('.location');
+    var locationContainerWidth = locationContainer.width();
+    var locationContainerHeight = locationContainer.height();
+    var locationSVG  = d3.select('.location')
+        .append('svg')
+        .attr('class', 'prev-next-buttons')
+        .attr('width', 1920 )
+        .attr('height', locationContainerHeight);
+
+    drawNavButton(locationSVG, 50, 400, 30, 'left');
+    drawNavButton(locationSVG, 1860, 400, 30, 'right');
+
 }
+
+/**
+ * Draw temp circle
+ *
+ * Drawing a cirle for the next and prev buttons
+ *
+ */
+function drawNavButton(svg, cx, cy, r, direction) {
+    svg.append('circle')
+        .attr('cx', cx)
+        .attr('cy', cy)
+        .attr('fill', '#e2d9c2')
+        //.attr('fill-opacity', 0.5)
+        .attr('r', r);
+
+    var poly = [
+        {'x':0.0, 'y':25.0},
+        {'x':8.5,'y':23.4},
+        {'x':13.0,'y':21.0},
+        {'x':19.0,'y':15.5}
+    ];
+
+    var triA;
+    var triB;
+    var triC;
+    if (direction == 'left') {
+        triA = [(cx - (r / 2)), cy];
+        triB = [(cx + 10), (cy - 20)];
+        triC = [(cx + 10), (cy + 20)];
+    } else {
+        triA = [(cx + (r / 2)), cy];
+        triB = [(cx - 10), (cy + 20)];
+        triC = [(cx - 10), (cy - 20)];
+    }
+
+    svg.append('polygon')
+        .attr('fill', '#341B1C')
+        //.attr('fill-opacity', 0.8)
+        .attr('points',function() {
+            return triA.join(',') + ' ' + triB.join(',') + ' ' + triC.join(',');
+        });
+        //.attr('points', cx,cy, (cx + 50), (cy + 50), (cx - 50), (cy + 50)');
+}
+
 
 /**
  * Draw the timeline handle
