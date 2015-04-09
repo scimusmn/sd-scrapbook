@@ -43,8 +43,13 @@ Template.location.events({
             highlightImage(e.pageX);
         }
     },
-    'click .prev-next-buttons circle': function (e) {
-        console.log('Clicked e - ', e);
+    'click .prev-next-buttons circle.button-left, click .prev-next-buttons polygon.button-left': function (e) {
+        console.log('Button left clicked: e - ', e);
+        highlightImage(100);
+    },
+    'click .prev-next-buttons circle.button-right, click .prev-next-buttons polygon.button-right': function (e) {
+        console.log('Button right clicked: e - ', e);
+        highlightImage(500);
     }
 });
 
@@ -79,7 +84,6 @@ function drawLocation() {
     var timelineBackground = $('.timeline-background');
     var timelineBackgroundWidth = timelineBackground.width();
     var timelineBackgroundHeight = timelineBackground.height();
-    var timelineBackgroundLeft = parseInt(timelineBackground.css('left'));
     var timelineSVG  = d3.select('.timeline-background')
         .append('svg')
         .attr('class', 'timeline-background-svg')
@@ -137,8 +141,6 @@ function drawLocation() {
     /**
      * Draw circle
      */
-    //var locationContainer = $('.location');
-    var locationContainerWidth = locationContainer.width();
     var locationContainerHeight = locationContainer.height();
     var locationSVG  = d3.select('.location')
         .append('svg')
@@ -161,16 +163,10 @@ function drawNavButton(svg, cx, cy, r, direction) {
     svg.append('circle')
         .attr('cx', cx)
         .attr('cy', cy)
+        .attr('class', 'button-' + direction)
         .attr('fill', '#e2d9c2')
         //.attr('fill-opacity', 0.5)
         .attr('r', r);
-
-    var poly = [
-        {'x':0.0, 'y':25.0},
-        {'x':8.5,'y':23.4},
-        {'x':13.0,'y':21.0},
-        {'x':19.0,'y':15.5}
-    ];
 
     var triA;
     var triB;
@@ -187,6 +183,7 @@ function drawNavButton(svg, cx, cy, r, direction) {
 
     svg.append('polygon')
         .attr('fill', '#341B1C')
+        .attr('class', 'button-' + direction)
         //.attr('fill-opacity', 0.8)
         .attr('points',function() {
             return triA.join(',') + ' ' + triB.join(',') + ' ' + triC.join(',');
@@ -197,16 +194,27 @@ function drawNavButton(svg, cx, cy, r, direction) {
 
 /**
  * Draw the timeline handle
- *
- * Leave the options here until the client is sure that they like the
- * new pointer
  */
 function drawTimelineHandle(svg) {
-    svg.append('image')
-        .attr('xlink:href', '/images/hand-2.png')
-        .attr('width', 75)
-        .attr('height', 146)
-        .attr('class', 'time-handle-rect');
+    //
+    // Disabling hand pointer
+    //
+    // The odd shape and the timeline difficulties are making this a bad choice
+    //
+    // Keep this around until we're certain that we don't want
+    // to use this any longer.
+    //svg.append('image')
+        //.attr('xlink:href', '/images/hand-2.png')
+        //.attr('width', 75)
+        //.attr('height', 146)
+        //.attr('class', 'time-handle-rect');
+
+    svg.append('path')
+        .style('stroke', '#341B1C')
+        .style('fill', '#341B1C')
+        //.attr('width', 300)
+        .attr('class', 'time-handle-rect')
+        .attr('d', 'M 0,50, L 25,0, L 50,50 Z');
 }
 
 /**
@@ -406,7 +414,7 @@ function highlightImage(pointerX) {
 
         // This positions the hand graphic correctly. The mouse position
         // will exactly match up with the index finger on the graphic.
-        var handleFingerOffset = 16;
+        var handleFingerOffset = -23;
         var handleX = posX - handleFingerOffset;
 
         // Prevent the handle from going off the edge of the area
@@ -423,7 +431,7 @@ function highlightImage(pointerX) {
 
         // Move handle
         handle.attr('transform', function (){
-            var transform = 'translate(' + ( handleX ) + ', 40)';
+            var transform = 'translate(' + ( handleX ) + ', 100)';
             return transform;
         });
 
@@ -465,7 +473,10 @@ function highlightImage(pointerX) {
             // Set the scale value, without changing other attributes
             // This allows the image to stay at its current X,Y position
             // while scaling.
-            t.scale = [distanceScale, distanceScale];
+            //
+            // Disabling
+            //
+            //t.scale = [distanceScale, distanceScale];
 
             var timelineImages = $('.timeline-images');
             var timelineImagesHeight = timelineImages.height();
@@ -507,10 +518,11 @@ function highlightImage(pointerX) {
             *
             * Turn the transform back into a string for SVG
             */
+            //console.log('t.translate - ', t.translate[0]);
             t.translate = [
-                translateX,
-                translateY
-                    ];
+                t.translate[0],
+                t.translate[1],
+            ];
             var transformString = t.toString();
             pictureGroup
                 .transition()
