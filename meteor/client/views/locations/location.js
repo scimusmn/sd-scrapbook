@@ -468,17 +468,20 @@ function imagesCount() {
     return d3.selectAll('.picture-group')[0].length;
 }
 
+function timelineOffset() {
+    return timeline().parent().offset();
+}
+
 function highlightImage(pointerX, timeline, intervalWidth) {
     /**
      * Get timeline width for position calculations
      */
 
-    var timelineOffset = timeline.parent().offset();
     // TODO - Define why we check the offset for undefined
-    if (typeof timelineOffset !== 'undefined') {
+    //if (typeof timelineOffset() !== 'undefined') {
 
         // Set an X position for modifications based on mouse X
-        var posX = boundPosX(pointerX - timelineOffset.left);
+        var posX = boundPosX(pointerX - timelineOffset().left);
 
         // Position selection handle
         positionHandle(posX);
@@ -641,5 +644,5 @@ function highlightImage(pointerX, timeline, intervalWidth) {
             $('.image-fullsize-image').attr('aspect', aspectR);
         }
 
-    }
+    //}
 }
