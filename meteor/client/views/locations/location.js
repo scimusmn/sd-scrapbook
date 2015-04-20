@@ -40,16 +40,16 @@ Template.location.events({
     'mousemove .container': function (e) {
         if (e.pageY >= 840) {
             console.log('Highlighting');
-            highlightImage(e.pageX);
+            highlightImage(e.pageX, timeline(), intervalWidth());
         }
     },
     'click .prev-next-buttons circle.button-left, click .prev-next-buttons polygon.button-left': function (e) {
         console.log('Button left clicked: e - ', e);
-        highlightImage(100);
+        highlightImage(100, timeline(), intervalWidth());
     },
     'click .prev-next-buttons circle.button-right, click .prev-next-buttons polygon.button-right': function (e) {
         console.log('Button right clicked: e - ', e);
-        highlightImage(500);
+        highlightImage(500, timeline(), intervalWidth());
     }
 });
 
@@ -136,7 +136,7 @@ function drawLocation() {
     var groupObj = d3.selectAll('g[data-id=' + clickedImage + ']');
     var timeline = $('.timeline-images-svg');
     var posX = parseInt(timeline.parent().offset().left) + parseInt(groupObj.attr('data-centerx'));
-    highlightImage(posX);
+    highlightImage(posX, timeline(), intervalWidth());
 
     /**
      * Draw circle
@@ -428,11 +428,23 @@ function boundPosX(posX) {
     return posX;
 }
 
-function highlightImage(pointerX) {
+function timeline() {
+    return $('.timeline-images-svg');
+}
+
+function intervalWidth() {
+    var timeline = $('.timeline-images-svg');
+    return ( timeline.width() / imagesCount());
+}
+
+function imagesCount() {
+    return d3.selectAll('.picture-group')[0].length;
+}
+
+function highlightImage(pointerX, timeline, intervalWidth) {
     /**
      * Get timeline width for position calculations
      */
-    var timeline = $('.timeline-images-svg');
 
     var timelineOffset = timeline.parent().offset();
     // TODO - Define why we check the offset for undefined
@@ -444,15 +456,15 @@ function highlightImage(pointerX) {
         // Position selection handle
         positionHandle(posX);
 
-        var imagesCount = d3.selectAll('.picture-group')[0].length;
 
         /**
          * Scale the images based on mouse position
          *
          * Make the images nearest the cursor the biggest
          */
-        var intervalWidth = ( timeline.width() / imagesCount);
         var posInterval = Math.floor(posX / intervalWidth);
+        console.log('posInterval - ', posInterval);
+
         d3.selectAll('.picture-group').each( function(d, i){
 
             /**
