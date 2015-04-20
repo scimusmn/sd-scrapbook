@@ -117,8 +117,35 @@ function drawLocation() {
         .attr('height', timelineImagesHeight);
     var firstImageWidth = _.first(images).thumbWidth;
     var lastImageWidth = _.last(images).thumbWidth;
+    var totalImagesWidth  = 0;
     _.each(images, function(image, i) {
-        drawTimelineImage(timelineImagesSVG, timelineImagesWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth);
+        console.log('image.thumbWidth - ', image.thumbWidth);
+        totalImagesWidth = (parseInt(totalImagesWidth) + parseInt(image.thumbWidth));
+    });
+    console.log('totalImagesWidth - ', totalImagesWidth);
+    console.log('timelineImagesWidth - ', timelineImagesWidth);
+
+    /**
+     * Create scale factor for the images
+     *
+     * Shrink the images by this scale factor and all of the pictures will be
+     * visible along the timeline. Add a fudge factor of 0.4 to make the images
+     * overlap slightly.
+     *
+     * Don't oversize the images on unpopulated timelines.
+     */
+    var scaleFactor;
+    if (totalImagesWidth <= timelineImagesWidth) {
+        scaleFactor = 1;
+    }
+    else {
+        var fudgeFactor = 1;
+        scaleFactor = ((timelineImagesWidth / (parseInt(totalImagesWidth) + (imagesCount * 20))) * fudgeFactor);
+    }
+    console.log('scaleFactor - ', scaleFactor);
+
+    _.each(images, function(image, i) {
+        drawTimelineImage(timelineImagesSVG, timelineImagesWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth, scaleFactor);
     });
 
     /**
@@ -260,7 +287,7 @@ function drawYearMarker(svg, x, y, posX, posY, year) {
 /**
  * Render each image
  */
-function drawTimelineImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth) {
+function drawTimelineImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth, scaleFactor) {
     var centerX;
     var leftX;
     var translateX;
@@ -370,7 +397,7 @@ function drawTimelineImage(timelineImagesSVG, timelineBackgroundWidth, timelineI
     // Position the image groups
     pictureGroup
         .attr('transform', function (){
-            var transform = translate + ' scale(1)';
+            var transform = translate + ' scale(' + scaleFactor + ')';
             return transform;
         });
 
