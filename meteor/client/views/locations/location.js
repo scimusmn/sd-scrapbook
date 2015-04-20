@@ -385,6 +385,51 @@ function drawTimelineImage(timelineImagesSVG, timelineBackgroundWidth, timelineI
 
 }
 
+/**
+ * Position timeline handle
+ *
+ * Position the handle center on our pointer, but prevent it
+ * from going off the edge of the timeline.
+ */
+function positionHandle(posX) {
+    // Handle object
+    var handle = d3.select('.time-handle-rect');
+
+    // Handle width
+    var handleWidth = handle.node().getBBox().width;
+
+    // Center handle on mouse X
+    var handleX = (posX + (handleWidth / 2));
+
+    // Move handle
+    handle.attr('transform', function (){
+        var transform = 'translate(' + ( handleX ) + ', 100)';
+        return transform;
+    });
+
+}
+
+/**
+ * Bound posX
+ *
+ * Prevent the posX from getting modified outside of the timeline boundaries.
+ */
+function boundPosX(posX) {
+    // Prevent the handle from going off the edge of the timeline area
+    // Left edge
+    if (posX <= 20) {
+        posX = 20;
+        //handleX = posX + handleWidth;
+    }
+    // Right edge
+    if (posX >= 1620) {
+        posX = 1620;
+        //handleX = posX;
+    }
+
+    return posX;
+}
+
 function highlightImage(pointerX) {
     /**
      * Get timeline width for position calculations
@@ -392,48 +437,19 @@ function highlightImage(pointerX) {
     var timeline = $('.timeline-images-svg');
 
     var timelineOffset = timeline.parent().offset();
+    // TODO - Define why we check the offset for undefined
     if (typeof timelineOffset !== 'undefined') {
 
-        /**
-        * Determine which image to highlight based on pointer position
-        */
-        var posX = pointerX - timelineOffset.left;
+        // Set an X position for modifications based on mouse X
+        var posX = boundPosX(pointerX - timelineOffset.left);
+
+        // Position selection handle
+        positionHandle(posX);
 
         var imagesCount = d3.selectAll('.picture-group')[0].length;
         var intervalWidth = (
                 timeline.width() /
                 imagesCount);
-
-        /**
-        * Timeline handle
-        *
-        * Position the handle center on our pointer, but prevent it
-        * from going off the edge of the timeline.
-        */
-        var handle = d3.select('.time-handle-rect');
-
-        // This positions the hand graphic correctly. The mouse position
-        // will exactly match up with the index finger on the graphic.
-        var handleFingerOffset = -23;
-        var handleX = posX - handleFingerOffset;
-
-        // Prevent the handle from going off the edge of the area
-        // Left edge
-        if (posX <= 20) {
-            posX = 20;
-            handleX = posX - handleFingerOffset;
-        }
-        // Right edge
-        if (posX >= 1620) {
-            posX = 1620;
-            handleX = posX;
-        }
-
-        // Move handle
-        handle.attr('transform', function (){
-            var transform = 'translate(' + ( handleX ) + ', 100)';
-            return transform;
-        });
 
         /**
         * Scale the images based on mouse position
