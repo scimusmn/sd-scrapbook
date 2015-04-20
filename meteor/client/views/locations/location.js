@@ -450,10 +450,11 @@ function highlightImage(pointerX) {
                 imagesCount);
 
         /**
-        * Scale the images based on mouse position
-        *
-        * Make the images nearest the cursor the biggest
-        */
+         * Scale the images based on mouse position
+         *
+         * Make the images nearest the cursor the biggest
+         */
+        var intervalWidth = ( timeline.width() / imagesCount);
         var posInterval = Math.floor(posX / intervalWidth);
         d3.selectAll('.picture-group').each( function(d, i){
 
@@ -496,12 +497,12 @@ function highlightImage(pointerX) {
             var timelineImagesHeight = timelineImages.height();
 
             /**
-            * X position
-            *
-            * Position the image off its center, scaled by the size of the
-            * image. Push the image right or left for the image border
-            * based on whether it's on the left or the right side.
-            */
+             * X position
+             *
+             * Position the image off its center, scaled by the size of the
+             * image. Push the image right or left for the image border
+             * based on whether it's on the left or the right side.
+             */
             var imageBorderTranslate = imageBorder;
             if ( i >= ( imagesCount / 2 ) ) {
                 imageBorderTranslate = imageBorder * -1;
@@ -528,10 +529,10 @@ function highlightImage(pointerX) {
                     highlightHeight);
 
             /**
-            * Transform the image
-            *
-            * Turn the transform back into a string for SVG
-            */
+             * Transform the image
+             *
+             * Turn the transform back into a string for SVG
+             */
             //console.log('t.translate - ', t.translate[0]);
             t.translate = [
                 t.translate[0],
@@ -546,8 +547,8 @@ function highlightImage(pointerX) {
         });
 
         /**
-        * Display detail information about the photograph
-        */
+         * Display detail information about the photograph
+         */
         // Get the image data from the thumbnail data objects
         var hlImg = $('g[data-index=' + posInterval + ']');
 
@@ -572,8 +573,8 @@ function highlightImage(pointerX) {
         var hlImgAspect = parseFloat(hlImg.data('aspect'));
 
         /**
-        * Portait - taller than narrow. Limit the height to 600px
-        */
+         * Portait - taller than narrow. Limit the height to 600px
+         */
         var aspectR;
         if (hlImgAspect < 1) {
             if (hlImgExHeight > 800) {
@@ -583,9 +584,10 @@ function highlightImage(pointerX) {
 
             aspectR = hlImgAspect;
         }
+
         /**
-        * Landscape - wider than tall. Limit the width to 1000px
-        */
+         * Landscape - wider than tall. Limit the width to 1000px
+         */
         else {
             if (hlImgExWidth > 1000) {
                 hlImgExWidth = 1000;
