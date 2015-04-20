@@ -11,6 +11,7 @@ var imageBorder = 5; // White border aorund the picture
 var imageBottomPadding = 10; // Whitespace below images
 var delay = 5; // Milliseconds to delay the animation per image
 var dur = 500; // Milliseconds for the image animation
+var timelineWidth = 1730; // Width of the timeline
 
 /**
  * Template render
@@ -22,9 +23,27 @@ Template.location.rendered = function () {
      * Draw the location page.
      */
     window.setTimeout(function () {
+        /**
+         * Location information
+         *
+         * Define some basic information about the location assets for use
+         * after the page is rendered.
+         */
+        var imagesCursor = Images.find();
+        var images = imagesCursor.fetch();
+
+        var imagesCount = imagesCursor.count();
+        Session.set('imagesCount', imagesCount);
+
+        var intervalWidth = (timelineWidth / imagesCount);
+        Session.set('intervalWidth', intervalWidth);
+
+        /**
+         * Draw the location assets
+         */
         var locationContainer = $('.location');
         locationContainer.css('opacity', 0);
-        drawLocation();
+        drawLocation(images);
     }, 300);
 };
 
@@ -40,29 +59,26 @@ Template.location.events({
     'mousemove .container': function (e) {
         if (e.pageY >= 840) {
             console.log('Highlighting');
-            highlightImage(e.pageX, timeline(), intervalWidth());
+            highlightImage(e.pageX);
         }
     },
     'click .prev-next-buttons circle.button-left, click .prev-next-buttons polygon.button-left': function (e) {
         console.log('Button left clicked: e - ', e);
-        highlightImage(100, timeline(), intervalWidth());
+        highlightImage(100);
     },
     'click .prev-next-buttons circle.button-right, click .prev-next-buttons polygon.button-right': function (e) {
         console.log('Button right clicked: e - ', e);
-        highlightImage(500, timeline(), intervalWidth());
+        highlightImage(500);
     }
 });
 
 /**
  * Draw the location page
  */
-function drawLocation() {
+function drawLocation(images) {
     /**
      * Gather image data from the Meteor collection and sort by year
      */
-    var imagesCursor = Images.find();
-    var imagesCount = imagesCursor.count();
-    var images = imagesCursor.fetch();
     images = _.sortBy(images, function (image) {
         return image.isoDate;
     });
@@ -140,12 +156,12 @@ function drawLocation() {
     }
     else {
         var fudgeFactor = 1;
-        scaleFactor = ((timelineImagesWidth / (parseInt(totalImagesWidth) + (imagesCount * 20))) * fudgeFactor);
+        scaleFactor = ((timelineImagesWidth / (parseInt(totalImagesWidth) + (Session.get('imagesCount') * 20))) * fudgeFactor);
     }
     console.log('scaleFactor - ', scaleFactor);
 
     _.each(images, function(image, i) {
-        drawTimelineImage(timelineImagesSVG, timelineImagesWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth, scaleFactor);
+        drawTimelineImage(timelineImagesSVG, timelineImagesWidth, timelineImagesHeight, image, i, firstImageWidth, lastImageWidth, scaleFactor);
     });
 
     /**
@@ -161,9 +177,12 @@ function drawLocation() {
 
     // Determine which image to highlight based on pointer position
     var groupObj = d3.selectAll('g[data-id=' + clickedImage + ']');
+    // TODO: cleanup this mess. We shouldn't need to use jquery here
     var timeline = $('.timeline-images-svg');
-    var posX = parseInt(timeline.parent().offset().left) + parseInt(groupObj.attr('data-centerx'));
-    highlightImage(posX, timeline(), intervalWidth());
+    var timelineOffset = timeline.parent().offset();
+    Session.set('timelineOffset', timelineOffset);
+    var posX = parseInt(timelineOffset.left) + parseInt(groupObj.attr('data-centerx'));
+    highlightImage(posX);
 
     /**
      * Draw circle
@@ -287,7 +306,7 @@ function drawYearMarker(svg, x, y, posX, posY, year) {
 /**
  * Render each image
  */
-function drawTimelineImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight, image, i, imagesCount, firstImageWidth, lastImageWidth, scaleFactor) {
+function drawTimelineImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight, image, i, firstImageWidth, lastImageWidth, scaleFactor) {
     var centerX;
     var leftX;
     var translateX;
@@ -308,7 +327,7 @@ function drawTimelineImage(timelineImagesSVG, timelineBackgroundWidth, timelineI
     }
 
     // Values for the last image
-    if (i == (imagesCount - 1)){
+    if (i == (Session.get('imagesCount') - 1)){
         centerX = lastCenterX;
         leftX = timelineBackgroundWidth - lastImageWidth - imageBorder;
         translateX = leftX;
@@ -318,8 +337,8 @@ function drawTimelineImage(timelineImagesSVG, timelineBackgroundWidth, timelineI
     //
     // First find the proper interval between images, and then set the
     // position based on the i value
-    var centerInterval = (lastCenterX - firstCenterX) / ( imagesCount - 1 );
-    if ((i !== 0) && (i != (imagesCount - 1))) {
+    var centerInterval = (lastCenterX - firstCenterX) / ( Session.get('imagesCount') - 1 );
+    if ((i !== 0) && (i != (Session.get('imagesCount') - 1))) {
         centerX = firstCenterX + ( centerInterval * i );
         leftX = centerX - ( ( parseInt( image.thumbWidth )) / 2);
         translateX = leftX;
@@ -455,40 +474,25 @@ function boundPosX(posX) {
     return posX;
 }
 
-function timeline() {
-    return $('.timeline-images-svg');
-}
-
-function intervalWidth() {
-    var timeline = $('.timeline-images-svg');
-    return ( timeline.width() / imagesCount());
-}
-
-function imagesCount() {
-    return d3.selectAll('.picture-group')[0].length;
-}
-
-function timelineOffset() {
-    return timeline().parent().offset();
-}
-
-function highlightImage(pointerX, timeline, intervalWidth) {
+function highlightImage(pointerX) {
     /**
      * Get timeline width for position calculations
      */
 
     // Set an X position for modifications based on mouse X
-    var posX = boundPosX(pointerX - timelineOffset().left);
+    var posX = boundPosX(pointerX - Session.get('timelineOffset').left);
 
     // Position selection handle
     positionHandle(posX);
+
 
     /**
      * Scale the images based on mouse position
      *
      * Make the images nearest the cursor the biggest
      */
-    var posInterval = Math.floor(posX / intervalWidth);
+    var posInterval = Math.floor(posX / Session.get('intervalWidth'));
+    console.log('Interval width - ', Session.get('intervalWidth'));
     console.log('posInterval - ', posInterval);
 
     d3.selectAll('.picture-group').each( function(d, i){
@@ -539,7 +543,7 @@ function highlightImage(pointerX, timeline, intervalWidth) {
          * based on whether it's on the left or the right side.
          */
         var imageBorderTranslate = imageBorder;
-        if ( i >= ( imagesCount / 2 ) ) {
+        if ( i >= ( Session.get('imagesCount') / 2 ) ) {
             imageBorderTranslate = imageBorder * -1;
         }
         var translateX = dataCenterX - ((imageWidth * distanceScale) / 2) + imageBorderTranslate;
