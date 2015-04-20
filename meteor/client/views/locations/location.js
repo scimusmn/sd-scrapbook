@@ -445,9 +445,6 @@ function highlightImage(pointerX) {
         positionHandle(posX);
 
         var imagesCount = d3.selectAll('.picture-group')[0].length;
-        var intervalWidth = (
-                timeline.width() /
-                imagesCount);
 
         /**
          * Scale the images based on mouse position
