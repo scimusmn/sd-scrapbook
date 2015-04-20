@@ -3,6 +3,8 @@ meteor/.meteor/.id
 meteor/public/fonts
 meteor/public/video
 meteor/public/images/source-photos
+# Don't track our keen API keys in Git
+meteor/client/lib/keen_api.js
 data/photos/*/*.jpg
 data/photos/*/*.JPG
 data/photos/*/*.tif

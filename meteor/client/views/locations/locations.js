@@ -10,6 +10,33 @@ var enableDevMap = false;
 var enableDevLocIds = false;
 
 /**
+ * Send a keen.io event
+ */
+function sendKeenEvent(eventProperties) {
+    var collectionEvent  = {};
+    var eventType = 'location';
+
+    // Send click position and location name
+    collectionEvent = {
+        event: eventType,
+        clickX: eventProperties.x,
+        clickY: eventProperties.y,
+        clickedLocation: eventProperties.clickedLocation,
+    };
+
+    // Send data, with some basic error reporting
+    keenClient.addEvent(eventType, collectionEvent, function(err, res){
+        if (err) {
+            console.log('Keen - ' + collectionEvent.event + ' submission failed');
+        }
+        else {
+            console.log('Keen - ' + collectionEvent.event + ' event sent successfully');
+        }
+    });
+}
+
+
+/**
  * Code executed once the page is loaded and rendered
  */
 Template.locations.rendered = function () {
@@ -547,6 +574,14 @@ Template.locations.events({
 
             // Query Mongo for a location with a matching title
             var clickedLocation = Locations.findOne( {dsLocId: imageLocation });
+
+            // Send location seclection event
+            var eventProperties = {};
+            eventProperties.x = e.clientX;
+            eventProperties.y = e.clientY;
+            eventProperties.clickedLocation = clickedLocation.link;
+            sendKeenEvent(eventProperties);
+
             // Navigate to the Location with the matching _id
             Router.go(
                 'location',
