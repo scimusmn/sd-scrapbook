@@ -415,7 +415,6 @@ function positionHandle(posX) {
  * Prevent the posX from getting modified outside of the timeline boundaries.
  */
 function boundPosX(posX) {
-    // Prevent the handle from going off the edge of the timeline area
     // Left edge
     if (posX <= 20) {
         posX = 20;
@@ -426,7 +425,6 @@ function boundPosX(posX) {
         posX = 1620;
         //handleX = posX;
     }
-
     return posX;
 }
 
