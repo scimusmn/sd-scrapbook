@@ -473,6 +473,30 @@ function boundPosX(posX) {
     return posX;
 }
 
+function getDistanceScale(picture, posInterval) {
+    /**
+     * Determine a scale value based on mouse position
+     */
+    i = Number(d3.select(picture).attr('data-index'));
+    console.log('i - ', i);
+    var distance = posInterval - i;
+    var distanceScale;
+    if (distance === 0) {
+        distanceScale = 1;
+    } else {
+        var minVal = 0.5;
+        var maxVal = 0.7;
+        distanceScale = ( minVal + (maxVal - minVal) * (1 / (Math.abs(posInterval - i))));
+    }
+
+    return distanceScale;
+
+}
+
+function getPosInterval(posX) {
+    return Math.floor(posX / Session.get('intervalWidth'));
+}
+
 function highlightImage(pointerX) {
     /**
      * Get timeline width for position calculations
@@ -484,32 +508,16 @@ function highlightImage(pointerX) {
     // Position selection handle
     positionHandle(posX);
 
-
     /**
      * Scale the images based on mouse position
      *
      * Make the images nearest the cursor the biggest
      */
-    var posInterval = Math.floor(posX / Session.get('intervalWidth'));
     console.log('Interval width - ', Session.get('intervalWidth'));
-    console.log('posInterval - ', posInterval);
 
     d3.selectAll('.picture-group').each( function(d, i){
 
-        /**
-         * Determine a scale value based on mouse position
-         */
-            i = Number(d3.select(this).attr('data-index'));
-            var distance = posInterval - i;
-            var distanceScale;
-            if (distance === 0) {
-            distanceScale = 1;
-            }
-            else {
-            var minVal = 0.5;
-            var maxVal = 0.7;
-            distanceScale = ( minVal + (maxVal - minVal) * (1 / (Math.abs(posInterval - i))));
-            }
+        var distanceScale = getDistanceScale(this, getPosInterval(posX));
 
         /**
          * Transform the picture group
@@ -553,10 +561,9 @@ function highlightImage(pointerX) {
          * Highlight the current image by moving it up
          */
         var highlightHeight;
-        if (posInterval == i) {
+        if (getPosInterval(posX) == i) {
             highlightHeight = 50;
-        }
-        else {
+        } else {
             highlightHeight = 0;
         }
         var translateY = (
@@ -588,7 +595,7 @@ function highlightImage(pointerX) {
      * Display detail information about the photograph
      */
     // Get the image data from the thumbnail data objects
-    var hlImg = $('g[data-index=' + posInterval + ']');
+    var hlImg = $('g[data-index=' + getPosInterval(posX) + ']');
 
     // Set the title
     var hlImgTitle = hlImg.data('title');
