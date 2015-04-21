@@ -153,8 +153,7 @@ function drawLocation(images) {
     var scaleFactor;
     if (totalImagesWidth <= timelineImagesWidth) {
         scaleFactor = 1;
-    }
-    else {
+    } else {
         var fudgeFactor = 1;
         scaleFactor = ((timelineImagesWidth / (parseInt(totalImagesWidth) + (Session.get('imagesCount') * 20))) * fudgeFactor);
     }
@@ -622,12 +621,11 @@ function highlightImage(pointerX) {
         hlImgExWidth = hlImgExHeight * hlImgAspect;
 
         aspectR = hlImgAspect;
-    }
 
-    /**
-     * Landscape - wider than tall. Limit the width to 1000px
-     */
-    else {
+    } else {
+        /**
+         * Landscape - wider than tall. Limit the width to 1000px
+         */
         if (hlImgExWidth > 1000) {
             hlImgExWidth = 1000;
         }
