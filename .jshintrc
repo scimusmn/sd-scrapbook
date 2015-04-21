@@ -20,6 +20,7 @@
     "Meteor": false,
     "Template": false,
     "Deps": false,
+    "Session": false,
     "Router": false,
     "Images": false,
     "Locations": false
