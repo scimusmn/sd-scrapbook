@@ -473,20 +473,19 @@ function boundPosX(posX) {
     return posX;
 }
 
+/**
+ * Determine a scale value based on mouse position
+ */
 function getDistanceScale(picture, posInterval) {
-    /**
-     * Determine a scale value based on mouse position
-     */
-    i = Number(d3.select(picture).attr('data-index'));
-    console.log('i - ', i);
-    var distance = posInterval - i;
+    //var distance = posInterval - Number(d3.select(picture).attr('data-index'));
+    var distance = posInterval - parseInt(d3.select(picture).attr('data-index'), 10);
     var distanceScale;
     if (distance === 0) {
         distanceScale = 1;
     } else {
         var minVal = 0.5;
         var maxVal = 0.7;
-        distanceScale = ( minVal + (maxVal - minVal) * (1 / (Math.abs(posInterval - i))));
+        distanceScale = ( minVal + (maxVal - minVal) * ( 1 / distance ));
     }
 
     return distanceScale;
@@ -513,31 +512,30 @@ function highlightImage(pointerX) {
      *
      * Make the images nearest the cursor the biggest
      */
-    console.log('Interval width - ', Session.get('intervalWidth'));
-
     d3.selectAll('.picture-group').each( function(d, i){
 
+        // Get a scale for each image based on the cursor distance
         var distanceScale = getDistanceScale(this, getPosInterval(posX));
 
         /**
          * Transform the picture group
          */
-            var pictureGroup = d3.select(this);
-            var imageInGroup = pictureGroup.select('image');
-            var imageHeight = imageInGroup
-                .attr('height');
-            var imageWidth = imageInGroup
-                .attr('width');
-            // Get the current transform object
-            var dataCenterX = pictureGroup.attr('data-centerx');
-            var t = d3.transform(pictureGroup.attr('transform'));
-            // Set the scale value, without changing other attributes
-            // This allows the image to stay at its current X,Y position
-            // while scaling.
-            //
-            // Disabling
-            //
-            //t.scale = [distanceScale, distanceScale];
+        var pictureGroup = d3.select(this);
+        var imageInGroup = pictureGroup.select('image');
+        var imageHeight = imageInGroup
+            .attr('height');
+        var imageWidth = imageInGroup
+            .attr('width');
+        // Get the current transform object
+        var dataCenterX = pictureGroup.attr('data-centerx');
+        var t = d3.transform(pictureGroup.attr('transform'));
+        // Set the scale value, without changing other attributes
+        // This allows the image to stay at its current X,Y position
+        // while scaling.
+        //
+        // Disabling
+        //
+        //t.scale = [distanceScale, distanceScale];
 
         var timelineImages = $('.timeline-images');
         var timelineImagesHeight = timelineImages.height();
