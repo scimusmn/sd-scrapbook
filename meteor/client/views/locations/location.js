@@ -265,6 +265,31 @@ function drawYearMarker(svg, x, y, posX, posY, year) {
 }
 
 /**
+ * Create scale factor for the images
+ *
+ * Shrink the images by this scale factor and all of the pictures will be
+ * visible along the timeline. Add a fudge factor of 0.4 to make the images
+ * overlap slightly.
+ *
+ * Don't oversize the images on unpopulated timelines.
+ */
+function getScaleFactor(images) {
+    var scaleFactor;
+    var fudgeFactor = 2;
+    var totalImagesWidth = 0;
+
+    _.each(images, function(image) {
+        totalImagesWidth = (parseInt(totalImagesWidth, 10) + parseInt(image.thumbWidth, 10));
+    });
+    if (totalImagesWidth <= Session.get('timelineBackgroundWidth')) {
+        scaleFactor = 1;
+    } else {
+        scaleFactor = ((Session.get('timelineBackgroundWidth') / (parseInt(totalImagesWidth, 10) + (Session.get('imagesCount') * 20))) * fudgeFactor);
+    }
+    return scaleFactor;
+}
+
+/**
  * Render each image along the timeline
  *
  * We have to find first and last image information outside the loop
@@ -288,31 +313,6 @@ function drawTimelineImages(images) {
         scaleFactor = getScaleFactor(images);
         drawTimelineImage(timelineSVG, image, i, firstImageWidth, lastImageWidth, scaleFactor);
     });
-}
-
-/**
- * Create scale factor for the images
- *
- * Shrink the images by this scale factor and all of the pictures will be
- * visible along the timeline. Add a fudge factor of 0.4 to make the images
- * overlap slightly.
- *
- * Don't oversize the images on unpopulated timelines.
- */
-function getScaleFactor(images) {
-    var scaleFactor;
-    var fudgeFactor = 2;
-    var totalImagesWidth = 0;
-
-    _.each(images, function(image) {
-        totalImagesWidth = (parseInt(totalImagesWidth, 10) + parseInt(image.thumbWidth, 10));
-    });
-    if (totalImagesWidth <= Session.get('timelineBackgroundWidth')) {
-        scaleFactor = 1;
-    } else {
-        scaleFactor = ((Session.get('timelineBackgroundWidth') / (parseInt(totalImagesWidth, 10) + (Session.get('imagesCount') * 20))) * fudgeFactor);
-    }
-    return scaleFactor;
 }
 
 /**
