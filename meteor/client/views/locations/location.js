@@ -276,7 +276,7 @@ function drawTimelineImages(images) {
     Session.set('timelineBackgroundHeight', $('.timeline-images').height());
     var firstImageWidth = _.first(images).thumbWidth;
     var lastImageWidth = _.last(images).thumbWidth;
-    var timelineImagesSVG = d3.select('.timeline-images')
+    var timelineSVG = d3.select('.timeline-images')
         .append('svg')
         .attr('class', 'timeline-images-svg')
         .attr('width', Session.get('timelineBackgroundWidth'))
@@ -286,7 +286,7 @@ function drawTimelineImages(images) {
     // Draw each image
     _.each(images, function(image, i) {
         scaleFactor = getScaleFactor(images);
-        drawTimelineImage(timelineImagesSVG, image, i, firstImageWidth, lastImageWidth, scaleFactor);
+        drawTimelineImage(timelineSVG, image, i, firstImageWidth, lastImageWidth, scaleFactor);
     });
 }
 
@@ -318,7 +318,7 @@ function getScaleFactor(images) {
 /**
  * Render each image
  */
-function drawTimelineImage(timelineImagesSVG, image, i, firstImageWidth, lastImageWidth, scaleFactor) {
+function drawTimelineImage(timelineSVG, image, i, firstImageWidth, lastImageWidth, scaleFactor) {
     var centerX;
     var leftX;
     var translateX;
@@ -371,7 +371,7 @@ function drawTimelineImage(timelineImagesSVG, image, i, firstImageWidth, lastIma
     /**
      * Picture group
      */
-    var pictureGroup = timelineImagesSVG.append('g')
+    var pictureGroup = timelineSVG.append('g')
         .attr('class', 'picture-group ' + 'picture-' + i)
         .attr('data-index', i)
         .attr('data-id', image._id)
