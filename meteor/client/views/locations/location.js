@@ -299,8 +299,7 @@ function drawTimelineImages(images) {
     //var timelineBackgroundHeight = $('.timeline-images').height();
     Session.set('timelineBackgroundWidth', $('.timeline-images').width());
     Session.set('timelineBackgroundHeight', $('.timeline-images').height());
-    var firstImageWidth = _.first(images).thumbWidth;
-    var lastImageWidth = _.last(images).thumbWidth;
+    Session.set('firstImageWidth', _.first(images).thumbWidth);
     var timelineSVG = d3.select('.timeline-images')
         .append('svg')
         .attr('class', 'timeline-images-svg')
@@ -311,14 +310,14 @@ function drawTimelineImages(images) {
     // Draw each image
     _.each(images, function(image, i) {
         scaleFactor = getScaleFactor(images);
-        drawTimelineImage(timelineSVG, image, i, firstImageWidth, lastImageWidth, scaleFactor);
+        drawTimelineImage(timelineSVG, image, i, scaleFactor);
     });
 }
 
 /**
  * Render each image
  */
-function drawTimelineImage(timelineSVG, image, i, firstImageWidth, lastImageWidth, scaleFactor) {
+function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
     var centerX;
     var leftX;
     var translateX;
@@ -328,8 +327,8 @@ function drawTimelineImage(timelineSVG, image, i, firstImageWidth, lastImageWidt
      */
 
     // Centers for the first and last images
-    var firstCenterX = imageBorder + ( ( firstImageWidth) / 2 );
-    var lastCenterX = Session.get('timelineBackgroundWidth') - ( ( lastImageWidth) / 2 );
+    var firstCenterX = imageBorder + ( ( Session.get('firstImageWidth') ) / 2 );
+    var lastCenterX = Session.get('timelineBackgroundWidth') - ( ( Session.get('firstImageWidth') ) / 2 );
 
     // Values for the first image
     if (i === 0) {
