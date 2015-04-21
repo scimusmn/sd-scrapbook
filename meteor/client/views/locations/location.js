@@ -143,16 +143,13 @@ function drawLocation(images) {
     var posX = parseInt(timelineOffset.left, 10) + parseInt(groupObj.attr('data-centerx'), 10);
     highlightImage(posX);
 
-    /**
-     * Draw circle
-     */
+    // Draw prev/next buttons
     var locationContainerHeight = locationContainer.height();
     var locationSVG  = d3.select('.location')
         .append('svg')
         .attr('class', 'prev-next-buttons')
         .attr('width', 1920 )
         .attr('height', locationContainerHeight);
-
     drawNavButton(locationSVG, 50, 400, 30, 'left');
     drawNavButton(locationSVG, 1860, 400, 30, 'right');
 
