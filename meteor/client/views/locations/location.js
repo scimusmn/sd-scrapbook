@@ -296,6 +296,7 @@ function drawTimelineImages(images) {
     Session.set('timelineBackgroundWidth', $('.timeline-images').width());
     Session.set('timelineBackgroundHeight', $('.timeline-images').height());
     Session.set('firstImageWidth', _.first(images).thumbWidth);
+    Session.set('lastImageWidth', _.last(images).thumbWidth);
     var timelineSVG = d3.select('.timeline-images')
         .append('svg')
         .attr('class', 'timeline-images-svg')
@@ -336,7 +337,7 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
     // Values for the last image
     if (i == (Session.get('imagesCount') - 1)){
         centerX = lastCenterX;
-        leftX = Session.get('timelineBackgroundWidth') - lastImageWidth - imageBorder;
+        leftX = Session.get('timelineBackgroundWidth') - Session.get('lastImageWidth') - imageBorder;
         translateX = leftX;
     }
 
