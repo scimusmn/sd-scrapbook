@@ -136,7 +136,7 @@ function drawLocation(images) {
     var totalImagesWidth  = 0;
     _.each(images, function(image, i) {
         console.log('image.thumbWidth - ', image.thumbWidth);
-        totalImagesWidth = (parseInt(totalImagesWidth) + parseInt(image.thumbWidth));
+        totalImagesWidth = (parseInt(totalImagesWidth, 10) + parseInt(image.thumbWidth, 10));
     });
     console.log('totalImagesWidth - ', totalImagesWidth);
     console.log('timelineImagesWidth - ', timelineImagesWidth);
@@ -155,7 +155,7 @@ function drawLocation(images) {
         scaleFactor = 1;
     } else {
         var fudgeFactor = 1;
-        scaleFactor = ((timelineImagesWidth / (parseInt(totalImagesWidth) + (Session.get('imagesCount') * 20))) * fudgeFactor);
+        scaleFactor = ((timelineImagesWidth / (parseInt(totalImagesWidth, 10) + (Session.get('imagesCount') * 20))) * fudgeFactor);
     }
     console.log('scaleFactor - ', scaleFactor);
 
@@ -180,7 +180,7 @@ function drawLocation(images) {
     var timeline = $('.timeline-images-svg');
     var timelineOffset = timeline.parent().offset();
     Session.set('timelineOffset', timelineOffset);
-    var posX = parseInt(timelineOffset.left) + parseInt(groupObj.attr('data-centerx'));
+    var posX = parseInt(timelineOffset.left, 10) + parseInt(groupObj.attr('data-centerx'), 10);
     highlightImage(posX);
 
     /**
@@ -339,7 +339,7 @@ function drawTimelineImage(timelineImagesSVG, timelineBackgroundWidth, timelineI
     var centerInterval = (lastCenterX - firstCenterX) / ( Session.get('imagesCount') - 1 );
     if ((i !== 0) && (i != (Session.get('imagesCount') - 1))) {
         centerX = firstCenterX + ( centerInterval * i );
-        leftX = centerX - ( ( parseInt( image.thumbWidth )) / 2);
+        leftX = centerX - ( parseInt(image.thumbWidth, 10) / 2);
         translateX = leftX;
     }
 
