@@ -58,7 +58,6 @@ Template.location.events({
      */
     'mousemove .container': function (e) {
         if (e.pageY >= 840) {
-            console.log('Highlighting');
             highlightImage(e.pageX);
         }
     },
@@ -98,73 +97,35 @@ function drawLocation(images) {
      * Setup the timeline
      */
     var timelineBackground = $('.timeline-background');
-    var timelineBackgroundWidth = timelineBackground.width();
-    var timelineBackgroundHeight = timelineBackground.height();
-    var timelineSVG  = d3.select('.timeline-background')
+    Session.set('timelineBackgroundWidth', timelineBackground.width());
+    Session.set('timelineBackgroundHeight', timelineBackground.width());
+    var timelineBackgroundSVG  = d3.select('.timeline-background')
         .append('svg')
         .attr('class', 'timeline-background-svg')
-        .attr('width', timelineBackgroundWidth )
-        .attr('height', timelineBackgroundHeight);
+        .attr('width', Session.get('timelineBackgroundWidth'))
+        .attr('height', Session.get('timelineBackgroundHeight'));
 
     /**
      * Draw year markers at the start and end of the timeline
      */
     var firstYear = _.first(images).isoDate.substring(4,8);
-    drawYearMarker(timelineSVG, 0, 50, 50, 55, firstYear);
+    drawYearMarker(timelineBackgroundSVG, 0, 50, 50, 55, firstYear);
     var lastYear = _.last(images).isoDate.substring(4,8);
-    drawYearMarker(timelineSVG, (timelineBackgroundWidth - 100), 50, (timelineBackgroundWidth - 55), 55, lastYear);
+    drawYearMarker(
+        timelineBackgroundSVG,
+        (Session.get('timelineBackgroundWidth') - 100),
+        50,
+        (Session.get('timelineBackgroundWidth') - 55), 55, lastYear
+    );
+
+    // Draw selection handle
+    drawTimelineHandle(timelineBackgroundSVG);
+
+    // Draw timeline images
+    drawTimelineImages(images);
 
     /**
-     * Draw selection handle
-     */
-    drawTimelineHandle(timelineSVG);
-
-    /**
-     * Render each image along the timeline
-     *
-     * We have to find first and last image information outside the loop
-     */
-    var timelineImagesWidth = $('.timeline-images').width();
-    var timelineImagesHeight = $('.timeline-images').height();
-    var timelineImagesSVG = d3.select('.timeline-images')
-        .append('svg')
-        .attr('class', 'timeline-images-svg')
-        .attr('width', timelineImagesWidth)
-        .attr('height', timelineImagesHeight);
-    var firstImageWidth = _.first(images).thumbWidth;
-    var lastImageWidth = _.last(images).thumbWidth;
-    var totalImagesWidth  = 0;
-    _.each(images, function(image, i) {
-        console.log('image.thumbWidth - ', image.thumbWidth);
-        totalImagesWidth = (parseInt(totalImagesWidth, 10) + parseInt(image.thumbWidth, 10));
-    });
-    console.log('totalImagesWidth - ', totalImagesWidth);
-    console.log('timelineImagesWidth - ', timelineImagesWidth);
-
-    /**
-     * Create scale factor for the images
-     *
-     * Shrink the images by this scale factor and all of the pictures will be
-     * visible along the timeline. Add a fudge factor of 0.4 to make the images
-     * overlap slightly.
-     *
-     * Don't oversize the images on unpopulated timelines.
-     */
-    var scaleFactor;
-    if (totalImagesWidth <= timelineImagesWidth) {
-        scaleFactor = 1;
-    } else {
-        var fudgeFactor = 1;
-        scaleFactor = ((timelineImagesWidth / (parseInt(totalImagesWidth, 10) + (Session.get('imagesCount') * 20))) * fudgeFactor);
-    }
-    console.log('scaleFactor - ', scaleFactor);
-
-    _.each(images, function(image, i) {
-        drawTimelineImage(timelineImagesSVG, timelineImagesWidth, timelineImagesHeight, image, i, firstImageWidth, lastImageWidth, scaleFactor);
-    });
-
-    /**
-     * Special the clicked image and highlight it
+     * Highlight the clicked image
      *
      * TODO - This is a hack. We're looking up the x position for the
      * image clicked and then passing it to the mousemove function.
@@ -197,6 +158,7 @@ function drawLocation(images) {
     drawNavButton(locationSVG, 1860, 400, 30, 'right');
 
 }
+
 
 /**
  * Draw temp circle
@@ -303,9 +265,60 @@ function drawYearMarker(svg, x, y, posX, posY, year) {
 }
 
 /**
+ * Render each image along the timeline
+ *
+ * We have to find first and last image information outside the loop
+ */
+function drawTimelineImages(images) {
+    //var timelineBackgroundWidth = $('.timeline-images').width();
+    //var timelineBackgroundHeight = $('.timeline-images').height();
+    Session.set('timelineBackgroundWidth', $('.timeline-images').width());
+    Session.set('timelineBackgroundHeight', $('.timeline-images').height());
+    var firstImageWidth = _.first(images).thumbWidth;
+    var lastImageWidth = _.last(images).thumbWidth;
+    var timelineImagesSVG = d3.select('.timeline-images')
+        .append('svg')
+        .attr('class', 'timeline-images-svg')
+        .attr('width', Session.get('timelineBackgroundWidth'))
+        .attr('height', Session.get('timelineBackgroundHeight'));
+    var scaleFactor;
+
+    // Draw each image
+    _.each(images, function(image, i) {
+        scaleFactor = getScaleFactor(images);
+        drawTimelineImage(timelineImagesSVG, image, i, firstImageWidth, lastImageWidth, scaleFactor);
+    });
+}
+
+/**
+ * Create scale factor for the images
+ *
+ * Shrink the images by this scale factor and all of the pictures will be
+ * visible along the timeline. Add a fudge factor of 0.4 to make the images
+ * overlap slightly.
+ *
+ * Don't oversize the images on unpopulated timelines.
+ */
+function getScaleFactor(images) {
+    var scaleFactor;
+    var fudgeFactor = 2;
+    var totalImagesWidth = 0;
+
+    _.each(images, function(image) {
+        totalImagesWidth = (parseInt(totalImagesWidth, 10) + parseInt(image.thumbWidth, 10));
+    });
+    if (totalImagesWidth <= Session.get('timelineBackgroundWidth')) {
+        scaleFactor = 1;
+    } else {
+        scaleFactor = ((Session.get('timelineBackgroundWidth') / (parseInt(totalImagesWidth, 10) + (Session.get('imagesCount') * 20))) * fudgeFactor);
+    }
+    return scaleFactor;
+}
+
+/**
  * Render each image
  */
-function drawTimelineImage(timelineImagesSVG, timelineBackgroundWidth, timelineImagesHeight, image, i, firstImageWidth, lastImageWidth, scaleFactor) {
+function drawTimelineImage(timelineImagesSVG, image, i, firstImageWidth, lastImageWidth, scaleFactor) {
     var centerX;
     var leftX;
     var translateX;
@@ -316,7 +329,7 @@ function drawTimelineImage(timelineImagesSVG, timelineBackgroundWidth, timelineI
 
     // Centers for the first and last images
     var firstCenterX = imageBorder + ( ( firstImageWidth) / 2 );
-    var lastCenterX = timelineBackgroundWidth - ( ( lastImageWidth) / 2 );
+    var lastCenterX = Session.get('timelineBackgroundWidth') - ( ( lastImageWidth) / 2 );
 
     // Values for the first image
     if (i === 0) {
@@ -328,7 +341,7 @@ function drawTimelineImage(timelineImagesSVG, timelineBackgroundWidth, timelineI
     // Values for the last image
     if (i == (Session.get('imagesCount') - 1)){
         centerX = lastCenterX;
-        leftX = timelineBackgroundWidth - lastImageWidth - imageBorder;
+        leftX = Session.get('timelineBackgroundWidth') - lastImageWidth - imageBorder;
         translateX = leftX;
     }
 
@@ -347,7 +360,7 @@ function drawTimelineImage(timelineImagesSVG, timelineBackgroundWidth, timelineI
     //
     // This bottom aligns the images to the top of the timeline
     var bottomY = (
-        timelineImagesHeight -
+        Session.get('timelineBackgroundHeight') -
         image.thumbHeight -
         imageBorder -
         imageBottomPadding);
@@ -476,9 +489,9 @@ function boundPosX(posX) {
 /**
  * Determine a scale value based on mouse position
  */
-function getDistanceScale(picture, posInterval) {
+function getDistanceScale(pictureGroup, posInterval) {
     //var distance = posInterval - Number(d3.select(picture).attr('data-index'));
-    var distance = posInterval - parseInt(d3.select(picture).attr('data-index'), 10);
+    var distance = posInterval - parseInt(pictureGroup.attr('data-index'), 10);
     var distanceScale;
     if (distance === 0) {
         distanceScale = 1;
@@ -489,12 +502,67 @@ function getDistanceScale(picture, posInterval) {
     }
 
     return distanceScale;
-
 }
 
 function getPosInterval(posX) {
     return Math.floor(posX / Session.get('intervalWidth'));
 }
+
+function getTimelineTransformString(posX, pictureGroup, distanceScale, i) {
+    var imageInGroup = pictureGroup.select('image');
+    var imageHeight = imageInGroup.attr('height');
+    var imageWidth = imageInGroup.attr('width');
+
+    // Get the current transform object
+    var dataCenterX = pictureGroup.attr('data-centerx');
+    var t = d3.transform(pictureGroup.attr('transform'));
+
+    var timelineImages = $('.timeline-images');
+    var timelineBackgroundHeight = timelineImages.height();
+
+    /**
+     * X position
+     *
+     * Position the image off its center, scaled by the size of the
+     * image. Push the image right or left for the image border
+     * based on whether it's on the left or the right side.
+     */
+    //var imageBorderTranslate = imageBorder;
+    //if ( i >= ( Session.get('imagesCount') / 2 ) ) {
+        //imageBorderTranslate = imageBorder * -1;
+    //}
+    //var translateX = dataCenterX - ((imageWidth * distanceScale) / 2) + imageBorderTranslate;
+
+    /**
+     * Y position
+     *
+     * Highlight the current image by moving it up
+     */
+    //var highlightHeight;
+    //if (getPosInterval(posX) == i) {
+        //highlightHeight = 50;
+    //} else {
+        //highlightHeight = 0;
+    //}
+    //var translateY = (
+            //timelineBackgroundHeight -
+            //( imageHeight * distanceScale ) -
+            //imageBorder -
+            //imageBottomPadding -
+            //highlightHeight);
+    //console.log('translateY - ', translateY);
+
+    //t.scale = [distanceScale, distanceScale];
+    t.translate = [
+        t.translate[0],
+        t.translate[1],
+    ];
+    var transformString = t.toString();
+
+    return transformString;
+
+}
+
 
 function highlightImage(pointerX) {
     /**
@@ -513,80 +581,24 @@ function highlightImage(pointerX) {
      * Make the images nearest the cursor the biggest
      */
     d3.selectAll('.picture-group').each( function(d, i){
+        var pictureGroup = d3.select(this);
 
         // Get a scale for each image based on the cursor distance
-        var distanceScale = getDistanceScale(this, getPosInterval(posX));
-
-        /**
-         * Transform the picture group
-         */
-        var pictureGroup = d3.select(this);
-        var imageInGroup = pictureGroup.select('image');
-        var imageHeight = imageInGroup
-            .attr('height');
-        var imageWidth = imageInGroup
-            .attr('width');
-        // Get the current transform object
-        var dataCenterX = pictureGroup.attr('data-centerx');
-        var t = d3.transform(pictureGroup.attr('transform'));
-        // Set the scale value, without changing other attributes
-        // This allows the image to stay at its current X,Y position
-        // while scaling.
-        //
-        // Disabling
-        //
-        //t.scale = [distanceScale, distanceScale];
-
-        var timelineImages = $('.timeline-images');
-        var timelineImagesHeight = timelineImages.height();
-
-        /**
-         * X position
-         *
-         * Position the image off its center, scaled by the size of the
-         * image. Push the image right or left for the image border
-         * based on whether it's on the left or the right side.
-         */
-        var imageBorderTranslate = imageBorder;
-        if ( i >= ( Session.get('imagesCount') / 2 ) ) {
-            imageBorderTranslate = imageBorder * -1;
-        }
-        var translateX = dataCenterX - ((imageWidth * distanceScale) / 2) + imageBorderTranslate;
-
-        /**
-         * Y position
-         *
-         * Highlight the current image by moving it up
-         */
-        var highlightHeight;
-        if (getPosInterval(posX) == i) {
-            highlightHeight = 50;
-        } else {
-            highlightHeight = 0;
-        }
-        var translateY = (
-                timelineImagesHeight -
-                ( imageHeight * distanceScale ) -
-                imageBorder -
-                imageBottomPadding -
-                highlightHeight);
+        var distanceScale = getDistanceScale(pictureGroup, getPosInterval(posX));
 
         /**
          * Transform the image
          *
          * Turn the transform back into a string for SVG
          */
-        //console.log('t.translate - ', t.translate[0]);
-        t.translate = [
-            t.translate[0],
-            t.translate[1],
-            ];
-        var transformString = t.toString();
         pictureGroup
             .transition()
             .duration(100)
             .ease('circle-out')
-            .attr('transform', transformString);
+            .attr(
+                'transform',
+                getTimelineTransformString(posX, pictureGroup, distanceScale, i)
+            );
     });
 
     /**
