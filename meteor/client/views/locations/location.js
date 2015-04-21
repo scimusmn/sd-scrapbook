@@ -32,6 +32,11 @@ Template.location.rendered = function () {
         var imagesCursor = Images.find();
         var images = imagesCursor.fetch();
 
+        // Sort images by year
+        images = _.sortBy(images, function (image) {
+            return image.isoDate;
+        });
+
         var imagesCount = imagesCursor.count();
         Session.set('imagesCount', imagesCount);
 
@@ -75,12 +80,6 @@ Template.location.events({
  * Draw the location page
  */
 function drawLocation(images) {
-    /**
-     * Gather image data from the Meteor collection and sort by year
-     */
-    images = _.sortBy(images, function (image) {
-        return image.isoDate;
-    });
 
     /**
      * Setup the location element, and fade it in on page load.
