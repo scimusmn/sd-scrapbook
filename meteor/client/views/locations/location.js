@@ -12,6 +12,7 @@ var imageBottomPadding = 10; // Whitespace below images
 var delay = 5; // Milliseconds to delay the animation per image
 var dur = 500; // Milliseconds for the image animation
 var timelineWidth = 1730; // Width of the timeline
+var yearMarkerWidth = 95;
 
 /**
  * Template render
@@ -235,7 +236,7 @@ function drawYearMarker(svg, x, y, posX, posY, year) {
     svg.append('rect')
         .attr('x', x)
         .attr('y', y)
-        .attr('width', 95)
+        .attr('width', yearMarkerWidth)
         .attr('height', 60)
         .style('fill', '#000')
         .attr('filter', 'url(#blur)');
@@ -244,7 +245,7 @@ function drawYearMarker(svg, x, y, posX, posY, year) {
     svg.append('rect')
         .attr('x', x)
         .attr('y', y)
-        .attr('width', 95)
+        .attr('width', yearMarkerWidth)
         .attr('height', 60)
         .attr('fill', 'white');
 
