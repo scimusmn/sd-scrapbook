@@ -463,8 +463,7 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
 /**
  * Position timeline handle
  *
- * Position the handle center on our pointer, but prevent it
- * from going off the edge of the timeline.
+ * Position the handle center on our pointer
  */
 function positionHandle(posX) {
     // Handle object
@@ -491,14 +490,15 @@ function positionHandle(posX) {
  */
 function boundPosX(posX) {
     // Left edge
-    if (posX <= 20) {
-        posX = 20;
-        //handleX = posX + handleWidth;
+    console.log('posX - ', posX);
+    var leftBound = ( yearMarkerWidth / 2 );
+    if (posX <= leftBound) {
+        posX = leftBound;
     }
     // Right edge
-    if (posX >= 1620) {
-        posX = 1620;
-        //handleX = posX;
+    var rightBound = 1580;
+    if (posX >= rightBound) {
+        posX = rightBound;
     }
     return posX;
 }
