@@ -313,17 +313,12 @@ function drawTimelineImages(images) {
 }
 
 /**
- * Render each image
+ * Calculate a horizontal position for the image
+ *
+ * Position is based on it's order in the timeline and the scaleFactor.
  */
-function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
-    var centerX;
+function calculateTimelineImageX(i, image, scaleFactor) {
     var translateX;
-    var imageCardWidth = image.thumbWidth + (imageBorder * 2);
-    var imageCardHeight = image.thumbHeight + (imageBorder * 2);
-
-    /**
-     * Image positioning
-     */
 
     // Values for the first image
     var firstImageX = ( yearMarkerWidth / 2 );
@@ -350,19 +345,41 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
         translateX = firstImageX + ( centerInterval * i );
     }
 
-    /**
-     * Set the Y value for the images to bottom align them to the timeline.
-     *
-     * Multiply values by the scale factor to account for shrinking
-     * images on the populous locations.
-     */
+    return translateX;
+
+}
+
+/**
+ * Calculate a vertical position for the image
+ *
+ * We use the image size to align all the images along the bottom of the timeline.
+ */
+function calculateTimelineImageY(image, scaleFactor) {
     var bottomY = Session.get('timelineBackgroundHeight') -
         ( image.thumbHeight * scaleFactor ) -
         ( ( imageBorder * 2 ) * scaleFactor ) -
         imageBottomPadding;
+    return bottomY;
+}
+
+/**
+ * Render a single timeline image
+ */
+function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
+    var centerX;
+    var translateX;
+    var bottomY;
+    var imageCardWidth = image.thumbWidth + (imageBorder * 2);
+    var imageCardHeight = image.thumbHeight + (imageBorder * 2);
+
+    // Calculate image positions
+    translateX = calculateTimelineImageX(i, image, scaleFactor);
+    bottomY = calculateTimelineImageY(image, scaleFactor);
 
     /**
-     * Picture group
+     * Create a SVG group for all of the picture elements
+     *
+     * We store data about the picture for manipulation by events via the DOM
      */
     var pictureGroup = timelineSVG.append('g')
         .attr('class', 'picture-group ' + 'picture-' + i)
@@ -380,9 +397,7 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
         .attr('data-description', image.labelTextEnglish)
         .attr('data-description-es', image.labelTextSpanish);
 
-    /**
-    * Picture drop shadow
-    */
+    // SVG - draw drop shadow
     pictureGroup.append('defs')
         .append('filter')
         .attr('id', 'blur')
@@ -397,9 +412,7 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
         .attr('class', 'child')
         .attr('filter', 'url(#blur)');
 
-    /**
-    * Picture white border
-    */
+    // SVG - Draw picture's white border
     pictureGroup.append('rect')
         // Positions are relative to the group
         .attr('x', 0)
@@ -408,7 +421,7 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
         .attr('height', imageCardHeight)
         .attr('class', 'child location-matte');
 
-    // Image
+    // SVG draw the image
     pictureGroup.append('image')
         .attr('x', imageBorder)
         .attr('y', imageBorder)
@@ -420,21 +433,28 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
         .attr('location', image.generalLocationDs)
         .attr('class', 'child');
 
-    // Start building the SVG translate command
-    var translate = 'translate(' + translateX + ',' + bottomY + ')';
-    // Position the image groups
+    /**
+     * Apply D3 trasforms to translate them to their correct X & Y position
+     * and then to scale them to the right size based on the scaleFactor
+     */
     pictureGroup
         .attr('transform', function (){
-            var transform = translate + ' scale(' + scaleFactor + ')';
+            var transform = 'translate(' + translateX + ',' + bottomY + ')' +
+                ' scale(' + scaleFactor + ')';
             return transform;
         });
 
-    // Start hidden and fade in
+    /**
+     * Fade in
+     *
+     * Start with all of the images hidden and then do a staggered fade in
+     */
     pictureGroup.selectAll('.child')
         .attr('opacity', '0');
     pictureGroup.selectAll('.child')
         .transition()
-        .delay(i * delay) // Stagger the markers animating in
+        // Stagger the markers animating in
+        .delay(i * delay)
         .attr('opacity', '1')
         .duration(dur);
 
