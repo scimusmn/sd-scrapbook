@@ -317,53 +317,49 @@ function drawTimelineImages(images) {
  */
 function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
     var centerX;
-    var leftX;
     var translateX;
+    var imageCardWidth = image.thumbWidth + (imageBorder * 2);
+    var imageCardHeight = image.thumbHeight + (imageBorder * 2);
 
     /**
      * Image positioning
      */
 
-    // Centers for the first and last images
-    var firstCenterX = imageBorder + ( ( Session.get('firstImageWidth') ) / 2 );
-    var lastCenterX = Session.get('timelineBackgroundWidth') - ( ( Session.get('firstImageWidth') ) / 2 );
-
     // Values for the first image
+    var firstImageX = ( yearMarkerWidth / 2 );
     if (i === 0) {
-        centerX = firstCenterX;
-        leftX = imageBorder;
-        translateX = leftX;
+        translateX = firstImageX;
     }
 
     // Values for the last image
+    var lastImageX = Session.get('timelineBackgroundWidth') -
+        ( image.thumbWidth * scaleFactor ) -
+        ( ( imageBorder * 2 ) * scaleFactor) -
+        ( yearMarkerWidth / 2 );
+
     if (i == (Session.get('imagesCount') - 1)){
-        centerX = lastCenterX;
-        leftX = Session.get('timelineBackgroundWidth') - Session.get('lastImageWidth') - imageBorder;
-        translateX = leftX;
+        translateX = lastImageX;
     }
 
     // Values for the rest of the images
     //
     // First find the proper interval between images, and then set the
     // position based on the i value
-    var centerInterval = (lastCenterX - firstCenterX) / ( Session.get('imagesCount') - 1 );
+    var centerInterval = (lastImageX - firstImageX) / ( Session.get('imagesCount') - 1 );
     if ((i !== 0) && (i != (Session.get('imagesCount') - 1))) {
-        centerX = firstCenterX + ( centerInterval * i );
-        leftX = centerX - ( parseInt(image.thumbWidth, 10) / 2);
-        translateX = leftX;
+        translateX = firstImageX + ( centerInterval * i );
     }
 
-    // Y Value for all images is the same
-    //
-    // This bottom aligns the images to the top of the timeline
-    var bottomY = (
-        Session.get('timelineBackgroundHeight') -
-        image.thumbHeight -
-        imageBorder -
-        imageBottomPadding);
-
-    // Start building the SVG translate command
-    var translate = 'translate(' + translateX + ',' + bottomY + ')';
+    /**
+     * Set the Y value for the images to bottom align them to the timeline.
+     *
+     * Multiply values by the scale factor to account for shrinking
+     * images on the populous locations.
+     */
+    var bottomY = Session.get('timelineBackgroundHeight') -
+        ( image.thumbHeight * scaleFactor ) -
+        ( ( imageBorder * 2 ) * scaleFactor ) -
+        imageBottomPadding;
 
     /**
      * Picture group
@@ -396,8 +392,8 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
         .attr('x', 0)
         .attr('y', 0)
         .style('fill', '#000')
-        .attr('width', image.thumbWidth + (imageBorder * 2))
-        .attr('height', image.thumbHeight + (imageBorder * 2))
+        .attr('width', imageCardWidth)
+        .attr('height', imageCardHeight)
         .attr('class', 'child')
         .attr('filter', 'url(#blur)');
 
@@ -406,14 +402,16 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
     */
     pictureGroup.append('rect')
         // Positions are relative to the group
-        .attr('x', (0 - imageBorder))
-        .attr('y', (0 - imageBorder))
-        .attr('width', image.thumbWidth + (imageBorder * 2))
-        .attr('height', image.thumbHeight + (imageBorder * 2))
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', imageCardWidth)
+        .attr('height', imageCardHeight)
         .attr('class', 'child location-matte');
 
     // Image
     pictureGroup.append('image')
+        .attr('x', imageBorder)
+        .attr('y', imageBorder)
         .attr('xlink:href', '/images/thumbnails/' + image._id + '.jpg')
         .attr('data-id', image._id)
         .attr('data-location', image.generalLocationDs)
@@ -422,6 +420,8 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
         .attr('location', image.generalLocationDs)
         .attr('class', 'child');
 
+    // Start building the SVG translate command
+    var translate = 'translate(' + translateX + ',' + bottomY + ')';
     // Position the image groups
     pictureGroup
         .attr('transform', function (){
