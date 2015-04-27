@@ -18,6 +18,7 @@ var yearMarkerWidth = 95;
  * Template render
  */
 Template.location.rendered = function () {
+
     /**
      * Wait for Meteor to finish loading server data.
      *
@@ -51,7 +52,47 @@ Template.location.rendered = function () {
         locationContainer.css('opacity', 0);
         drawLocation(images);
     }, 300);
+
 };
+
+
+/**
+ * Get the closest value in an array of sorted images
+ */
+function getClosest(array, target) {
+    var tuples = _.map(array, function(val) {
+        return [val, Math.abs(val - target)];
+    });
+    console.log('tuples - ', tuples);
+    var reduced = _.reduce(
+        //tuples, function(memo, val) { return (memo[1] < val[1]) ? memo : val; }, [-1, 999]
+        tuples, function(memo, val) {
+            if (memo[1] < val[1]) {
+                return memo;
+            }
+            else {
+                return val;
+            }
+        }, [-1, 999]
+    );
+    console.log('reduced - ', reduced);
+    return reduced[0];
+}
+
+function getLeftist(array, target) {
+    var leftist = _.find(array, function(item) {
+        return item > target;
+    });
+
+    if (typeof leftist === 'undefined'){
+        leftist = array.length;
+    } else {
+        leftist = array.indexOf(leftist);
+    }
+    leftist = leftist - 1;
+
+    return leftist;
+}
 
 /**
  * Template Events
@@ -305,11 +346,14 @@ function drawTimelineImages(images) {
         .attr('height', Session.get('timelineBackgroundHeight'));
     var scaleFactor;
 
+    var translateXs = [];
+
     // Draw each image
     _.each(images, function(image, i) {
         scaleFactor = getScaleFactor(images);
-        drawTimelineImage(timelineSVG, image, i, scaleFactor);
+        translateXs[i] = drawTimelineImage(timelineSVG, image, i, scaleFactor);
     });
+    Session.set('translateXs', translateXs)
 }
 
 /**
@@ -390,6 +434,7 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
         .attr('data-location', image.creationPlace)
         .attr('data-credit-line', image.creditLine)
         .attr('data-title', image.title)
+        .attr('data-x', translateX)
         .attr('data-xh', image.expandedHeight)
         .attr('data-xw', image.expandedWidth)
         .attr('data-aspect', image.expandedAspectRatio)
@@ -457,6 +502,8 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
         .delay(i * delay)
         .attr('opacity', '1')
         .duration(dur);
+
+    return translateX;
 
 }
 
@@ -580,7 +627,6 @@ function getTimelineTransformString(posX, pictureGroup, distanceScale, i) {
 
 }
 
-
 function highlightImage(pointerX) {
     /**
      * Get timeline width for position calculations
@@ -588,6 +634,7 @@ function highlightImage(pointerX) {
 
     // Set an X position for modifications based on mouse X
     var posX = boundPosX(pointerX - Session.get('timelineOffset').left);
+    //console.log('posX - ', posX);
 
     // Position selection handle
     positionHandle(posX);
@@ -597,32 +644,49 @@ function highlightImage(pointerX) {
      *
      * Make the images nearest the cursor the biggest
      */
-    d3.selectAll('.picture-group').each( function(d, i){
-        var pictureGroup = d3.select(this);
+    var Xs = Session.get('translateXs');
+    var closestLeftEdgeIndex = getLeftist(Xs, posX);
 
-        // Get a scale for each image based on the cursor distance
-        var distanceScale = getDistanceScale(pictureGroup, getPosInterval(posX));
+    //$('.navlink').filter('[data-selected="true"]');
+
+    //d3.selectAll('.picture-group').each( function(d, i){
+        //var pictureGroup = d3.select(this);
+
+        /**
+         * New approach to highlighting the images
+         *
+         * If the cursour is past the left edge of the picture
+         */
+        //var leftX = parseInt(pictureGroup.attr('data-x'), 10);
+        //if (posX >= leftX) {
+            //console.log('index - ', parseInt(pictureGroup.attr('data-index'), 10));
+        //}
+        ////console.log('leftX - ', leftX);
+
+        //// Get a scale for each image based on the cursor distance
+        //var distanceScale = getDistanceScale(pictureGroup, getPosInterval(posX));
 
         /**
          * Transform the image
          *
          * Turn the transform back into a string for SVG
          */
-        pictureGroup
-            .transition()
-            .duration(100)
-            .ease('circle-out')
-            .attr(
-                'transform',
-                getTimelineTransformString(posX, pictureGroup, distanceScale, i)
-            );
-    });
+        //pictureGroup
+            //.transition()
+            //.duration(100)
+            //.ease('circle-out')
+            //.attr(
+                //'transform',
+                //getTimelineTransformString(posX, pictureGroup, distanceScale, i)
+            //);
+    //});
 
     /**
      * Display detail information about the photograph
      */
     // Get the image data from the thumbnail data objects
-    var hlImg = $('g[data-index=' + getPosInterval(posX) + ']');
+    var hlImg = $('g[data-index=' + closestLeftEdgeIndex + ']');
+    //var hlImg = $('g[data-index=' + getPosInterval(posX) + ']');
 
     // Set the title
     var hlImgTitle = hlImg.data('title');
