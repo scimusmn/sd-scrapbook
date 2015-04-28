@@ -76,7 +76,6 @@ Template.location.rendered = function () {
 
 };
 
-
 /**
  * Get the closest value in an array of sorted images
  */
@@ -130,12 +129,13 @@ Template.location.events({
         }
     },
     'click .prev-next-buttons circle.button-left, click .prev-next-buttons polygon.button-left': function (e) {
-        console.log('Button left clicked: e - ', e);
-        highlightImageByPointer(100);
+        //console.log('Button left clicked: e - ', e);
+        highlightImageByIndex(parseInt(Session.get('highlightedIndex'), 10) - 1);
     },
     'click .prev-next-buttons circle.button-right, click .prev-next-buttons polygon.button-right': function (e) {
-        console.log('Button right clicked: e - ', e);
-        highlightImageByPointer(500);
+        //console.log('Button right clicked: e - ', e);
+        //console.log('Current index', Session.get('highlightedIndex'));
+        highlightImageByIndex(parseInt(Session.get('highlightedIndex'), 10) + 1);
     }
 });
 
@@ -344,6 +344,10 @@ function getScaleFactor(images) {
     } else {
         scaleFactor = ((Session.get('timelineBackgroundWidth') / (parseInt(totalImagesWidth, 10) + (Session.get('imagesCount') * 20))) * fudgeFactor);
     }
+
+    // Store scaleFactor for overlap checking in transformations
+    Session.set('scaleFactor', scaleFactor);
+
     return scaleFactor;
 }
 
@@ -659,6 +663,8 @@ function highlightImageByPointer(pointerX) {
     // Get the index of the image to highlight, based on mouse position
     var closestLeftEdgeIndex = getLeftist(Session.get('translateXs'), posX);
 
+    Session.set('highlightedIndex', closestLeftEdgeIndex);
+
     // Update highlighted image: text and big image
     var hlImg = $('g[data-index=' + closestLeftEdgeIndex + ']');
     updateHighlightedImageText(hlImg);
@@ -677,14 +683,90 @@ function highlightImageByIndex(index) {
     // Determine the position for the handle
     //var posX = boundPosX(pointerX - Session.get('timelineOffset').left);
     //positionHandle(posX);
+    console.log('index - ', index);
+    console.log('count - ', Session.get("imagesCount"));
+
+    // Trying to navigate beyond the timeline. Return false.
+    if ( index < 0 || index > ( Session.get('imagesCount') - 1 ) ) {
+        console.log('Trying to navigate beyond the bounds');
+        return false;
+    }
+
+    /**
+     * Switching to the first image
+     *
+     * Grey out the prev button
+     */
+    if ( index === 0 ) {
+        // TODO: add a class to grey out the button
+    }
+
+    /**
+     * Switching to the last image
+     *
+     * Grey out the next button
+     */
+    if ( ( Session.get('imagesCount') - 1) == index ) {
+        // TODO: add a class to grey out the button
+    }
+
+    // Get the highlighted image
+    var hlImg = $('g[data-index=' + index + ']');
+
+    Session.set('highlightedIndex', index);
+
+    // Position selection handle
+    updateHighlightedImageHandle(index);
 
     // Update highlighted image: text and big image
-    var hlImg = $('g[data-index=' + index + ']');
     updateHighlightedImageText(hlImg);
     updateHighlightedImage(hlImg);
 
+    return true;
+
 }
 
+function updateHighlightedImageHandle(index) {
+    var posX;
+    var hlImg = $('g[data-index=' + index + ']');
+
+    /**
+     * Find appropriate handle location
+     */
+
+    if ((Session.get('imagesCount') - 1) == index) {
+
+        // Last image
+        var timelineRightEdge = Session.get('timelineBackgroundWidth') -
+            (yearMarkerWidth / 2);
+        posX = (
+                hlImg.data('x') +
+                ( ( timelineRightEdge - hlImg.data('x') ) / 2 )
+               );
+
+    } else {
+        // All other images
+
+        if (Session.get('scaleFactor') < 1) {
+            /**
+             * If images are overlapping position the handle in between the
+             * two image X positions
+             */
+            var nextImg = $('g[data-index=' + (parseInt(index, 10) + 1 ) + ']');
+            posX = hlImg.data('x') + ( ( nextImg.data('x') - hlImg.data('x') ) / 2 );
+        } else {
+            /**
+             * If images aren't overlapping, place the handle in the middle
+             * of the image
+             */
+            var thumbRect = $('g[data-index=' + (parseInt(index, 10)) + '] rect');
+            var thumbRectWidth = thumbRect.attr('width');
+            posX = hlImg.data('x') + (thumbRectWidth / 2);
+        }
+    }
+
+    positionHandle(posX);
+}
 
 /**
  * Update highlighted image text
