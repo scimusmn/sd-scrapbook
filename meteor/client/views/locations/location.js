@@ -235,24 +235,10 @@ function drawNavButton(svg, cx, cy, r, direction) {
         });
 }
 
-
 /**
  * Draw the timeline handle
  */
 function drawTimelineHandle(svg) {
-    //
-    // Disabling hand pointer
-    //
-    // The odd shape and the timeline difficulties are making this a bad choice
-    //
-    // Keep this around until we're certain that we don't want
-    // to use this any longer.
-    //svg.append('image')
-        //.attr('xlink:href', '/images/hand-2.png')
-        //.attr('width', 75)
-        //.attr('height', 146)
-        //.attr('class', 'time-handle-rect');
-
     svg.append('path')
         .style('stroke', '#341B1C')
         .style('fill', '#341B1C')
