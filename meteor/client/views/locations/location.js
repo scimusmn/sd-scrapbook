@@ -15,6 +15,27 @@ var timelineWidth = 1730; // Width of the timeline
 var yearMarkerWidth = 95;
 
 /**
+ * Template helpers
+ */
+Template.location.helpers({
+    highlightedImageLocation: function () {
+        return Session.get('highlightedImageLocation');
+    },
+    highlightedImageDate: function () {
+        return Session.get('highlightedImageDate');
+    },
+    highlightedImageDescription: function () {
+        return Session.get('highlightedImageDescription');
+    },
+    highlightedImageDescriptionEs: function () {
+        return Session.get('highlightedImageDescriptionEs');
+    },
+    highlightedImageCredit: function () {
+        return Session.get('highlightedImageCredit');
+    }
+});
+
+/**
  * Template render
  */
 Template.location.rendered = function () {
@@ -105,16 +126,16 @@ Template.location.events({
      */
     'mousemove .container': function (e) {
         if (e.pageY >= 840) {
-            highlightImage(e.pageX);
+            highlightImageByPointer(e.pageX);
         }
     },
     'click .prev-next-buttons circle.button-left, click .prev-next-buttons polygon.button-left': function (e) {
         console.log('Button left clicked: e - ', e);
-        highlightImage(100);
+        highlightImageByPointer(100);
     },
     'click .prev-next-buttons circle.button-right, click .prev-next-buttons polygon.button-right': function (e) {
         console.log('Button right clicked: e - ', e);
-        highlightImage(500);
+        highlightImageByPointer(500);
     }
 });
 
@@ -182,8 +203,11 @@ function drawLocation(images) {
     var timeline = $('.timeline-images-svg');
     var timelineOffset = timeline.parent().offset();
     Session.set('timelineOffset', timelineOffset);
-    var posX = parseInt(timelineOffset.left, 10) + parseInt(groupObj.attr('data-centerx'), 10);
-    highlightImage(posX);
+    //
+    // Temp removing this because of errors
+    //
+    //var posX = parseInt(timelineOffset.left, 10) + parseInt(groupObj.attr('data-centerx'), 10);
+    //highlightImageByPointer(posX);
 
     // Draw prev/next buttons
     var locationContainerHeight = locationContainer.height();
@@ -353,7 +377,7 @@ function drawTimelineImages(images) {
         scaleFactor = getScaleFactor(images);
         translateXs[i] = drawTimelineImage(timelineSVG, image, i, scaleFactor);
     });
-    Session.set('translateXs', translateXs)
+    Session.set('translateXs', translateXs);
 }
 
 /**
@@ -553,36 +577,36 @@ function boundPosX(posX) {
 /**
  * Determine a scale value based on mouse position
  */
-function getDistanceScale(pictureGroup, posInterval) {
-    //var distance = posInterval - Number(d3.select(picture).attr('data-index'));
-    var distance = posInterval - parseInt(pictureGroup.attr('data-index'), 10);
-    var distanceScale;
-    if (distance === 0) {
-        distanceScale = 1;
-    } else {
-        var minVal = 0.5;
-        var maxVal = 0.7;
-        distanceScale = ( minVal + (maxVal - minVal) * ( 1 / distance ));
-    }
+//function getDistanceScale(pictureGroup, posInterval) {
+    ////var distance = posInterval - Number(d3.select(picture).attr('data-index'));
+    //var distance = posInterval - parseInt(pictureGroup.attr('data-index'), 10);
+    //var distanceScale;
+    //if (distance === 0) {
+        //distanceScale = 1;
+    //} else {
+        //var minVal = 0.5;
+        //var maxVal = 0.7;
+        //distanceScale = ( minVal + (maxVal - minVal) * ( 1 / distance ));
+    //}
 
-    return distanceScale;
-}
+    //return distanceScale;
+//}
 
-function getPosInterval(posX) {
-    return Math.floor(posX / Session.get('intervalWidth'));
-}
+//function getPosInterval(posX) {
+    //return Math.floor(posX / Session.get('intervalWidth'));
+//}
 
-function getTimelineTransformString(posX, pictureGroup, distanceScale, i) {
-    var imageInGroup = pictureGroup.select('image');
-    var imageHeight = imageInGroup.attr('height');
-    var imageWidth = imageInGroup.attr('width');
+//function getTimelineTransformString(posX, pictureGroup, distanceScale, i) {
+    //var imageInGroup = pictureGroup.select('image');
+    //var imageHeight = imageInGroup.attr('height');
+    //var imageWidth = imageInGroup.attr('width');
 
-    // Get the current transform object
-    var dataCenterX = pictureGroup.attr('data-centerx');
-    var t = d3.transform(pictureGroup.attr('transform'));
+    //// Get the current transform object
+    //var dataCenterX = pictureGroup.attr('data-centerx');
+    //var t = d3.transform(pictureGroup.attr('transform'));
 
-    var timelineImages = $('.timeline-images');
-    var timelineBackgroundHeight = timelineImages.height();
+    //var timelineImages = $('.timeline-images');
+    //var timelineBackgroundHeight = timelineImages.height();
 
     /**
      * X position
@@ -591,135 +615,102 @@ function getTimelineTransformString(posX, pictureGroup, distanceScale, i) {
      * image. Push the image right or left for the image border
      * based on whether it's on the left or the right side.
      */
-    //var imageBorderTranslate = imageBorder;
-    //if ( i >= ( Session.get('imagesCount') / 2 ) ) {
-        //imageBorderTranslate = imageBorder * -1;
-    //}
-    //var translateX = dataCenterX - ((imageWidth * distanceScale) / 2) + imageBorderTranslate;
+    ////var imageBorderTranslate = imageBorder;
+    ////if ( i >= ( Session.get('imagesCount') / 2 ) ) {
+        ////imageBorderTranslate = imageBorder * -1;
+    ////}
+    ////var translateX = dataCenterX - ((imageWidth * distanceScale) / 2) + imageBorderTranslate;
 
     /**
      * Y position
      *
      * Highlight the current image by moving it up
      */
-    //var highlightHeight;
-    //if (getPosInterval(posX) == i) {
-        //highlightHeight = 50;
-    //} else {
-        //highlightHeight = 0;
-    //}
-    //var translateY = (
-            //timelineBackgroundHeight -
-            //( imageHeight * distanceScale ) -
-            //imageBorder -
-            //imageBottomPadding -
-            //highlightHeight);
-    //console.log('translateY - ', translateY);
+    ////var highlightHeight;
+    ////if (getPosInterval(posX) == i) {
+        ////highlightHeight = 50;
+    ////} else {
+        ////highlightHeight = 0;
+    ////}
+    ////var translateY = (
+            ////timelineBackgroundHeight -
+            ////( imageHeight * distanceScale ) -
+            ////imageBorder -
+            ////imageBottomPadding -
+            ////highlightHeight);
+    ////console.log('translateY - ', translateY);
 
-    //t.scale = [distanceScale, distanceScale];
-    t.translate = [
-        t.translate[0],
-        t.translate[1],
-    ];
-    var transformString = t.toString();
+    ////t.scale = [distanceScale, distanceScale];
+    //t.translate = [
+        //t.translate[0],
+        //t.translate[1],
+    //];
+    //var transformString = t.toString();
 
-    return transformString;
+    //return transformString;
+
+//}
+
+/**
+ * Use the mouse cursor position to highlight the current image
+ */
+function highlightImageByPointer(pointerX) {
+
+    // Position selection handle
+    var posX = boundPosX(pointerX - Session.get('timelineOffset').left);
+    positionHandle(posX);
+
+    // Get the index of the image to highlight, based on mouse position
+    var closestLeftEdgeIndex = getLeftist(Session.get('translateXs'), posX);
+
+    // Update highlighted image: text and big image
+    var hlImg = $('g[data-index=' + closestLeftEdgeIndex + ']');
+    updateHighlightedImageText(hlImg);
+    updateHighlightedImage(hlImg);
 
 }
 
-function highlightImage(pointerX) {
-    /**
-     * Get timeline width for position calculations
-     */
-
-    // Set an X position for modifications based on mouse X
-    var posX = boundPosX(pointerX - Session.get('timelineOffset').left);
-    //console.log('posX - ', posX);
-
-    // Position selection handle
-    positionHandle(posX);
-
-    /**
-     * Scale the images based on mouse position
-     *
-     * Make the images nearest the cursor the biggest
-     */
-    var Xs = Session.get('translateXs');
-    var closestLeftEdgeIndex = getLeftist(Xs, posX);
-
-    //$('.navlink').filter('[data-selected="true"]');
-
-    //d3.selectAll('.picture-group').each( function(d, i){
-        //var pictureGroup = d3.select(this);
-
-        /**
-         * New approach to highlighting the images
-         *
-         * If the cursour is past the left edge of the picture
-         */
-        //var leftX = parseInt(pictureGroup.attr('data-x'), 10);
-        //if (posX >= leftX) {
-            //console.log('index - ', parseInt(pictureGroup.attr('data-index'), 10));
-        //}
-        ////console.log('leftX - ', leftX);
-
-        //// Get a scale for each image based on the cursor distance
-        //var distanceScale = getDistanceScale(pictureGroup, getPosInterval(posX));
-
-        /**
-         * Transform the image
-         *
-         * Turn the transform back into a string for SVG
-         */
-        //pictureGroup
-            //.transition()
-            //.duration(100)
-            //.ease('circle-out')
-            //.attr(
-                //'transform',
-                //getTimelineTransformString(posX, pictureGroup, distanceScale, i)
-            //);
-    //});
-
-    /**
-     * Display detail information about the photograph
-     */
-    // Get the image data from the thumbnail data objects
-    var hlImg = $('g[data-index=' + closestLeftEdgeIndex + ']');
-    //var hlImg = $('g[data-index=' + getPosInterval(posX) + ']');
-
-    // Set the title
-    var hlImgTitle = hlImg.data('title');
-    $('.image-detail h4').text(hlImgTitle);
-
-    var hlImgDescription = hlImg.data('description');
-    var hlImgDescriptionEs = hlImg.data('description-es');
-    $('.image-detail div.image-description').text(hlImgDescription);
-    $('.image-detail div.image-description-es').text(hlImgDescriptionEs);
-    $('.image-detail div.image-location').text(hlImg.data('location'));
-    $('.image-detail div.image-date').text(hlImg.data('app-date').substring(5));
+/**
+ * Update highlighted image text
+ *
+ * Pull data from timeline images and store it in the Session.
+ * The session variables are linked to template elements.
+ */
+function updateHighlightedImageText(hlImg) {
+    Session.set('highlightedImageLocation', hlImg.data('location'));
+    Session.set('highlightedImageDate', hlImg.data('app-date').substring(5));
+    Session.set('highlightedImageDescription', hlImg.data('description'));
+    Session.set('highlightedImageDescriptionEs', hlImg.data('description-es'));
+    var highlightedImageCredit;
     if ((hlImg.data('credit-line')).length) {
         $('.image-detail div.image-credit-line').text('Courtesy of ' + hlImg.data('credit-line'));
     } else {
         $('.image-detail div.image-credit-line').text('');
     }
+    Session.set('highlightedImageCredit', highlightedImageCredit);
+}
+
+/**
+ * Update the big highlighted image
+ */
+function updateHighlightedImage(hlImg) {
     var hlImgId = hlImg.data('id');
     var hlImgExHeight = parseFloat(hlImg.data('xh'));
     var hlImgExWidth = parseFloat(hlImg.data('xw'));
     var hlImgAspect = parseFloat(hlImg.data('aspect'));
+    var aspectR;
 
     /**
-     * Portait - taller than narrow. Limit the height to 600px
+     * Bound image size based on aspect ratio
+     *
+     * For portrait images, that are taller than narrow, limit the height.
      */
-    var aspectR;
     if (hlImgAspect < 1) {
         if (hlImgExHeight > 800) {
             hlImgExHeight = 800;
         }
         hlImgExWidth = hlImgExHeight * hlImgAspect;
-
         aspectR = hlImgAspect;
-
     } else {
         /**
          * Landscape - wider than tall. Limit the width to 1000px
@@ -731,7 +722,11 @@ function highlightImage(pointerX) {
         aspectR = hlImgAspect;
     }
 
-    // Only change the image when we need to
+    /**
+     * Update the big image
+     *
+     * Only make changes when we need to.
+     */
     var imagePath = '/images/expanded/' + hlImgId + '.jpg';
     if ($('.image-fullsize-image').attr('src') != imagePath) {
         $('.image-fullsize-image').attr('src', imagePath).stop(true, true).hide().fadeIn(400);
@@ -739,5 +734,5 @@ function highlightImage(pointerX) {
         $('.image-fullsize-image').attr('height', (hlImgExHeight));
         $('.image-fullsize-image').attr('aspect', aspectR);
     }
-
 }
+
