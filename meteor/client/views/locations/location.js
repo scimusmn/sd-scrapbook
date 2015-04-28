@@ -69,8 +69,6 @@ Template.location.rendered = function () {
         /**
          * Draw the location assets
          */
-        var locationContainer = $('.location');
-        locationContainer.css('opacity', 0);
         drawLocation(images);
     }, 300);
 
@@ -132,11 +130,9 @@ function drawLocation(images) {
      * Setup the location element, and fade it in on page load.
      *
      * The location element contains all the main content on this page.
-     *
-     * TODO
-     * Maybe wait to fade it in until the images and the timeline are loaded?
      */
     var locationContainer = $('.location');
+    locationContainer.css('opacity', 0);
     locationContainer.addClass('animated fadeIn');
 
     /**
