@@ -600,6 +600,9 @@ function highlightImageByIndex(index) {
 
 }
 
+/**
+ * Move the handle to the appropriate position for a specific image
+ */
 function updateHighlightedImageHandle(index) {
     var posX;
     var hlImg = $('g[data-index=' + index + ']');
