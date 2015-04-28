@@ -76,7 +76,13 @@ Template.location.rendered = function () {
 
 };
 
-function getLeftist(array, target) {
+/**
+ * Get the index of the image based on the left edge
+ *
+ * Find out which two images the mouse is between.
+ * Return the index of the left one.
+ */
+function getClosestLeftEdgeIndex(array, target) {
     var leftist = _.find(array, function(item) {
         return item > target;
     });
@@ -561,7 +567,7 @@ function highlightImageByPointer(pointerX) {
     positionHandle(posX);
 
     // Get the index of the image to highlight, based on mouse position
-    var closestLeftEdgeIndex = getLeftist(Session.get('translateXs'), posX);
+    var closestLeftEdgeIndex = getClosestLeftEdgeIndex(Session.get('translateXs'), posX);
 
     Session.set('highlightedIndex', closestLeftEdgeIndex);
 
