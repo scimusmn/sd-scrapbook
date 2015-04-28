@@ -77,27 +77,6 @@ Template.location.rendered = function () {
 };
 
 /**
- * Get the index of the image based on the left edge
- *
- * Find out which two images the mouse is between.
- * Return the index of the left one.
- */
-function getClosestLeftEdgeIndex(array, target) {
-    var leftist = _.find(array, function(item) {
-        return item > target;
-    });
-
-    if (typeof leftist === 'undefined'){
-        leftist = array.length;
-    } else {
-        leftist = array.indexOf(leftist);
-    }
-    leftist = leftist - 1;
-
-    return leftist;
-}
-
-/**
  * Template Events
  */
 Template.location.events({
@@ -122,6 +101,27 @@ Template.location.events({
         highlightImageByIndex(parseInt(Session.get('highlightedIndex'), 10) + 1);
     }
 });
+
+/**
+ * Get the index of the image based on the left edge
+ *
+ * Find out which two images the mouse is between.
+ * Return the index of the left one.
+ */
+function getClosestLeftEdgeIndex(array, target) {
+    var leftist = _.find(array, function(item) {
+        return item > target;
+    });
+
+    if (typeof leftist === 'undefined'){
+        leftist = array.length;
+    } else {
+        leftist = array.indexOf(leftist);
+    }
+    leftist = leftist - 1;
+
+    return leftist;
+}
 
 /**
  * Draw the location page
