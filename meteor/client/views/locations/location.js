@@ -318,8 +318,6 @@ function getScaleFactor(images) {
  * We have to find first and last image information outside the loop
  */
 function drawTimelineImages(images) {
-    //var timelineBackgroundWidth = $('.timeline-images').width();
-    //var timelineBackgroundHeight = $('.timeline-images').height();
     Session.set('timelineBackgroundWidth', $('.timeline-images').width());
     Session.set('timelineBackgroundHeight', $('.timeline-images').height());
     Session.set('firstImageWidth', _.first(images).thumbWidth);
