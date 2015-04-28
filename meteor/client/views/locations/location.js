@@ -187,27 +187,23 @@ function drawLocation(images) {
     drawTimelineImages(images);
 
     /**
-     * Highlight the clicked image
+     * Highlight the image from the previous locations page
      *
-     * TODO - This is a hack. We're looking up the x position for the
-     * image clicked and then passing it to the mousemove function.
+     * When you first come to this page from the locations overview, you've
+     * clicked on a specific picture within this location. This picture
+     * should be highlighted when you first come to the page.
      *
-     * Figure out a better non-positional way to do this.
+     * Get the clicked image details from the URL and look up its index
+     * for highlighting
      */
-    // Get the clicked image from the URL
     var clickedImage = Router.current().params.query.image;
-
-    // Determine which image to highlight based on pointer position
     var groupObj = d3.selectAll('g[data-id=' + clickedImage + ']');
-    // TODO: cleanup this mess. We shouldn't need to use jquery here
+    highlightImageByIndex(groupObj.attr('data-index'));
+
+    // Save timeline offset for future transformation operations
     var timeline = $('.timeline-images-svg');
     var timelineOffset = timeline.parent().offset();
     Session.set('timelineOffset', timelineOffset);
-    //
-    // Temp removing this because of errors
-    //
-    //var posX = parseInt(timelineOffset.left, 10) + parseInt(groupObj.attr('data-centerx'), 10);
-    //highlightImageByPointer(posX);
 
     // Draw prev/next buttons
     var locationContainerHeight = locationContainer.height();
@@ -669,6 +665,26 @@ function highlightImageByPointer(pointerX) {
     updateHighlightedImage(hlImg);
 
 }
+
+
+/**
+ * Use the image index to highlight the current image
+ */
+function highlightImageByIndex(index) {
+
+    // Position selection handle
+    //
+    // Determine the position for the handle
+    //var posX = boundPosX(pointerX - Session.get('timelineOffset').left);
+    //positionHandle(posX);
+
+    // Update highlighted image: text and big image
+    var hlImg = $('g[data-index=' + index + ']');
+    updateHighlightedImageText(hlImg);
+    updateHighlightedImage(hlImg);
+
+}
+
 
 /**
  * Update highlighted image text
