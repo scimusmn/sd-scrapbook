@@ -76,29 +76,6 @@ Template.location.rendered = function () {
 
 };
 
-/**
- * Get the closest value in an array of sorted images
- */
-function getClosest(array, target) {
-    var tuples = _.map(array, function(val) {
-        return [val, Math.abs(val - target)];
-    });
-    console.log('tuples - ', tuples);
-    var reduced = _.reduce(
-        //tuples, function(memo, val) { return (memo[1] < val[1]) ? memo : val; }, [-1, 999]
-        tuples, function(memo, val) {
-            if (memo[1] < val[1]) {
-                return memo;
-            }
-            else {
-                return val;
-            }
-        }, [-1, 999]
-    );
-    console.log('reduced - ', reduced);
-    return reduced[0];
-}
-
 function getLeftist(array, target) {
     var leftist = _.find(array, function(item) {
         return item > target;
