@@ -140,7 +140,7 @@ function drawLocation(images) {
      */
     var timelineBackground = $('.timeline-background');
     Session.set('timelineBackgroundWidth', timelineBackground.width());
-    Session.set('timelineBackgroundHeight', timelineBackground.width());
+    Session.set('timelineBackgroundHeight', timelineBackground.height());
     var timelineBackgroundSVG  = d3.select('.timeline-background')
         .append('svg')
         .attr('class', 'timeline-background-svg')
@@ -318,15 +318,15 @@ function getScaleFactor(images) {
  * We have to find first and last image information outside the loop
  */
 function drawTimelineImages(images) {
-    Session.set('timelineBackgroundWidth', $('.timeline-images').width());
-    Session.set('timelineBackgroundHeight', $('.timeline-images').height());
+    Session.set('timelineImagesWidth', $('.timeline-images').width());
+    Session.set('timelineImagesHeight', $('.timeline-images').height());
     Session.set('firstImageWidth', _.first(images).thumbWidth);
     Session.set('lastImageWidth', _.last(images).thumbWidth);
     var timelineSVG = d3.select('.timeline-images')
         .append('svg')
         .attr('class', 'timeline-images-svg')
-        .attr('width', Session.get('timelineBackgroundWidth'))
-        .attr('height', Session.get('timelineBackgroundHeight'));
+        .attr('width', Session.get('timelineImagesWidth'))
+        .attr('height', Session.get('timelineImagesHeight'));
     var scaleFactor;
 
     var translateXs = [];
@@ -354,7 +354,7 @@ function calculateTimelineImageX(i, image, scaleFactor) {
     }
 
     // Values for the last image
-    var lastImageX = Session.get('timelineBackgroundWidth') -
+    var lastImageX = Session.get('timelineImagesWidth') -
         ( image.thumbWidth * scaleFactor ) -
         ( ( imageBorder * 2 ) * scaleFactor) -
         ( yearMarkerWidth / 2 );
@@ -382,7 +382,7 @@ function calculateTimelineImageX(i, image, scaleFactor) {
  * We use the image size to align all the images along the bottom of the timeline.
  */
 function calculateTimelineImageY(image, scaleFactor) {
-    var bottomY = Session.get('timelineBackgroundHeight') -
+    var bottomY = Session.get('timelineImagesHeight') -
         ( image.thumbHeight * scaleFactor ) -
         ( ( imageBorder * 2 ) * scaleFactor ) -
         imageBottomPadding;
@@ -612,7 +612,7 @@ function updateHighlightedImageHandle(index) {
     if ((Session.get('imagesCount') - 1) == index) {
 
         // Last image
-        var timelineRightEdge = Session.get('timelineBackgroundWidth') -
+        var timelineRightEdge = Session.get('timelineImagesWidth') -
             (yearMarkerWidth / 2);
         posX = (
                 hlImg.data('x') +
