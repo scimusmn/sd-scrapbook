@@ -201,14 +201,11 @@ function drawLocation(images) {
 
 }
 
-
 /**
- * Draw temp circle
- *
- * Drawing a cirle for the next and prev buttons
- *
+ * Draw nav button
  */
 function drawNavButton(svg, cx, cy, r, direction) {
+    // Background circle
     svg.append('circle')
         .attr('cx', cx)
         .attr('cy', cy)
@@ -217,6 +214,7 @@ function drawNavButton(svg, cx, cy, r, direction) {
         //.attr('fill-opacity', 0.5)
         .attr('r', r);
 
+    // Right or left pointing arrow
     var triA;
     var triB;
     var triC;
@@ -229,15 +227,12 @@ function drawNavButton(svg, cx, cy, r, direction) {
         triB = [(cx - 10), (cy + 20)];
         triC = [(cx - 10), (cy - 20)];
     }
-
     svg.append('polygon')
         .attr('fill', '#341B1C')
         .attr('class', 'button-' + direction)
-        //.attr('fill-opacity', 0.8)
         .attr('points',function() {
             return triA.join(',') + ' ' + triB.join(',') + ' ' + triC.join(',');
         });
-        //.attr('points', cx,cy, (cx + 50), (cy + 50), (cx - 50), (cy + 50)');
 }
 
 
