@@ -539,7 +539,6 @@ function positionHandle(posX) {
  */
 function boundPosX(posX) {
     // Left edge
-    console.log('posX - ', posX);
     var leftBound = ( yearMarkerWidth / 2 );
     if (posX <= leftBound) {
         posX = leftBound;
@@ -656,17 +655,8 @@ function highlightImageByPointer(pointerX) {
  */
 function highlightImageByIndex(index) {
 
-    // Position selection handle
-    //
-    // Determine the position for the handle
-    //var posX = boundPosX(pointerX - Session.get('timelineOffset').left);
-    //positionHandle(posX);
-    console.log('index - ', index);
-    console.log('count - ', Session.get("imagesCount"));
-
     // Trying to navigate beyond the timeline. Return false.
     if ( index < 0 || index > ( Session.get('imagesCount') - 1 ) ) {
-        console.log('Trying to navigate beyond the bounds');
         return false;
     }
 
