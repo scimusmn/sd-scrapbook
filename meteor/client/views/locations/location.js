@@ -105,13 +105,14 @@ Template.location.events({
             highlightImageByPointer(e.pageX);
         }
     },
-    'click .prev-next-buttons circle.button-left, click .prev-next-buttons polygon.button-left': function (e) {
-        //console.log('Button left clicked: e - ', e);
+
+    // Highlight the previous image
+    'click .prev-next-buttons circle.button-left, click .prev-next-buttons polygon.button-left': function () {
         highlightImageByIndex(parseInt(Session.get('highlightedIndex'), 10) - 1);
     },
-    'click .prev-next-buttons circle.button-right, click .prev-next-buttons polygon.button-right': function (e) {
-        //console.log('Button right clicked: e - ', e);
-        //console.log('Current index', Session.get('highlightedIndex'));
+
+    // Highlight the next image
+    'click .prev-next-buttons circle.button-right, click .prev-next-buttons polygon.button-right': function () {
         highlightImageByIndex(parseInt(Session.get('highlightedIndex'), 10) + 1);
     }
 });
