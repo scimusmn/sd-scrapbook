@@ -13,6 +13,9 @@
     // Normal stuff
     "window": false,
     "console": false,
+    // Keen
+    "Keen": false,
+    "keenClient": false,
     // D3
     "d3": false,
     "topojson": false,
