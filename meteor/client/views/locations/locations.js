@@ -21,11 +21,11 @@ function sendKeenEvent(eventProperties) {
         event: eventType,
         clickX: eventProperties.x,
         clickY: eventProperties.y,
-        clickedLocation: eventProperties.clickedLocation,
+        clickedLocation: eventProperties.clickedLocation
     };
 
     // Send data, with some basic error reporting
-    keenClient.addEvent(eventType, collectionEvent, function(err, res){
+    keenClient.addEvent(eventType, collectionEvent, function(err, res) {
         if (err) {
             console.log('Keen - ' + collectionEvent.event + ' submission failed');
         }
@@ -39,7 +39,7 @@ function sendKeenEvent(eventProperties) {
 /**
  * Code executed once the page is loaded and rendered
  */
-Template.locations.rendered = function () {
+Template.locations.rendered = function() {
 
     /**
      * Set the map projection to a Southern California focus
@@ -47,9 +47,7 @@ Template.locations.rendered = function () {
      * This will need to be reprojected if the background map raster changes
      */
     var projection = d3.geo.mercator()
-        //.scale(16160)
         .scale(19225)
-        // bigger right, bigger up
         .center([-118.616, 34.048])
         .precision(0.1);
 
@@ -113,7 +111,7 @@ Template.locations.rendered = function () {
         _.each(locations, function(location) {
 
             // Define the position
-            var position = projection([location.longitude,location.latitude]);
+            var position = projection([location.longitude, location.latitude]);
 
             positions[location.dsLocId] = {
                 latitude: location.latitude,
@@ -140,6 +138,7 @@ Template.locations.rendered = function () {
             }
 
         });
+
         return positions;
     }
 
@@ -182,11 +181,13 @@ Template.locations.rendered = function () {
 
         // Old skool border width
         var imageBorder = 5;
+
         // Max character length in location name
         var locationLength = 20;
 
         var centerX = imagePosition[0];
         var centerY = imagePosition[1];
+
         // Group for all the picture elements
         var pictureGroup = svg.append('g');
 
@@ -219,9 +220,10 @@ Template.locations.rendered = function () {
 
         // Write a short version of the locaiton name
         var imageName = image.generalLocationDs;
-        if (imageName.length > locationLength ) {
-            imageName = imageName.substring(0,locationLength) + '...';
+        if (imageName.length > locationLength) {
+            imageName = imageName.substring(0, locationLength) + '...';
         }
+
         pictureGroup.append('text')
             .attr('x', 10)
             .attr('y', image.thumbHeight + 37)
@@ -247,27 +249,27 @@ Template.locations.rendered = function () {
             .attr('opacity', '0')
             .attr('class', 'picture-group')
             .attr('data-locid', image.dsLocId)
-            .attr('transform', function (){
+            .attr('transform', function() {
                 return 'scale(.1), translate(' + (centerX / 0.1) + ', ' + (centerY / 0.1) + ')';
             });
 
-        imagePosition = [imagePosition[0], ((imagePosition[1] - (image.thumbHeight/ 2) - 5) + 15)];
+        imagePosition = [imagePosition[0], ((imagePosition[1] - (image.thumbHeight / 2) - 5) + 15)];
         Meteor.svgRecipes.drawPin(svg, imagePosition);
 
         // Animate picture group to full size
         pictureGroup
             .transition()
             .attr('opacity', '1')
-            .attr('transform', function (){
+            .attr('transform', function() {
                 var transform =
-                    'rotate(' + _.random(-2,2) + ', ' +
-                        ( centerX - ( image.thumbWidth / 2 ) ) + ', ' +
-                        ( centerY - ( image.thumbHeight / 2 ) ) +
+                    'rotate(' + _.random(-2, 2) + ', ' +
+                        (centerX - (image.thumbWidth / 2)) + ', ' +
+                        (centerY - (image.thumbHeight / 2)) +
                     '),' +
                     'scale(1),' +
                     'translate(' +
-                        ( centerX - ( image.thumbWidth / 2 ) ) + ', ' +
-                        ( centerY - ( image.thumbHeight / 2 ) ) +
+                        (centerX - (image.thumbWidth / 2)) + ', ' +
+                        (centerY - (image.thumbHeight / 2)) +
                     ')';
                 return transform;
             })
@@ -280,44 +282,50 @@ Template.locations.rendered = function () {
         var markerY = parseFloat(markerPosition[1]);
 
         var imagePinX = imagePosition[0];
-        var imagePinY = (imagePosition[1] - (2*(image.thumbHeight / 5)));
+        var imagePinY = (imagePosition[1] - (2 * (image.thumbHeight / 5)));
 
         // Check to see if the image is above or below the marker
         var lineMidX;
         var lineMidY;
         var lineStroke = '#DDDFE0';
-        //
+
         // Image is SW of the marker
-        //
         if ((markerX > imagePinX) && (markerY < imagePinY)) {
             lineMidX = imagePinX + ((markerX - imagePinX) / 2) + 20;
             lineMidY = markerY - (markerY - imagePinY) / 2;
             lineStroke = 'white';
         }
+
         // Image is NW of marker
-        else if ((markerX > imagePinX) && (markerY > imagePinY)){
-            lineMidX = imagePinX + ((markerX - imagePinX) / 2 ) - 20;
+        else if ((markerX > imagePinX) && (markerY > imagePinY)) {
+            lineMidX = imagePinX + ((markerX - imagePinX) / 2) - 20;
             lineMidY = markerY - (markerY - imagePinY) / 2;
             lineStroke = 'white';
         }
+
         // Image is NE of marker
-        else if ((markerX < imagePinX) && (markerY > imagePinY)){
-            lineMidX = markerX + ((imagePinX - markerX) / 2 ) + 20;
+        else if ((markerX < imagePinX) && (markerY > imagePinY)) {
+            lineMidX = markerX + ((imagePinX - markerX) / 2) + 20;
             lineMidY = markerY - (markerY - imagePinY) / 2;
         }
+
         // Image is SE of marker
         else {
-            lineMidX = markerX + ((imagePinX - markerX) / 2 );
-            lineMidY = markerY + ((imagePinY - markerY) / 2 ) + 10;
+            lineMidX = markerX + ((imagePinX - markerX) / 2);
+            lineMidY = markerY + ((imagePinY - markerY) / 2) + 10;
             lineStroke = 'white';
         }
 
         var lineData = [
             { 'x': markerX, 'y': markerY + 16.5 - 15},
             { 'x': lineMidX, 'y': lineMidY},
-            //{ 'x': (imagePosition[0] + 50), 'y': (imagePosition[1] + ((markerPosition[1] - imagePosition[1]) / 2))},
+
+            // { 'x': (imagePosition[0] + 50), 'y': (imagePosition[1] + ((markerPosition[1] - imagePosition[1]) / 2))},
+
             { 'x': imagePosition[0], 'y': imagePinY}
         ];
+
+
 
         // Curve type
         // https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate
@@ -352,7 +360,7 @@ Template.locations.rendered = function () {
                 .attr('stroke-width', 1.6)
                 .attr('fill', 'none')
                 .attr('stroke', 'black')
-                .attr('transform', function (){
+                .attr('transform', function() {
                     var transform = 'translate(0,2)';
                     return transform;
                 })
@@ -374,18 +382,12 @@ Template.locations.rendered = function () {
         if (locId == '1') {
             xOffset = 0;
             yOffset = 0;
-            //xOffset = 0.3;
-            //yOffset = -0.2;
-        }
-        else if (locId == '2') {
+        } else if (locId == '2') {
             xOffset = 0;
             yOffset = 0;
-        }
-        else if (locId == '3') {
+        } else if (locId == '3') {
             xOffset = 0;
             yOffset = 0;
-            //xOffset = -0.1;
-            //yOffset = -0.3;
         }
         else if (locId == '4') {
             xOffset = 0;
@@ -464,7 +466,6 @@ Template.locations.rendered = function () {
         return offsets;
     }
 
-
     function devMapFeatures(d3, projection) {
         /**
          * Test map data to position the map projection
@@ -478,17 +479,17 @@ Template.locations.rendered = function () {
         .projection(projection);
 
         d3.json('/data/salton.json', function(error, salton) {
-        svg.append('path')
-            .datum(topojson.feature(salton, salton.objects.salton))
-            .attr('d', path)
-            .attr('class', 'water');
+            svg.append('path')
+                .datum(topojson.feature(salton, salton.objects.salton))
+                .attr('d', path)
+                .attr('class', 'water');
         });
 
         d3.json('/data/i15.json', function(error, i15) {
-        svg.append('path')
-        .datum(topojson.feature(i15, i15.objects.i15))
-            .attr('d', path)
-            .attr('class', 'road');
+            svg.append('path')
+                .datum(topojson.feature(i15, i15.objects.i15))
+                .attr('d', path)
+                .attr('class', 'road');
         });
 
         /**
@@ -521,12 +522,12 @@ Template.locations.events({
     /**
      * Image click
      */
-    'click g.picture-group':function(e){
+    'click g.picture-group':function(e) {
 
         var animateContentOut = function() {
 
             var width, height, t;
-            d3.selectAll('image').each( function(d, i){
+            d3.selectAll('image').each(function(d, i) {
 
                 // Get the image dimensions
                 width = Number(d3.select(this).attr('width'));
@@ -537,8 +538,8 @@ Template.locations.events({
 
                 // Scale to zero from the center
                 t.scale = [0, 0];
-                t.translate[0] = t.translate[0] + ( width / 2 );
-                t.translate[1] = t.translate[1] + ( height / 2 );
+                t.translate[0] = t.translate[0] + (width / 2);
+                t.translate[1] = t.translate[1] + (height / 2);
                 var transformString = t.toString();
 
                 // Only this one has problems
@@ -573,7 +574,7 @@ Template.locations.events({
             var clickedImage = $('image[data-locid="' + imageLocation + '"]').data('id');
 
             // Query Mongo for a location with a matching title
-            var clickedLocation = Locations.findOne( {dsLocId: imageLocation });
+            var clickedLocation = Locations.findOne({dsLocId: imageLocation });
 
             // Send location seclection event
             var eventProperties = {};
@@ -587,7 +588,7 @@ Template.locations.events({
                 'location',
                 {link: clickedLocation.link},
                 {query: {image: clickedImage}}
-            );
+           );
         }
 
     }
