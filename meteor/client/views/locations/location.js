@@ -18,19 +18,23 @@ var yearMarkerWidth = 95;
  * Template helpers
  */
 Template.location.helpers({
-    highlightedImageLocation: function () {
+    highlightedImageLocation: function() {
         return Session.get('highlightedImageLocation');
     },
-    highlightedImageDate: function () {
+
+    highlightedImageDate: function() {
         return Session.get('highlightedImageDate');
     },
-    highlightedImageDescription: function () {
+
+    highlightedImageDescription: function() {
         return Session.get('highlightedImageDescription');
     },
-    highlightedImageDescriptionEs: function () {
+
+    highlightedImageDescriptionEs: function() {
         return Session.get('highlightedImageDescriptionEs');
     },
-    highlightedImageCredit: function () {
+
+    highlightedImageCredit: function() {
         return Session.get('highlightedImageCredit');
     }
 });
@@ -38,14 +42,14 @@ Template.location.helpers({
 /**
  * Template render
  */
-Template.location.rendered = function () {
+Template.location.rendered = function() {
 
     /**
      * Wait for Meteor to finish loading server data.
      *
      * Draw the location page.
      */
-    window.setTimeout(function () {
+    window.setTimeout(function() {
         /**
          * Location information
          *
@@ -56,7 +60,7 @@ Template.location.rendered = function () {
         var images = imagesCursor.fetch();
 
         // Sort images by year
-        images = _.sortBy(images, function (image) {
+        images = _.sortBy(images, function(image) {
             return image.isoDate;
         });
 
@@ -83,19 +87,19 @@ Template.location.events({
      *
      * We only highlight the images on the bottom part of the screen
      */
-    'mousemove .container': function (e) {
+    'mousemove .container': function(e) {
         if (e.pageY >= 840) {
             highlightImageByPointer(e.pageX);
         }
     },
 
     // Highlight the previous image
-    'click .prev-next-buttons circle.button-left, click .prev-next-buttons polygon.button-left': function () {
+    'click .prev-next-buttons circle.button-left, click .prev-next-buttons polygon.button-left': function() {
         highlightImageByIndex(parseInt(Session.get('highlightedIndex'), 10) - 1);
     },
 
     // Highlight the next image
-    'click .prev-next-buttons circle.button-right, click .prev-next-buttons polygon.button-right': function () {
+    'click .prev-next-buttons circle.button-right, click .prev-next-buttons polygon.button-right': function() {
         highlightImageByIndex(parseInt(Session.get('highlightedIndex'), 10) + 1);
     }
 });
@@ -153,9 +157,9 @@ function drawLocation(images) {
     /**
      * Draw year markers at the start and end of the timeline
      */
-    var firstYear = _.first(images).isoDate.substring(4,8);
+    var firstYear = _.first(images).isoDate.substring(4, 8);
     drawYearMarker(timelineBackgroundSVG, 0, 50, 50, 55, firstYear);
-    var lastYear = _.last(images).isoDate.substring(4,8);
+    var lastYear = _.last(images).isoDate.substring(4, 8);
     drawYearMarker(
         timelineBackgroundSVG,
         (Session.get('timelineBackgroundWidth') - 100),
@@ -210,7 +214,6 @@ function drawNavButton(svg, cx, cy, r, direction) {
         .attr('cy', cy)
         .attr('class', 'button-' + direction)
         .attr('fill', '#e2d9c2')
-        //.attr('fill-opacity', 0.5)
         .attr('r', r);
 
     // Right or left pointing arrow
@@ -226,10 +229,11 @@ function drawNavButton(svg, cx, cy, r, direction) {
         triB = [(cx - 10), (cy + 20)];
         triC = [(cx - 10), (cy - 20)];
     }
+
     svg.append('polygon')
         .attr('fill', '#341B1C')
         .attr('class', 'button-' + direction)
-        .attr('points',function() {
+        .attr('points', function() {
             return triA.join(',') + ' ' + triB.join(',') + ' ' + triC.join(',');
         });
 }
@@ -241,7 +245,6 @@ function drawTimelineHandle(svg) {
     svg.append('path')
         .style('stroke', '#341B1C')
         .style('fill', '#341B1C')
-        //.attr('width', 300)
         .attr('class', 'time-handle-rect')
         .attr('d', 'M 0,50, L 25,0, L 50,50 Z');
 }
@@ -303,6 +306,7 @@ function getScaleFactor(images) {
     _.each(images, function(image) {
         totalImagesWidth = (parseInt(totalImagesWidth, 10) + parseInt(image.thumbWidth, 10));
     });
+
     if (totalImagesWidth <= Session.get('timelineBackgroundWidth')) {
         scaleFactor = 1;
     } else {
@@ -342,6 +346,7 @@ function drawTimelineImages(images) {
         translateXs[i] = translations[0];
         imageWidths[i] = translations[1];
     });
+
     Session.set('translateXs', translateXs);
     Session.set('imageWidths', imageWidths);
 }
@@ -355,18 +360,18 @@ function calculateTimelineImageX(i, image, scaleFactor) {
     var translateX;
 
     // Values for the first image
-    var firstImageX = ( yearMarkerWidth / 2 );
+    var firstImageX = (yearMarkerWidth / 2);
     if (i === 0) {
         translateX = firstImageX;
     }
 
     // Values for the last image
     var lastImageX = Session.get('timelineImagesWidth') -
-        ( image.thumbWidth * scaleFactor ) -
-        ( ( imageBorder * 2 ) * scaleFactor) -
-        ( yearMarkerWidth / 2 );
+        (image.thumbWidth * scaleFactor) -
+        ((imageBorder * 2) * scaleFactor) -
+        (yearMarkerWidth / 2);
 
-    if (i == (Session.get('imagesCount') - 1)){
+    if (i == (Session.get('imagesCount') - 1)) {
         translateX = lastImageX;
     }
 
@@ -374,9 +379,9 @@ function calculateTimelineImageX(i, image, scaleFactor) {
     //
     // First find the proper interval between images, and then set the
     // position based on the i value
-    var centerInterval = (lastImageX - firstImageX) / ( Session.get('imagesCount') - 1 );
+    var centerInterval = (lastImageX - firstImageX) / (Session.get('imagesCount') - 1);
     if ((i !== 0) && (i != (Session.get('imagesCount') - 1))) {
-        translateX = firstImageX + ( centerInterval * i );
+        translateX = firstImageX + (centerInterval * i);
     }
 
     return translateX;
@@ -390,8 +395,8 @@ function calculateTimelineImageX(i, image, scaleFactor) {
  */
 function calculateTimelineImageY(image, scaleFactor) {
     var bottomY = Session.get('timelineImagesHeight') -
-        ( image.thumbHeight * scaleFactor ) -
-        ( ( imageBorder * 2 ) * scaleFactor ) -
+        (image.thumbHeight * scaleFactor) -
+        ((imageBorder * 2) * scaleFactor) -
         imageBottomPadding;
     return bottomY;
 }
@@ -448,8 +453,8 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
         .attr('filter', 'url(#blur)');
 
     // SVG - Draw picture's white border
+    // Positions are relative to the group
     pictureGroup.append('rect')
-        // Positions are relative to the group
         .attr('x', 0)
         .attr('y', 0)
         .attr('width', imageCardWidth)
@@ -473,7 +478,7 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
      * and then to scale them to the right size based on the scaleFactor
      */
     pictureGroup
-        .attr('transform', function (){
+        .attr('transform', function() {
             var transform = 'translate(' + translateX + ',' + bottomY + ')' +
                 ' scale(' + scaleFactor + ')';
             return transform;
@@ -488,8 +493,10 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
         .attr('opacity', '0');
     pictureGroup.selectAll('.child')
         .transition()
+
         // Stagger the markers animating in
         .delay(i * delay)
+
         .attr('opacity', '1')
         .duration(dur);
 
@@ -513,8 +520,8 @@ function positionHandle(posX) {
     var handleX = (posX + (handleWidth / 2));
 
     // Move handle
-    handle.attr('transform', function (){
-        var transform = 'translate(' + ( handleX ) + ', 100)';
+    handle.attr('transform', function() {
+        var transform = 'translate(' + (handleX) + ', 100)';
         return transform;
     });
 
@@ -527,15 +534,17 @@ function positionHandle(posX) {
  */
 function boundPosX(posX) {
     // Left edge
-    var leftBound = ( yearMarkerWidth / 2 );
+    var leftBound = (yearMarkerWidth / 2);
     if (posX <= leftBound) {
         posX = leftBound;
     }
+
     // Right edge
     var rightBound = 1580;
     if (posX >= rightBound) {
         posX = rightBound;
     }
+
     return posX;
 }
 
@@ -563,7 +572,7 @@ function highlightImageByPointer(pointerX) {
         var translateXs = Session.get('translateXs');
         var imageWidths = Session.get('imageWidths');
         var rightEdges;
-        rightEdges = _.map(translateXs, function(x, key){
+        rightEdges = _.map(translateXs, function(x, key) {
             return x + imageWidths[key];
         });
 
@@ -575,13 +584,15 @@ function highlightImageByPointer(pointerX) {
                 return (x + ((Session.get('timelineImagesWidth') - x) / 2));
             }
         });
+
+        // Remove the undefined element.
+        // Middle array is shorter than the right edge array.
         middlePoints.pop();
 
         closestEdgeIndex = getClosestEdgeIndex(
             middlePoints, posX, true
         );
     }
-
 
     Session.set('highlightedIndex', closestEdgeIndex);
 
@@ -599,7 +610,7 @@ function highlightImageByPointer(pointerX) {
 function highlightImageByIndex(index) {
 
     // Trying to navigate beyond the timeline. Return false.
-    if ( index < 0 || index > ( Session.get('imagesCount') - 1 ) ) {
+    if (index < 0 || index > (Session.get('imagesCount') - 1)) {
         return false;
     }
 
@@ -607,19 +618,18 @@ function highlightImageByIndex(index) {
      * Switching to the first image
      *
      * Grey out the prev button
+     *
+     * TODO: add a class to grey out the button
+     * if (index === 0) { }
      */
-    if ( index === 0 ) {
-        // TODO: add a class to grey out the button
-    }
 
     /**
      * Switching to the last image
      *
      * Grey out the next button
+     * // TODO: add a class to grey out the button
+     * if ((Session.get('imagesCount') - 1) == index) { }
      */
-    if ( ( Session.get('imagesCount') - 1) == index ) {
-        // TODO: add a class to grey out the button
-    }
 
     // Get the highlighted image
     var hlImg = $('g[data-index=' + index + ']');
@@ -655,7 +665,7 @@ function updateHighlightedImageHandle(index) {
             (yearMarkerWidth / 2);
         posX = (
                 hlImg.data('x') +
-                ( ( timelineRightEdge - hlImg.data('x') ) / 2 )
+                ((timelineRightEdge - hlImg.data('x')) / 2)
                );
 
     } else {
@@ -666,8 +676,8 @@ function updateHighlightedImageHandle(index) {
              * If images are overlapping position the handle in between the
              * two image X positions
              */
-            var nextImg = $('g[data-index=' + (parseInt(index, 10) + 1 ) + ']');
-            posX = hlImg.data('x') + ( ( nextImg.data('x') - hlImg.data('x') ) / 2 );
+            var nextImg = $('g[data-index=' + (parseInt(index, 10) + 1) + ']');
+            posX = hlImg.data('x') + ((nextImg.data('x') - hlImg.data('x')) / 2);
         } else {
             /**
              * If images aren't overlapping, place the handle in the middle
@@ -693,12 +703,14 @@ function updateHighlightedImageText(hlImg) {
     Session.set('highlightedImageDate', hlImg.data('app-date').substring(5));
     Session.set('highlightedImageDescription', hlImg.data('description'));
     Session.set('highlightedImageDescriptionEs', hlImg.data('description-es'));
+
     var highlightedImageCredit;
     if ((hlImg.data('credit-line')).length) {
         $('.image-detail div.image-credit-line').text('Courtesy of ' + hlImg.data('credit-line'));
     } else {
         $('.image-detail div.image-credit-line').text('');
     }
+
     Session.set('highlightedImageCredit', highlightedImageCredit);
 }
 
@@ -721,6 +733,7 @@ function updateHighlightedImage(hlImg) {
         if (hlImgExHeight > 800) {
             hlImgExHeight = 800;
         }
+
         hlImgExWidth = hlImgExHeight * hlImgAspect;
         aspectR = hlImgAspect;
     } else {
@@ -730,6 +743,7 @@ function updateHighlightedImage(hlImg) {
         if (hlImgExWidth > 1000) {
             hlImgExWidth = 1000;
         }
+
         hlImgExHeight = hlImgExWidth / hlImgAspect;
         aspectR = hlImgAspect;
     }
