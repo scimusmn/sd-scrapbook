@@ -101,22 +101,25 @@ Template.location.events({
 });
 
 /**
- * Get the index of the image based on the left edge
+ * Get the index of the image based on an array of edges
  *
  * Find out which two images the mouse is between.
  * Return the index of the left one.
  */
-function getClosestLeftEdgeIndex(array, target) {
+function getClosestEdgeIndex(array, target, middle) {
     var leftist = _.find(array, function(item) {
         return item > target;
     });
 
-    if (typeof leftist === 'undefined'){
+    if (typeof leftist === 'undefined') {
         leftist = array.length;
     } else {
         leftist = array.indexOf(leftist);
     }
-    leftist = leftist - 1;
+
+    if (!middle) {
+        leftist = leftist - 1;
+    }
 
     return leftist;
 }
@@ -330,13 +333,17 @@ function drawTimelineImages(images) {
     var scaleFactor;
 
     var translateXs = [];
+    var imageWidths = [];
 
     // Draw each image
     _.each(images, function(image, i) {
         scaleFactor = getScaleFactor(images);
-        translateXs[i] = drawTimelineImage(timelineSVG, image, i, scaleFactor);
+        var translations = drawTimelineImage(timelineSVG, image, i, scaleFactor);
+        translateXs[i] = translations[0];
+        imageWidths[i] = translations[1];
     });
     Session.set('translateXs', translateXs);
+    Session.set('imageWidths', imageWidths);
 }
 
 /**
@@ -486,7 +493,7 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
         .attr('opacity', '1')
         .duration(dur);
 
-    return translateX;
+    return [translateX, image.thumbWidth];
 
 }
 
@@ -541,13 +548,45 @@ function highlightImageByPointer(pointerX) {
     var posX = boundPosX(pointerX - Session.get('timelineOffset').left);
     positionHandle(posX);
 
-    // Get the index of the image to highlight, based on mouse position
-    var closestLeftEdgeIndex = getClosestLeftEdgeIndex(Session.get('translateXs'), posX);
+    /**
+     * Get the index of the image to highlight
+     *
+     * We use different trigger functions, depending on whether the images
+     * are overlapping or not.
+     */
+    var closestEdgeIndex;
+    if (Session.get('scaleFactor') < 1) {
+        closestEdgeIndex = getClosestEdgeIndex(
+            Session.get('translateXs'), posX
+        );
+    } else {
+        var translateXs = Session.get('translateXs');
+        var imageWidths = Session.get('imageWidths');
+        var rightEdges;
+        rightEdges = _.map(translateXs, function(x, key){
+            return x + imageWidths[key];
+        });
 
-    Session.set('highlightedIndex', closestLeftEdgeIndex);
+        var middlePoints = [];
+        middlePoints = _.map(rightEdges, function(x, key) {
+            if (key != rightEdges.length) {
+                return (x + ((translateXs[key + 1] - x) / 2));
+            } else {
+                return (x + ((Session.get('timelineImagesWidth') - x) / 2));
+            }
+        });
+        middlePoints.pop();
+
+        closestEdgeIndex = getClosestEdgeIndex(
+            middlePoints, posX, true
+        );
+    }
+
+
+    Session.set('highlightedIndex', closestEdgeIndex);
 
     // Update highlighted image: text and big image
-    var hlImg = $('g[data-index=' + closestLeftEdgeIndex + ']');
+    var hlImg = $('g[data-index=' + closestEdgeIndex + ']');
     updateHighlightedImageText(hlImg);
     updateHighlightedImage(hlImg);
 
