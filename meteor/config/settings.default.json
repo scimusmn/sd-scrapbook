@@ -1,11 +1,17 @@
 {
     "public": {
-        "homeItem": "bat",
+        "homeItem": "/",
         "ga": {
             "id": "UA-YY-X",
             "create": {
                 "cookieDomain": "none"
             }
-        }
+        },
+        "keen": {
+            "projectId": "1234567890",
+            "writeKey": "1234567890",
+            "readKey": "1234567890"
+        },
+        "adminPassword": "1234567890"
     }
 }
