@@ -30,11 +30,14 @@ $(document).keydown(function(e) {
 
       if (e.ctrlKey && e.shiftKey) {
         console.log('You pressed CTRL + SHIFT + E');
+
       }
 
     break;
 
     default: return; // Exit this handler for other keys
   }
+
+  // e.preventDefault(); // Prevent the default action (scroll / move caret)
 
 });

@@ -596,6 +596,9 @@ function highlightImageByPointer(pointerX) {
 
     Session.set('highlightedIndex', closestEdgeIndex);
 
+    // Update prev/next buttons
+    updatePrevNextButtons(closestEdgeIndex);
+
     // Update highlighted image: text and big image
     var hlImg = $('g[data-index=' + closestEdgeIndex + ']');
     updateHighlightedImageText(hlImg);
@@ -614,27 +617,13 @@ function highlightImageByIndex(index) {
         return false;
     }
 
-    /**
-     * Switching to the first image
-     *
-     * Grey out the prev button
-     *
-     * TODO: add a class to grey out the button
-     * if (index === 0) { }
-     */
-
-    /**
-     * Switching to the last image
-     *
-     * Grey out the next button
-     * // TODO: add a class to grey out the button
-     * if ((Session.get('imagesCount') - 1) == index) { }
-     */
-
     // Get the highlighted image
     var hlImg = $('g[data-index=' + index + ']');
 
     Session.set('highlightedIndex', index);
+
+    // Update prev/next buttons
+    updatePrevNextButtons(index);
 
     // Position selection handle
     updateHighlightedImageHandle(index);
@@ -644,6 +633,28 @@ function highlightImageByIndex(index) {
     updateHighlightedImage(hlImg);
 
     return true;
+
+}
+
+/**
+ * Dim prev/next buttons if on first or last index
+ */
+function updatePrevNextButtons(index) {
+
+    var nextBtn = $('.prev-next-buttons circle.button-right, .prev-next-buttons polygon.button-right');
+    var prevBtn = $('.prev-next-buttons circle.button-left, .prev-next-buttons polygon.button-left');
+
+    if (index <= 0) {
+        prevBtn.css('opacity', '0.35');
+    } else {
+        prevBtn.css('opacity', '1.0');
+    }
+
+    if (index >= (Session.get('imagesCount') - 1)) {
+        nextBtn.css('opacity', '0.35');
+    } else {
+        nextBtn.css('opacity', '1.0');
+    }
 
 }
 
