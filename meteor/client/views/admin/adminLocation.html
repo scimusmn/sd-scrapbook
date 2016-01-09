@@ -1,0 +1,22 @@
+<!-- Admin | Single Location -->
+
+<template name="adminLocation">
+  <div class="container">
+    <header class="subtitle">
+      <h1>Admin | {{location.title}}</h1>
+    </header>
+    <ul class="container">
+      {{#each imageEntries}}
+        {{> adminImageEntry}}
+      {{/each}}
+    </ul>
+
+  </div>
+</template>
+
+<!-- Admin | Image Entry -->
+<template name="adminImageEntry">
+  <li class="row">
+    <h3>{{entry.creditLine}}</h3>
+  </li>
+</template>

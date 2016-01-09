@@ -1,0 +1,25 @@
+<!-- Admin | Location Manifest -->
+
+<template name="admin">
+  <div class="container">
+    <header class="subtitle">
+    <h1>Admin | All locations</h1>
+    </header>
+    <ul class="container">
+      {{#each locations}}
+        {{> adminLocationButton}}
+      {{/each}}
+    </ul>
+
+  </div>
+</template>
+
+<!-- Admin | Location Button -->
+<template name="adminLocationButton">
+  <a href={{locationURL}}>
+    <li class="col-md-2 btn btn-default">
+      <h3>{{location.title}}</h3>
+      <!-- <p>{{location.latitude}}, {{location.longitude}}</p> -->
+    </li>
+  </a>
+</template>
