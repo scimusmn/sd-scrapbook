@@ -4,7 +4,7 @@
 Template.admin.helpers({
   locations: function() {
 
-    return Locations.find();
+    return Locations.find({}, {sort:{title:1}});
 
   },
 

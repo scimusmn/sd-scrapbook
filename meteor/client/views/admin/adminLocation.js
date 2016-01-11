@@ -4,7 +4,7 @@
 Template.adminLocation.helpers({
   imageEntries: function() {
 
-    return Images.find();
+    return Images.find({}, {sort:{isoDate: 1}});
 
   },
 
@@ -16,8 +16,11 @@ Template.adminImageEntry.helpers({
     return Images.findOne(this._id);
   },
 
-});
+  thumbPath : function() {
+    return '/images/thumbnails/' + this._id + '.jpg';
+  },
 
+});
 
 /*
 _id: "ds02040"

@@ -4,11 +4,16 @@
   <div class="container">
     <header class="subtitle">
       <h1>Admin | {{location.title}}</h1>
+      <h3>Click an entry to edit.</h3>
     </header>
     <ul class="container">
       {{#each imageEntries}}
         {{> adminImageEntry}}
       {{/each}}
+      <li class="col-md-2 btn btn-default" data-toggle="modal" data-target="#add_project">
+        <h1>Add new image</h1>
+        <i class="fa fa-plus"></i>
+      </li>
     </ul>
 
   </div>
@@ -16,7 +21,11 @@
 
 <!-- Admin | Image Entry -->
 <template name="adminImageEntry">
-  <li class="row">
-    <h3>{{entry.creditLine}}</h3>
-  </li>
+  <a href="#">
+    <li class="col-md-1 btn btn-default">
+      <h3>{{entry.creationPlace}}</h3>
+      <img src="{{thumbPath}}" height="50"/>
+      <p>{{entry.isoDate}}</p>
+    </li>
+  </a>
 </template>
