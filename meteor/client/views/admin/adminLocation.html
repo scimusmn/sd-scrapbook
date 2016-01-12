@@ -1,31 +1,54 @@
 <!-- Admin | Single Location -->
 
 <template name="adminLocation">
-  <div class="container">
+  <div class="container admin">
     <header class="subtitle">
       <h1>Admin | {{location.title}}</h1>
       <h3>Click an entry to edit.</h3>
     </header>
-    <ul class="container">
+    <ul class="container imageList">
       {{#each imageEntries}}
         {{> adminImageEntry}}
       {{/each}}
-      <li class="col-md-2 btn btn-default" data-toggle="modal" data-target="#add_project">
+      <li id="addBtn" class="col-md-2 btn btn-primary">
         <h1>Add new image</h1>
         <i class="fa fa-plus"></i>
       </li>
     </ul>
 
   </div>
+
+  {{> adminEditModal}}
+
 </template>
 
 <!-- Admin | Image Entry -->
 <template name="adminImageEntry">
   <a href="#">
-    <li class="col-md-1 btn btn-default">
+    <li id="{{entry._id}}" class="col-md-1 btn btn-default">
       <h3>{{entry.creationPlace}}</h3>
       <img src="{{thumbPath}}" height="50"/>
       <p>{{entry.isoDate}}</p>
     </li>
   </a>
+</template>
+
+<!-- Admin | Edit -->
+<template name="adminEditModal">
+
+<div id="editModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+     <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">{{modalHeader}}</h4>
+      </div>
+      <div class="modal-body">
+        {{> quickForm id="form_imageEntry" collection="Images" doc=editImage type=updateOrInsertMode autosave=false }}
+      </div>
+
+    </div>
+  </div>
+</div>
+
 </template>
