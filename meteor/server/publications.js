@@ -116,7 +116,7 @@ Meteor.publish('singleLocation', function(link) {
         {generalLocationDs: currentLocationTitle},
         {
             fields: {
-                _id: 1, dsLocId: 1, title: 1, isoDate: 1, appDate: 1,
+                _id: 1, dsLocId: 1, title: 1, isoDate: 1, appDate: 1, generalLocationDs:1,
                 creationPlace: 1, creditLine: 1, expandedHeight: 1,
                 expandedWidth: 1, expandedAspectRatio: 1, thumbWidth: 1,
                 thumbHeight: 1, labelTextEnglish: 1, labelTextSpanish: 1

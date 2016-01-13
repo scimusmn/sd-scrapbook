@@ -47,9 +47,9 @@ Template.adminEditModal.helpers({
   modalHeader: function() {
 
     if (Session.get('adminCurrentImageId') && Session.get('adminCurrentImageId') !== '') {
-      return 'EDIT ' + Session.get('adminCurrentImageId');
+      return 'EDIT IMAGE';
     } else {
-      return 'ADD';
+      return 'ADD NEW IMAGE';
     }
 
   },
@@ -69,6 +69,8 @@ Template.adminLocation.events({
     if (clickedId === 'addBtn') {
 
       // TODO = show add new image form
+      Session.set('adminCurrentImageId', '');
+      $('#editModal').modal('show');
 
     } else {
 
@@ -77,7 +79,6 @@ Template.adminLocation.events({
       var imgDoc = Images.findOne({_id:Session.get('adminCurrentImageId')});
       console.log(imgDoc.title);
 
-      // TODO = Show edit image form populated with data.
       $('#editModal').modal('show');
 
     }
@@ -94,50 +95,31 @@ AutoForm.hooks({
   form_imageEntry: {
 
     before: {
-      // Replace `formType` with the form `type` attribute to which this hook applies
+
       insert: function(doc) {
 
-        // Alter the doc to include
-        // Todo - assign adminLocationation id
+        console.log('before date: ' + doc.isoDate);
 
-        // Then return it or pass it to this.result()
-        return doc;
+        // Add location Id to create link to current location
+        var locationId = Locations.findOne().dsLocId;
+        var locationTitle = Locations.findOne().title;
+        doc.dsLocId = locationId;
+        doc.generalLocationDs = locationTitle;
 
-        //this.result(doc); (asynchronous)
-
-      },
-
-      update: function(doc) {
-
-        // Alter the doc as needed
-        console.log('update doc', doc);
-
-        // Then return it or pass it to this.result()
-        return doc;
-
-        //this.result(doc); (asynchronous)
+        this.result(doc);// (asynchronous)
 
       },
+
     },
 
     docToForm: function(doc, ss) {
-      console.log('doc', doc);
-      console.log('ss', ss);
 
-      console.log(doc.isoDate);
+      console.log('isoDate:\n' + doc.isoDate);
 
-      // Date strings are formatted like this: iso-2014-00-00
-      // So we must break it apart
-      // var split = doc.isoDate.split('-');
-      // var year = split[1];
-      // var month = split[2];
-      // var day = split[3];
-
-      // doc.date.year = year;
-      // doc.date.month = month;
-      // doc.date.day = day;
-
-      // console.log(split);
+      // Remove unneccessary iso prepend (cleaning old data)
+      if (doc.isoDate && doc.isoDate.indexOf('iso-') != -1) {
+        doc.isoDate = doc.isoDate.replace('iso-', '');
+      }
 
       return doc;
 
@@ -148,16 +130,9 @@ AutoForm.hooks({
 
       console.log('autoform success:', formType, result);
 
-      var flipbookId = result;
-
-      // Add new flipbook to corresponding project
-      var projectId = Session.get('activeProjectId');
-
-      Projects.update({_id: projectId}, {$addToSet: {flipbookIds: flipbookId}});
-
-      // Hide modal
-      $('#add_flipbook').modal('hide');
-      $('#add_flipbook form')[0].reset();
+      // // Hide modal
+      $('#editModal').modal('hide');
+      $('#editModal form')[0].reset();
 
     },
 

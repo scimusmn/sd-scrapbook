@@ -36,19 +36,19 @@
 <!-- Admin | Edit -->
 <template name="adminEditModal">
 
-<div id="editModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">{{modalHeader}}</h4>
-      </div>
-      <div class="modal-body">
-        {{> quickForm id="form_imageEntry" collection="Images" doc=editImage type=updateOrInsertMode autosave=false }}
-      </div>
+  <div id="editModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+       <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">{{modalHeader}}</h4>
+        </div>
+        <div class="modal-body">
+          {{> quickForm id="form_imageEntry" collection="Images" doc=editImage type=updateOrInsertMode autosave=false }}
+        </div>
 
+      </div>
     </div>
   </div>
-</div>
 
 </template>
