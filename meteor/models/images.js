@@ -10,15 +10,15 @@ Images = new Meteor.Collection('images');
 
 Images.allow({
   insert: function(userId, doc) {
-    return can.createImage(userId);
+    return true;
   },
 
   update:  function(userId, doc, fieldNames, modifier) {
-    return can.editImage(userId, doc);
+    return true;
   },
 
   remove:  function(userId, doc) {
-    return can.removeImage(userId, doc);
+    return true;
   },
 });
 
@@ -26,22 +26,39 @@ Images.allow({
 
 Meteor.methods({
   createImage: function(image) {
-    if (can.createImage(Meteor.user()))
-        Images.insert(image);
+    Images.insert(image);
   },
 
   removeImage: function(image) {
-    if (can.removeImage(Meteor.user(), image)) {
-      Images.remove(image._id);
-    }else {
-      throw new Meteor.Error(403, 'You do not have the rights to delete this image.')
-    }
+    Images.remove(image._id);
   },
 });
 
 // Attach schema for autoforms
 
 Images.attachSchema(new SimpleSchema({
+  isoDate: {
+    type: String,
+    label: 'Date ( yyyy-mm-dd )',
+    defaultValue: '0000-00-00',
+    max:10,
+    min:10,
+    optional: false,
+  },
+  dsLocId: {
+    type: String,
+    optional: false,
+    autoform: {
+      omit:true,
+    },
+  },
+  generalLocationDs: {
+    type: String,
+    optional: false,
+    autoform: {
+      omit:true,
+    },
+  },
   title: {
     type: String,
     label: 'Title',
@@ -78,34 +95,6 @@ Images.attachSchema(new SimpleSchema({
       rows: 3,
     },
   },
-  formYear: {
-    type: Number,
-    label: 'Year (Required)',
-    defaultValue: '0000',
-    optional: false,
-    autoform: {
-      class: 'col-sm-6'
-    },
-  },
-  formMonth: {
-    type: Number,
-    label: 'Month',
-    defaultValue: '',
-    optional: true,
-    autoform: {
-      class: 'col-sm-6'
-    },
-  },
-  formDay: {
-    type: Number,
-    label: 'Day',
-    defaultValue: '',
-    optional: true,
-    autoform: {
-      class: 'col-sm-6'
-    },
-  },
-
 
   // image: {
   //   type: String,
@@ -119,10 +108,6 @@ Images.attachSchema(new SimpleSchema({
   //       removeLabel: 'Change',
   //     },
   //   },
-  // },
-  // isoDate: {
-  //   type: Date,
-  //   label: 'Date',
   // },
 
 }));
