@@ -10,17 +10,33 @@ Template.adminLocation.helpers({
 
   },
 
-});
-
-// Helpers for adminImageEntry template
-Template.adminImageEntry.helpers({
-
-  entry: function() {
-    return Images.findOne(this._id);
-  },
-
   thumbPath: function() {
     return '/images/thumbnails/' + this._id + '.jpg';
+  },
+
+  tableSettings: function() {
+    return {
+      collection: Images.find({}, {sort:{isoDate: 1}}),
+
+      showNavigation: 'auto',
+      showNavigationRowsPerPage: true,
+      showFilter: true,
+      rowsPerPage: 5,
+      fields: ['isoDate',
+                'title',
+                'creationPlace',
+                'creditLine',
+                { key:'_id', label: 'thumb', fn: function(value) {
+                  var thmPath = '/images/thumbnails/' + value + '.jpg';
+                  return new Spacebars.SafeString('<img src="' + thmPath + '" height=70 />');
+                },
+              },
+                { key:'_id', label: 'action', fn: function(value) {
+                  return new Spacebars.SafeString('<a id="' + value + '" class="edit btn btn-default"><i class="fa fa-pencil"></i> Edit</a> &nbsp; <a id="' + value + '" class="delete btn btn-default"><i class="fa fa-trash-o"></i> Delete</a>');
+                },
+              },
+            ],
+    };
   },
 
 });
@@ -60,7 +76,7 @@ Template.adminLocation.events({
   /**
    * Entry click
    */
-  'click .imageList .btn':function(e) {
+  'click .btn.edit, click .btn.add':function(e) {
 
     var clickedId = $(e.currentTarget).attr('id');
 
@@ -68,7 +84,6 @@ Template.adminLocation.events({
 
     if (clickedId === 'addBtn') {
 
-      // TODO = show add new image form
       Session.set('adminCurrentImageId', '');
       $('#editModal').modal('show');
 
@@ -77,10 +92,25 @@ Template.adminLocation.events({
       Session.set('adminCurrentImageId', clickedId);
 
       var imgDoc = Images.findOne({_id:Session.get('adminCurrentImageId')});
-      console.log(imgDoc.title);
 
       $('#editModal').modal('show');
 
+    }
+
+  },
+
+  'click .btn.delete':function(e) {
+
+    var imgToDeleteId = $(e.currentTarget).attr('id');
+
+    console.log('delete clicked:', imgToDeleteId);
+
+    var response = confirm('Are you sure you want to delete Image ' + imgToDeleteId + '?');
+
+    if (response == true) {
+      Images.remove(imgToDeleteId);
+    } else {
+      console.log('Deletion canceled.');
     }
 
   },

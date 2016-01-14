@@ -2,25 +2,22 @@
  * Template helpers
  */
 Template.admin.helpers({
-  locations: function() {
 
-    return Locations.find({}, {sort:{title:1}});
+  tableSettings: function() {
+    return {
+      collection: Locations.find({}, {sort:{title:1}}),
 
-  },
-
-});
-
-Template.adminLocationButton.helpers({
-  location: function() {
-
-    return Locations.findOne(this._id);
-
-  },
-
-  locationURL: function() {
-
-    return 'http://' + window.location.host + '/admin/locations/' + this.link + '/';
-
+      showNavigation: 'auto',
+      showNavigationRowsPerPage: false,
+      showFilter: false,
+      rowsPerPage:30,
+      fields: ['title',
+                'link',
+                { key:'link',label: 'action', fn: function(value) {
+                  var hrefLink = 'http://' + window.location.host + '/admin/locations/' + value + '/';
+                  return new Spacebars.SafeString('<a href="' + hrefLink + '"><i class="fa fa-search"></i> View</a>');
+                },},],
+    };
   },
 
 });

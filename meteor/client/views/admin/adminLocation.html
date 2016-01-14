@@ -4,17 +4,13 @@
   <div class="container admin">
     <header class="subtitle">
       <h1>Admin | {{location.title}}</h1>
-      <h3>Click an entry to edit.</h3>
     </header>
-    <ul class="container imageList">
-      {{#each imageEntries}}
-        {{> adminImageEntry}}
-      {{/each}}
-      <li id="addBtn" class="col-md-2 btn btn-primary">
-        <h1>Add new image</h1>
-        <i class="fa fa-plus"></i>
-      </li>
-    </ul>
+    <div class="container adminTable">
+      {{> reactiveTable settings=tableSettings}}
+      <a id="addBtn" class="col-md-2 add btn">
+        <h1><i class="fa fa-plus"></i> Add new image</h1>
+      </a>
+    </div>
 
   </div>
 
@@ -46,7 +42,6 @@
         <div class="modal-body">
           {{> quickForm id="form_imageEntry" collection="Images" doc=editImage type=updateOrInsertMode autosave=false }}
         </div>
-
       </div>
     </div>
   </div>
