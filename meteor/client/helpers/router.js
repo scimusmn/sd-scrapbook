@@ -63,6 +63,7 @@ Router.map(function() {
       };
     },
     action: function() {
+        $('body').css('cursor', 'auto');
         this.render();
     }
   });
@@ -77,6 +78,8 @@ Router.map(function() {
       };
     },
     action: function() {
+      // Toggle cursor visibility
+        $('body').css('cursor', 'auto');
         this.render();
     }
   });

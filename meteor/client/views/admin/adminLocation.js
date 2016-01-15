@@ -21,18 +21,18 @@ Template.adminLocation.helpers({
       showNavigation: 'auto',
       showNavigationRowsPerPage: true,
       showFilter: true,
-      rowsPerPage: 5,
+      rowsPerPage: 10,
       fields: ['isoDate',
                 'title',
                 'creationPlace',
                 'creditLine',
                 { key:'_id', label: 'thumb', fn: function(value) {
                   var thmPath = '/images/thumbnails/' + value + '.jpg';
-                  return new Spacebars.SafeString('<img src="' + thmPath + '" height=70 />');
+                  return new Spacebars.SafeString('<img class="tableThumb" src="' + thmPath + '" height=25 />');
                 },
               },
                 { key:'_id', label: 'action', fn: function(value) {
-                  return new Spacebars.SafeString('<a id="' + value + '" class="edit btn btn-default"><i class="fa fa-pencil"></i> Edit</a> &nbsp; <a id="' + value + '" class="delete btn btn-default"><i class="fa fa-trash-o"></i> Delete</a>');
+                  return new Spacebars.SafeString('<a id="' + value + '" href="#" class="edit"><i class="fa fa-pencil"></i> Edit</a> &nbsp; <a id="' + value + '" href="#" class="delete"><i class="fa fa-trash-o"></i> Delete</a>');
                 },
               },
             ],
@@ -76,7 +76,7 @@ Template.adminLocation.events({
   /**
    * Entry click
    */
-  'click .btn.edit, click .btn.add':function(e) {
+  'click a.edit, click .btn.add':function(e) {
 
     var clickedId = $(e.currentTarget).attr('id');
 
@@ -99,7 +99,7 @@ Template.adminLocation.events({
 
   },
 
-  'click .btn.delete':function(e) {
+  'click a.delete':function(e) {
 
     var imgToDeleteId = $(e.currentTarget).attr('id');
 
@@ -113,6 +113,20 @@ Template.adminLocation.events({
       console.log('Deletion canceled.');
     }
 
+  },
+
+  'mouseenter table img.tableThumb':function(e) {
+    console.log('expand', $(e.currentTarget).attr('src'), e.clientY);
+    var expandSrc = $(e.currentTarget).attr('src');
+    $('#tableThumbPreview').show();
+    $('#tableThumbPreview img').attr('src', expandSrc);
+    $('#tableThumbPreview').css('top', e.clientY);
+    $('#tableThumbPreview').css('left', e.clientX);
+  },
+
+  'mouseleave table img.tableThumb':function(e) {
+    console.log('leave', $(e.currentTarget).attr('src'));
+    $('#tableThumbPreview').hide();
   },
 
 });

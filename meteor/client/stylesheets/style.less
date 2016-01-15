@@ -362,19 +362,42 @@ svg.svg-canvas {
  * Admin mode
  * ----------------------------------------------------------------------------
  */
-.admin h1, .admin h2, .admin h3, .admin p,  {
-  background:rgba(16,4,36,0.75);
+.admin h1,
+.admin h2,
+.admin h3,
+.admin p,
+.admin span {
   color:#00A388;
 }
 
 .admin .adminTable  {
   background:rgba(16,4,36,0.75);
-  padding:100px;
+  background:rgba(255,255,255,.9);
+  padding:2% 10%;
+}
+
+.admin h1{
+  font-size: 60px;
+  background: none;
+  font-family: 'FuturaTS-Demibold', sans-serif;
 }
 
 .admin .table  {
   background:#efefef;
   color:#222;
+}
+
+.admin #tableThumbPreview {
+  position:absolute;
+  pointer-events:none;
+}
+
+.admin #tableThumbPreview img {
+  background:rgba(255,255,255,.9);
+  box-shadow: 4px 4px 12px rgba(0,0,0,0.1);
+  padding:30px;
+  margin:10px;
+  pointer-events:none;
 }
 
 .modal {

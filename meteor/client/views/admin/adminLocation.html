@@ -2,31 +2,17 @@
 
 <template name="adminLocation">
   <div class="container admin">
-    <header class="subtitle">
-      <h1>Admin | {{location.title}}</h1>
-    </header>
     <div class="container adminTable">
+      <h1>{{location.title}}</h1>
       {{> reactiveTable settings=tableSettings}}
-      <a id="addBtn" class="col-md-2 add btn">
-        <h1><i class="fa fa-plus"></i> Add new image</h1>
-      </a>
+      <a href="#" id="addBtn" class="add btn btn-default btn-lg">New Entry&nbsp;<i class="fa fa-plus-circle"></i></a>
+      <div id='tableThumbPreview'><img src=""/></div>
     </div>
 
   </div>
 
   {{> adminEditModal}}
 
-</template>
-
-<!-- Admin | Image Entry -->
-<template name="adminImageEntry">
-  <a href="#">
-    <li id="{{entry._id}}" class="col-md-1 btn btn-default">
-      <h3>{{entry.creationPlace}}</h3>
-      <img src="{{thumbPath}}" height="50"/>
-      <p>{{entry.isoDate}}</p>
-    </li>
-  </a>
 </template>
 
 <!-- Admin | Edit -->
