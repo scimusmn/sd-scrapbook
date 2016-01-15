@@ -25,7 +25,7 @@ Template.adminLocation.helpers({
       fields: ['isoDate',
                 'title',
                 'creationPlace',
-                'creditLine',
+                // 'creditLine',
                 { key:'_id', label: 'thumb', fn: function(value) {
                   var thmPath = '/images/thumbnails/' + value + '.jpg';
                   return new Spacebars.SafeString('<img class="tableThumb" src="' + thmPath + '" height=25 />');
