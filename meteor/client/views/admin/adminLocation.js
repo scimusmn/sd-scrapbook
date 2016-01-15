@@ -25,7 +25,7 @@ Template.adminLocation.helpers({
       fields: ['isoDate',
                 'title',
                 'creationPlace',
-                // 'creditLine',
+                'creditLine',
                 { key:'_id', label: 'thumb', fn: function(value) {
                   var thmPath = '/images/thumbnails/' + value + '.jpg';
                   return new Spacebars.SafeString('<img class="tableThumb" src="' + thmPath + '" height=25 />');
@@ -120,6 +120,12 @@ Template.adminLocation.events({
     var expandSrc = $(e.currentTarget).attr('src');
     $('#tableThumbPreview').show();
     $('#tableThumbPreview img').attr('src', expandSrc);
+    $('#tableThumbPreview').css('top', e.clientY);
+    $('#tableThumbPreview').css('left', e.clientX);
+  },
+
+  'mousemove table img.tableThumb':function(e) {
+    $('#tableThumbPreview').show();
     $('#tableThumbPreview').css('top', e.clientY);
     $('#tableThumbPreview').css('left', e.clientX);
   },
