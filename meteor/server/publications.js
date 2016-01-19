@@ -137,3 +137,10 @@ Meteor.publish('allImages', function() {
     return Images.find();
 });
 
+/**
+ * Publish all Image Files
+ */
+Meteor.publish('allImageFiles', function() {
+    return ImageFiles.find();
+});
+

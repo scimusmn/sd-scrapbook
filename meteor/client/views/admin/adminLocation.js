@@ -137,6 +137,26 @@ Template.adminLocation.events({
 
 });
 
+Template.adminEditModal.events({
+
+  'change .myFileInput': function(event, template) {
+
+    FS.Utility.eachFile(event, function(file) {
+      Images.insert(file, function(err, fileObj) {
+        if (err) {
+          // Handle error
+          console.log('Image Upload Error:', err);
+        } else {
+          // Handle success depending what you need to do
+          console.log('Image upload success...');
+          console.log(fileObj);
+        }
+      });
+    });
+
+  },
+});
+
 /**
  * Hooks for autoform. Manipulate data before/after submission.
  */

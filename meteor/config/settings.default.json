@@ -12,6 +12,10 @@
             "writeKey": "1234567890",
             "readKey": "1234567890"
         },
+        "aws": {
+            "accessKeyId": "1234567890",
+            "secretAccessKey": "1234567890"
+        },
         "adminPassword": "1234567890"
     }
 }
