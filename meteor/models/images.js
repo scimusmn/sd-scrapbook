@@ -57,54 +57,54 @@ Images.attachSchema(new SimpleSchema({
     min:10,
     optional: false,
   },
-  dsLocId: {
-    type: String,
-    optional: false,
-    autoform: {
-      omit:true,
-    },
-  },
-  generalLocationDs: {
-    type: String,
-    optional: false,
-    autoform: {
-      omit:true,
-    },
-  },
-  title: {
-    type: String,
-    label: 'Title',
-    defaultValue: '',
-    optional: true,
-  },
-  creationPlace: {
-    type: String,
-    label: 'Creation place',
-    defaultValue: '',
-    optional: true,
-  },
-  creditLine: {
-    type: String,
-    label: 'Credit line',
-    defaultValue: '',
-    optional: true,
-  },
-  labelTextEnglish: {
-    type: String,
-    label: 'English label',
-    defaultValue: '',
-    optional: true,
-    autoform: {
-      rows: 3,
-    },
-  },
-  labelTextSpanish: {
-    type: String,
-    label: 'Spanish label',
-    defaultValue: '',
-    optional: true,
-    autoform: {
-      rows: 3,
-    },
-  },
+  // dsLocId: {
+  //   type: String,
+  //   optional: false,
+  //   autoform: {
+  //     omit:true,
+  //   },
+  // },
+  // generalLocationDs: {
+  //   type: String,
+  //   optional: false,
+  //   autoform: {
+  //     omit:true,
+  //   },
+  // },
+  // title: {
+  //   type: String,
+  //   label: 'Title',
+  //   defaultValue: '',
+  //   optional: true,
+  // },
+  // creationPlace: {
+  //   type: String,
+  //   label: 'Creation place',
+  //   defaultValue: '',
+  //   optional: true,
+  // },
+  // creditLine: {
+  //   type: String,
+  //   label: 'Credit line',
+  //   defaultValue: '',
+  //   optional: true,
+  // },
+  // labelTextEnglish: {
+  //   type: String,
+  //   label: 'English label',
+  //   defaultValue: '',
+  //   optional: true,
+  //   autoform: {
+  //     rows: 3,
+  //   },
+  // },
+  // labelTextSpanish: {
+  //   type: String,
+  //   label: 'Spanish label',
+  //   defaultValue: '',
+  //   optional: true,
+  //   autoform: {
+  //     rows: 3,
+  //   },
+  // },
 }));

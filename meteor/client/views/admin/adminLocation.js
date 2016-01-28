@@ -157,6 +157,34 @@ Template.adminEditModal.events({
   },
 });
 
+Template.uploader.events({
+
+  'change input[type="file"]':function(event, template) {
+    //Modules.client.uploadToAmazonS3( { event: event, template: template } );
+
+    ///
+
+    console.log('before img upload -----');
+
+    var imageFileUploader = new Slingshot.Upload('imageFiles');
+
+    imageFileUploader.send($('.upload-area input')[0].files[0], function(error, downloadUrl) {
+      if (error) {
+        // Log service detailed response.
+        console.error('img Error uploading', uploader.xhr.response);
+        alert(error);
+      } else {
+        console.log('img upload success! ', downloadUrl);
+
+        //Meteor.users.update(Meteor.userId(), {$push: {"profile.files": downloadUrl}});
+      }
+    });
+
+
+  },
+
+});
+
 /**
  * Hooks for autoform. Manipulate data before/after submission.
  */
