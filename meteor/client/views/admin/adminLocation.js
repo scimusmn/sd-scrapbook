@@ -116,7 +116,7 @@ Template.adminLocation.events({
   },
 
   'mouseenter table img.tableThumb':function(e) {
-    console.log('expand', $(e.currentTarget).attr('src'), e.clientY);
+
     var expandSrc = $(e.currentTarget).attr('src');
     $('#tableThumbPreview').show();
     $('#tableThumbPreview img').attr('src', expandSrc);
@@ -131,56 +131,7 @@ Template.adminLocation.events({
   },
 
   'mouseleave table img.tableThumb':function(e) {
-    console.log('leave', $(e.currentTarget).attr('src'));
     $('#tableThumbPreview').hide();
-  },
-
-});
-
-Template.adminEditModal.events({
-
-  'change .myFileInput': function(event, template) {
-
-    FS.Utility.eachFile(event, function(file) {
-      Images.insert(file, function(err, fileObj) {
-        if (err) {
-          // Handle error
-          console.log('Image Upload Error:', err);
-        } else {
-          // Handle success depending what you need to do
-          console.log('Image upload success...');
-          console.log(fileObj);
-        }
-      });
-    });
-
-  },
-});
-
-Template.uploader.events({
-
-  'change input[type="file"]':function(event, template) {
-    //Modules.client.uploadToAmazonS3( { event: event, template: template } );
-
-    ///
-
-    console.log('before img upload -----');
-
-    var imageFileUploader = new Slingshot.Upload('imageFiles');
-
-    imageFileUploader.send($('.upload-area input')[0].files[0], function(error, downloadUrl) {
-      if (error) {
-        // Log service detailed response.
-        console.error('img Error uploading', uploader.xhr.response);
-        alert(error);
-      } else {
-        console.log('img upload success! ', downloadUrl);
-
-        //Meteor.users.update(Meteor.userId(), {$push: {"profile.files": downloadUrl}});
-      }
-    });
-
-
   },
 
 });
@@ -196,7 +147,8 @@ AutoForm.hooks({
 
       insert: function(doc) {
 
-        console.log('before date: ' + doc.isoDate);
+        console.log('before insert: ');
+        console.log(doc);
 
         // Add location Id to create link to current location
         var locationId = Locations.findOne().dsLocId;
@@ -204,7 +156,7 @@ AutoForm.hooks({
         doc.dsLocId = locationId;
         doc.generalLocationDs = locationTitle;
 
-        this.result(doc);// (asynchronous)
+        this.result(doc); // (asynchronous)
 
       },
 

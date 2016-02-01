@@ -36,19 +36,6 @@ Meteor.methods({
 
 // Attach schema for autoforms
 Images.attachSchema(new SimpleSchema({
-  // imageFile: {
-  //   type: String,
-  //   optional: false,
-  //   autoform: {
-  //     afFieldInput: {
-  //       type: 'fileUpload',
-  //       collection: 'imageFiles',
-  //       accept: 'image/*',
-  //       label: 'Image File',
-  //       removeLabel: 'Change',
-  //     },
-  //   },
-  // },
   isoDate: {
     type: String,
     label: 'Date ( yyyy-mm-dd )',
@@ -57,6 +44,18 @@ Images.attachSchema(new SimpleSchema({
     min:10,
     optional: false,
   },
+  imageFileURL: {
+    type: String,
+    optional:true,
+    autoform: {
+      type: 'slingshotFileUpload',
+      afFieldInput:{
+        slingshotdirective: 'imageFiles'
+      }
+    },
+
+  },
+
   // dsLocId: {
   //   type: String,
   //   optional: false,
@@ -107,4 +106,6 @@ Images.attachSchema(new SimpleSchema({
   //     rows: 3,
   //   },
   // },
+
 }));
+

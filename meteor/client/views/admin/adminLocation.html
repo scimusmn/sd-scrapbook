@@ -27,24 +27,9 @@
         </div>
         <div class="modal-body">
           {{> quickForm id="form_imageEntry" collection="Images" doc=editImage type=updateOrInsertMode autosave=false }}
-
-          <h4 class="page-header">Upload a File to Amazon S3</h4>
-          {{> uploader}}
         </div>
       </div>
     </div>
   </div>
 
-</template>
-
-<!-- Admin | Uploader -->
-<template name="uploader">
-  <div class="upload-area">
-    <form id="upload">
-      <p class="alert alert-success text-center">
-        <span>Click or Drag a File Here to Upload</span>
-        <input type="file">
-      </p>
-    </form>
-  </div>
 </template>
