@@ -26,7 +26,15 @@
           <h4 class="modal-title" id="myModalLabel">{{modalHeader}}</h4>
         </div>
         <div class="modal-body">
-          {{> quickForm id="form_imageEntry" collection="Images" doc=editImage type=updateOrInsertMode autosave=false }}
+          <!-- {{> quickForm id="form_imageEntry" collection="Images" doc=editImage type=updateOrInsertMode autosave=false }} -->
+          {{#autoForm id="form_imageEntry" collection="Images" doc=editImage type=updateOrInsertMode autosave=false}}
+            <fieldset>
+              {{> afQuickField name='title'}}
+              {{> afQuickField name='imageFileURL'}}
+            </fieldset>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="button" class="btn btn-default cancel">Cancel</button>
+          {{/autoForm}}
         </div>
       </div>
     </div>

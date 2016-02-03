@@ -80,8 +80,6 @@ Template.adminLocation.events({
 
     var clickedId = $(e.currentTarget).attr('id');
 
-    console.log(clickedId);
-
     if (clickedId === 'addBtn') {
 
       Session.set('adminCurrentImageId', '');
@@ -90,8 +88,6 @@ Template.adminLocation.events({
     } else {
 
       Session.set('adminCurrentImageId', clickedId);
-
-      var imgDoc = Images.findOne({_id:Session.get('adminCurrentImageId')});
 
       $('#editModal').modal('show');
 
@@ -139,6 +135,7 @@ Template.adminLocation.events({
 /**
  * Hooks for autoform. Manipulate data before/after submission.
  */
+AutoForm.debug();
 AutoForm.hooks({
 
   form_imageEntry: {
@@ -147,7 +144,7 @@ AutoForm.hooks({
 
       insert: function(doc) {
 
-        console.log('before insert: ');
+        console.log('->before insert: ');
         console.log(doc);
 
         // Add location Id to create link to current location
@@ -157,6 +154,22 @@ AutoForm.hooks({
         doc.generalLocationDs = locationTitle;
 
         this.result(doc); // (asynchronous)
+        // return doc; // (synchronous)
+
+      },
+
+      update: function(doc) {
+
+        AutoForm.debug();
+
+        console.log('->before update: ');
+        console.log(doc);
+        console.log(Session.get('adminCurrentImageId'), '-->GO');
+
+        Images.update(Session.get('adminCurrentImageId'), doc);
+
+        // this.result(doc); // (asynchronous)
+        // return doc; // (synchronous)
 
       },
 
@@ -179,6 +192,8 @@ AutoForm.hooks({
     onSuccess: function(formType, result) {
 
       console.log('autoform success:', formType, result);
+
+      console.log(Images.findOne(result));
 
       // // Hide modal
       $('#editModal').modal('hide');
