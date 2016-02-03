@@ -7,7 +7,6 @@
 Images = new Meteor.Collection('images');
 
 // Allow/Deny
-
 Images.allow({
   insert: function(userId, doc) {
     return true;

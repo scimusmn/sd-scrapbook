@@ -135,7 +135,6 @@ Template.adminLocation.events({
 /**
  * Hooks for autoform. Manipulate data before/after submission.
  */
-AutoForm.debug();
 AutoForm.hooks({
 
   form_imageEntry: {
@@ -144,9 +143,6 @@ AutoForm.hooks({
 
       insert: function(doc) {
 
-        console.log('->before insert: ');
-        console.log(doc);
-
         // Add location Id to create link to current location
         var locationId = Locations.findOne().dsLocId;
         var locationTitle = Locations.findOne().title;
@@ -154,22 +150,12 @@ AutoForm.hooks({
         doc.generalLocationDs = locationTitle;
 
         this.result(doc); // (asynchronous)
-        // return doc; // (synchronous)
 
       },
 
       update: function(doc) {
 
-        AutoForm.debug();
-
-        console.log('->before update: ');
-        console.log(doc);
-        console.log(Session.get('adminCurrentImageId'), '-->GO');
-
-        Images.update(Session.get('adminCurrentImageId'), doc);
-
-        // this.result(doc); // (asynchronous)
-        // return doc; // (synchronous)
+        this.result(doc); // (asynchronous)
 
       },
 
