@@ -46,20 +46,7 @@ Images.attachSchema(new SimpleSchema({
     optional: false,
   },
 
-  imageFileURL: {
-    type: String,
-    label: 'Select Image',
-    optional:true,
-    autoform: {
-      type: 'slingshotFileUpload',
-      afFieldInput:{
-        slingshotdirective: 'imageFiles',
-      },
-    },
-  },
-
-  /* multiple sizes upload
-    imageFileLocation: {
+  imageFilePaths: {
       // This package can also take type: [String],
       // but in that case it will only save the src.
       type: [Object],
@@ -68,18 +55,18 @@ Images.attachSchema(new SimpleSchema({
       autoform: {
         type: 'slingshotFileUpload', // (required)
         removeLabel: 'Remove', // (optional, defaults to "Remove")
-        afFormGroup: { // (optional)
-          label: false,
-        },
         afFieldInput: {
           // Specify which slingshotdirective to present as thumbnail when  this picture is uploaded, you can use the "key" or "directive".
-          thumbnail: 'thumb',
+          thumbnail: 'original',
           slingshotdirective: {
-            thumb: { // <-- This is the "key" for the "mobile" version.
-              directive: 'imageThumbFiles',
+            original: {
+              directive: 'originalImageDirective',
+            },
+            thumb: { // <-- This is the "key" for the "thumb" version.
+              directive: 'thumbImageDirective',
               onBeforeUpload: function(file, callback) {
-                // Create a mobile 100x100 size version.
-                Resizer.resize(file, {width: 100, height: 100, cropSquare: false}, function(err, file) {
+                // Create a thumbnail 175x175 size version.
+                Resizer.resize(file, {width: 175, height: 175, cropSquare: false}, function(err, file) {
                   if (err) {
                     console.error(err);
                   }
@@ -88,22 +75,16 @@ Images.attachSchema(new SimpleSchema({
                 });
               },
             },
-            original: {
-              directive: 'imageFiles',
-            },
           },
         },
       },
     },
 
-    // NOTICE! These are required for type: [Object].
-    'picture.$.key': { type: String },
-    'picture.$.filename': { type: String },
-    'picture.$.src': { type: String },
-    'picture.$.directive': { type: String }
-
-
-    */
+  // NOTICE! These are required for the above type: slingshot [Object].
+  'imageFilePaths.$.key': { type: String },
+  'imageFilePaths.$.filename': { type: String },
+  'imageFilePaths.$.src': { type: String },
+  'imageFilePaths.$.directive': { type: String },
 
   title: {
     type: String,

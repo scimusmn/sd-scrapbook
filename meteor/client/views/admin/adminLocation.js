@@ -137,17 +137,15 @@ Template.adminLocation.events({
  */
 AutoForm.hooks({
 
-  form_imageEntry: {
+  formImageEntry: {
 
     before: {
 
       insert: function(doc) {
 
         // Add location Id to create link to current location
-        var locationId = Locations.findOne().dsLocId;
-        var locationTitle = Locations.findOne().title;
-        doc.dsLocId = locationId;
-        doc.generalLocationDs = locationTitle;
+        doc.dsLocId = Locations.findOne().dsLocId;
+        doc.generalLocationDs = Locations.findOne().title;
 
         this.result(doc); // (asynchronous)
 
@@ -163,9 +161,7 @@ AutoForm.hooks({
 
     docToForm: function(doc, ss) {
 
-      console.log('isoDate:\n' + doc.isoDate);
-
-      // Remove unneccessary iso prepend (cleaning old data)
+      // TODO - Remove unneccessary iso prepend (cleaning old data)
       if (doc.isoDate && doc.isoDate.indexOf('iso-') != -1) {
         doc.isoDate = doc.isoDate.replace('iso-', '');
       }
@@ -179,9 +175,15 @@ AutoForm.hooks({
 
       console.log('autoform success:', formType, result);
 
-      console.log(Images.findOne(result));
+      if (formType === 'insert') {
+        Session.set('adminCurrentImageId', result);
 
-      // // Hide modal
+      }
+
+      console.log('New doc:');
+      console.log(Images.findOne(Session.get('adminCurrentImageId')));
+
+      // Hide modal
       $('#editModal').modal('hide');
       $('#editModal form')[0].reset();
 
@@ -189,7 +191,8 @@ AutoForm.hooks({
 
     // Called when any submit operation fails
     onError: function(formType, error) {
-      console.log('autoform error:', formType, error);
+
+      console.log('Autoform error:', formType, error);
 
     },
 
