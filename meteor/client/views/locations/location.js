@@ -185,7 +185,8 @@ function drawLocation(images) {
      */
     var clickedImage = Router.current().params.query.image;
     var groupObj = d3.selectAll('g[data-id=' + clickedImage + ']');
-    highlightImageByIndex(groupObj.attr('data-index'));
+    var dIndex = groupObj.attr('data-index');
+    highlightImageByIndex(dIndex);
 
     // Save timeline offset for future transformation operations
     var timeline = $('.timeline-images-svg');
@@ -202,6 +203,8 @@ function drawLocation(images) {
     drawNavButton(locationSVG, 50, 400, 30, 'left');
     drawNavButton(locationSVG, 1860, 400, 30, 'right');
 
+    // Dim button if on first or last image
+    updatePrevNextButtons(dIndex);
 }
 
 /**
