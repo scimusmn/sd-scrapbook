@@ -25,7 +25,8 @@ if (Meteor.isServer) {
     },
 
     key: function(file) {
-      return file.name;
+      var filepath = 'originals/' + Meteor.uuid() + '-' + file.name;
+      return filepath;
     },
 
   });
@@ -45,7 +46,8 @@ if (Meteor.isServer) {
     },
 
     key: function(file) {
-      return file.name;
+      var filepath = 'thumbs/' + Meteor.uuid() + '-' + file.name;
+      return filepath;
     },
 
   });
