@@ -93,7 +93,6 @@ Template.adminLocation.events({
     } else {
 
       Session.set('adminCurrentImageId', clickedId);
-
       $('#editModal').modal('show');
 
     }

@@ -61,6 +61,25 @@ Images.attachSchema(new SimpleSchema({
           slingshotdirective: {
             original: {
               directive: 'originalImageDirective',
+              onBeforeUpload: function(file, callback) {
+                // Size down if larger than 5000x5000
+                Resizer.resize(file, {width: 5000, height: 5000, cropSquare: false}, function(err, file) {
+                  if (err) {
+                    console.error(err);
+                  }
+
+                  // Change filename before upload.
+                  var origName = file.name;
+                  var extension = origName.substr(origName.lastIndexOf('.'));
+                  var locFolder = Session.get('adminCurrentLocationLink');
+                  var unique = Meteor.uuid();
+
+                  file.name = locFolder + '/originals/' + unique + extension;
+
+                  callback(file);
+
+                });
+              },
             },
             thumb: { // <-- This is the "key" for the "thumb" version.
               directive: 'thumbImageDirective',
@@ -71,17 +90,16 @@ Images.attachSchema(new SimpleSchema({
                     console.error(err);
                   }
 
+                  // Change filename before upload.
                   var origName = file.name;
-
                   var extension = origName.substr(origName.lastIndexOf('.'));
+                  var locFolder = Session.get('adminCurrentLocationLink');
+                  var unique = Meteor.uuid();
 
-                  file.name = 'thumb/' + 'testername' + extension;
-
-                  console.log('onBeforeThumbUpload');
-                  console.log(file);
-                  console.log(Session.get('adminCurrentImageId'));
+                  file.name = locFolder + '/thumbs/' + unique + extension;
 
                   callback(file);
+
                 });
               },
             },

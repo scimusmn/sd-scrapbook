@@ -25,11 +25,7 @@ if (Meteor.isServer) {
     },
 
     key: function(file) {
-
-      // Generate unique filename
-      var filename = Meteor.uuid() + '-' + file.name;
-      return filename;
-
+      return file.name;
     },
 
   });
@@ -49,11 +45,7 @@ if (Meteor.isServer) {
     },
 
     key: function(file) {
-
-      // Generate unique filename
-      var filename = 'thumbs/' + 'thumb-' + Meteor.uuid() + '-' + file.name;
-      return filename;
-
+      return file.name;
     },
 
   });

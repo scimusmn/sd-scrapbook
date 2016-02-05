@@ -70,6 +70,7 @@ Router.map(function() {
   this.route('adminLocation', {
     path: 'admin/locations/:link',
     waitOn: function () {
+      Session.set('adminCurrentLocationLink', this.params.link);
       return Meteor.subscribe('singleLocation', this.params.link);
     },
     data: function () {
