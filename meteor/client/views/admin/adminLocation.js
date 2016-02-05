@@ -10,10 +10,6 @@ Template.adminLocation.helpers({
 
   },
 
-  thumbPath: function() {
-    return '/images/thumbnails/' + this._id + '.jpg';
-  },
-
   tableSettings: function() {
     return {
       collection: Images.find({}, {sort:{isoDate: 1}}),
@@ -27,8 +23,17 @@ Template.adminLocation.helpers({
                 'creationPlace',
                 'creditLine',
                 { key:'_id', label: 'thumb', fn: function(value) {
-                  var thmPath = '/images/thumbnails/' + value + '.jpg';
-                  return new Spacebars.SafeString('<img class="tableThumb" src="' + thmPath + '" height=25 />');
+                  var thumbPath = '/images/thumbnails/' + value + '.jpg';
+                  var previewPath = thumbPath;
+                  var imgDoc = Images.findOne({ _id: value });
+                  if (imgDoc) {
+                    if (imgDoc.imageFilePaths) {
+                      thumbPath = imgDoc.imageFilePaths[1].src;
+                      previewPath = imgDoc.imageFilePaths[0].src;
+                    }
+                  }
+
+                  return new Spacebars.SafeString('<img class="tableThumb" src="' + thumbPath + '" height=25 data-preview-src="' + previewPath + '" />');
                 },
               },
                 { key:'_id', label: 'action', fn: function(value) {
@@ -113,21 +118,46 @@ Template.adminLocation.events({
 
   'mouseenter table img.tableThumb':function(e) {
 
-    var expandSrc = $(e.currentTarget).attr('src');
-    $('#tableThumbPreview').show();
+    var expandSrc = $(e.currentTarget).attr('data-preview-src');
+    var preview = $('#tableThumbPreview');
     $('#tableThumbPreview img').attr('src', expandSrc);
-    $('#tableThumbPreview').css('top', e.clientY);
-    $('#tableThumbPreview').css('left', e.clientX);
+    preview.css('top', e.clientY - preview.outerHeight() / 2);
+    preview.css('right', $(document).width() - e.clientX + 17);
+    preview.delay(150).stop().fadeIn(70);
+
   },
 
   'mousemove table img.tableThumb':function(e) {
-    $('#tableThumbPreview').show();
-    $('#tableThumbPreview').css('top', e.clientY);
-    $('#tableThumbPreview').css('left', e.clientX);
+    var preview = $('#tableThumbPreview');
+    preview.css('top', e.clientY - preview.outerHeight() / 2);
+    preview.css('right', $(document).width() - e.clientX + 17);
   },
 
   'mouseleave table img.tableThumb':function(e) {
-    $('#tableThumbPreview').hide();
+    $('#tableThumbPreview').stop().hide();
+  },
+
+  'show.bs.modal':function(e) {
+
+    // Hack to fix autoform bug.
+    // Clears image upload form when
+    // no imageFilePaths are found. -tn
+    setTimeout(function() {
+      var imgDoc = Images.findOne({ _id: Session.get('adminCurrentImageId') });
+      if (imgDoc) {
+        if (imgDoc.imageFilePaths) {
+          // Already has image. Allow to display.
+          return;
+        }
+      }
+
+      $('#editModal .file-upload-clear').trigger('click');
+    }, 20);
+
+  },
+
+  'shown.bs.modal':function(e) {
+
   },
 
 });

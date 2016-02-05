@@ -51,7 +51,7 @@ if (Meteor.isServer) {
     key: function(file) {
 
       // Generate unique filename
-      var filename = 'thumb-' + Meteor.uuid() + '-' + file.name;
+      var filename = 'thumbs/' + 'thumb-' + Meteor.uuid() + '-' + file.name;
       return filename;
 
     },

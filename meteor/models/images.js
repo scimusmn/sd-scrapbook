@@ -50,7 +50,7 @@ Images.attachSchema(new SimpleSchema({
       // This package can also take type: [String],
       // but in that case it will only save the src.
       type: [Object],
-      label: 'Select Image', // (optional, defaults to "Select")
+      label: 'Image File', // (optional, defaults to "Select")
       optional: true, // (optional)
       autoform: {
         type: 'slingshotFileUpload', // (required)
@@ -70,6 +70,16 @@ Images.attachSchema(new SimpleSchema({
                   if (err) {
                     console.error(err);
                   }
+
+                  var origName = file.name;
+
+                  var extension = origName.substr(origName.lastIndexOf('.'));
+
+                  file.name = 'thumb/' + 'testername' + extension;
+
+                  console.log('onBeforeThumbUpload');
+                  console.log(file);
+                  console.log(Session.get('adminCurrentImageId'));
 
                   callback(file);
                 });
