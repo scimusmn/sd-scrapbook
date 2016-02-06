@@ -157,9 +157,9 @@ function drawLocation(images) {
     /**
      * Draw year markers at the start and end of the timeline
      */
-    var firstYear = _.first(images).isoDate.substring(4, 8);
+     var firstYear = DateUtils.getDisplayYear(_.first(images).isoDate);
     drawYearMarker(timelineBackgroundSVG, 0, 50, 50, 55, firstYear);
-    var lastYear = _.last(images).isoDate.substring(4, 8);
+    var lastYear = DateUtils.getDisplayYear(_.last(images).isoDate);
     drawYearMarker(
         timelineBackgroundSVG,
         (Session.get('timelineBackgroundWidth') - 100),
