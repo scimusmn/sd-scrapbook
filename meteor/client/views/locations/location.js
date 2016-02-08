@@ -429,6 +429,7 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
         .attr('data-id', image._id)
         .attr('data-iso-date', image.isoDate)
         .attr('data-app-date', image.appDate)
+        .attr('data-display-date', DateUtils.getDisplayDate(image.isoDate))
         .attr('data-location', image.creationPlace)
         .attr('data-credit-line', image.creditLine)
         .attr('data-title', image.title)
@@ -714,7 +715,7 @@ function updateHighlightedImageHandle(index) {
  */
 function updateHighlightedImageText(hlImg) {
     Session.set('highlightedImageLocation', hlImg.data('location'));
-    Session.set('highlightedImageDate', hlImg.data('app-date').substring(5));
+    Session.set('highlightedImageDate', hlImg.data('display-date'));
     Session.set('highlightedImageDescription', hlImg.data('description'));
     Session.set('highlightedImageDescriptionEs', hlImg.data('description-es'));
 

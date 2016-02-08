@@ -1,4 +1,30 @@
 // ISO Date Utils
+var getDisplayDate = function(isoDate) {
+
+  console.log('getDisplayDate', isoDate);
+
+  isoDate = clean(isoDate);
+
+  var month = getDisplayMonth(isoDate);
+  var year = getDisplayYear(isoDate);
+  var day = getDisplayDay(isoDate);
+
+  var str = '';
+
+  console.log(month);
+  if (month === '') {
+    console.log('no month found. using year');
+    console.log(year);
+    str = year;
+  } else if (day === '') {
+    str = month + ', ' + year;
+  } else {
+    str = month + ' ' + day + ', ' + year;
+  }
+
+  return str;
+
+};
 
 var getDisplayYear = function(isoDate) {
 
@@ -8,19 +34,11 @@ var getDisplayYear = function(isoDate) {
 
 };
 
-var getFullDisplayString = function(isoDate) {
-
-  isoDate = clean(isoDate);
-  var str = isoDate.substring(0, 4);
-  return str;
-
-};
-
 var getDisplayMonth = function(isoDate) {
 
   isoDate = clean(isoDate);
 
-  var m = isoDate.substring(6, 8);
+  var m = isoDate.substring(5, 7);
 
   var mStr = '';
 
@@ -76,6 +94,18 @@ var getDisplayMonth = function(isoDate) {
 
 };
 
+var getDisplayDay = function(isoDate) {
+
+  isoDate = clean(isoDate);
+  var d = isoDate.substring(8, 10);
+  if (d === '00') {
+    d = '';
+  }
+
+  return d;
+
+};
+
 var clean = function(isoDate) {
 
   // Remove 'iso' if prepended
@@ -88,6 +118,8 @@ var clean = function(isoDate) {
 };
 
 DateUtils = {};
+DateUtils.getDisplayDate = getDisplayDate;
 DateUtils.getDisplayYear = getDisplayYear;
 DateUtils.getDisplayMonth = getDisplayMonth;
-DateUtils.getFullDisplayString = getFullDisplayString;
+DateUtils.getDisplayDay = getDisplayDay;
+

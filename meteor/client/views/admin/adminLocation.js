@@ -161,6 +161,92 @@ Template.adminLocation.events({
 
 });
 
+// ImageUtil
+function loadImgDimensions(doc, isUpdate, callback) {
+
+  var editDoc;
+  if (isUpdate) {
+    editDoc = doc.$set;
+  } else {
+    editDoc = doc;
+  }
+
+  if (editDoc.imageFilePaths == undefined || editDoc.imageFilePaths == 'undefined' || !editDoc.imageFilePaths) {
+    callback(doc);
+    return false;
+  }
+
+  var expandedSrc = editDoc.imageFilePaths[0].src;
+  var thumbSrc = editDoc.imageFilePaths[1].src;
+  var myImage = new Image();
+  var myThumbImage = new Image();
+
+  var expandedLoaded = false;
+  var thumbLoaded = false;
+
+  myImage.onload = function() {
+
+    console.log('\' Expanded is ' + this.width + ' by ' + this.height + ' pixels in size.');
+
+    editDoc.expandedWidth = this.width;
+    editDoc.expandedHeight = this.height;
+    editDoc.expandedAspectRatio = (this.width / this.height).toFixed(4);
+
+    expandedLoaded = true;
+    if (thumbLoaded && expandedLoaded) {
+      if (isUpdate) {
+        callback({$set:editDoc});
+        return true;
+      } else {
+        callback(editDoc);
+        return true;
+      }
+    }
+
+  };
+
+  myThumbImage.onload = function() {
+
+    console.log('\' Thumb is ' + this.width + ' by ' + this.height + ' pixels in size.');
+
+    editDoc.thumbWidth = this.width;
+    editDoc.thumbHeight = this.height;
+    editDoc.thumbAspectRatio = (this.width / this.height).toFixed(4);
+
+    thumbLoaded = true;
+    if (thumbLoaded && expandedLoaded) {
+      if (isUpdate) {
+        callback({$set:editDoc});
+        return true;
+      } else {
+        callback(editDoc);
+        return true;
+      }
+    }
+
+  };
+
+  myImage.onerror = function() {
+
+    console.log('\'' + this.name + '\' (expanded) failed to load.');
+    callback(doc);
+    return false;
+
+  };
+
+  myThumbImage.onerror = function() {
+
+    console.log('\'' + this.name + '\' (thumb) failed to load.');
+    callback(doc);
+    return false;
+
+  };
+
+  myImage.src = expandedSrc;
+  myThumbImage.src = thumbSrc;
+
+}
+
 /**
  * Hooks for autoform. Manipulate data before/after submission.
  */
@@ -176,13 +262,15 @@ AutoForm.hooks({
         doc.dsLocId = Locations.findOne().dsLocId;
         doc.generalLocationDs = Locations.findOne().title;
 
-        this.result(doc); // (asynchronous)
+        // Add image meta data
+        loadImgDimensions(doc, false, this.result);
 
       },
 
       update: function(doc) {
 
-        this.result(doc); // (asynchronous)
+        // Add image meta data
+        loadImgDimensions(doc, true, this.result);
 
       },
 
@@ -202,11 +290,8 @@ AutoForm.hooks({
     // Called when any submit operation succeeds
     onSuccess: function(formType, result) {
 
-      console.log('autoform success:', formType, result);
-
       if (formType === 'insert') {
         Session.set('adminCurrentImageId', result);
-
       }
 
       console.log('New doc:');

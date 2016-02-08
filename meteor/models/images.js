@@ -24,7 +24,7 @@ Images.allow({
 // Attach schema for autoforms
 Images.attachSchema(new SimpleSchema({
   dsLocId: {
-    type: String,
+    type: Number,
     optional: false,
     autoform: {
       omit:true,
@@ -121,6 +121,50 @@ Images.attachSchema(new SimpleSchema({
     optional: true,
     autoform: {
       rows: 3,
+    },
+  },
+  expandedHeight: {
+    type: Number,
+    optional: true,
+    autoform: {
+      omit:true,
+    },
+  },
+  expandedWidth: {
+    type: Number,
+    optional: true,
+    autoform: {
+      omit:true,
+    },
+  },
+  expandedAspectRatio: {
+    type: Number,
+    decimal: true,
+    optional: true,
+    autoform: {
+      omit:true,
+    },
+  },
+  thumbWidth: {
+    type: Number,
+    optional: true,
+    autoform: {
+      omit:true,
+    },
+  },
+  thumbHeight: {
+    type: Number,
+    optional: true,
+    autoform: {
+      omit:true,
+    },
+  },
+  thumbAspectRatio: {
+    type: Number,
+    decimal: true,
+    optional: true,
+    autoform: {
+      omit:true,
     },
   },
 

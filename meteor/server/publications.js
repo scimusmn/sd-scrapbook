@@ -65,7 +65,10 @@ Meteor.publish('allLocations', function() {
 
         // Pick a random ID from the horizontal images
         var items = result.fetch();
-        var randId = items[Math.floor(Math.random()*items.length)]._id;
+        var randId = '';
+        if (items.length > 0) {
+            var randId = items[Math.floor(Math.random()*items.length)]._id;
+        }
 
         // Add to our query, selecting for the location and random _id
         query['$or'].push({
@@ -119,7 +122,7 @@ Meteor.publish('singleLocation', function(link) {
                 _id: 1, dsLocId: 1, title: 1, isoDate: 1, appDate: 1, generalLocationDs:1,
                 creationPlace: 1, creditLine: 1, expandedHeight: 1,
                 expandedWidth: 1, expandedAspectRatio: 1, thumbWidth: 1,
-                thumbHeight: 1, labelTextEnglish: 1, labelTextSpanish: 1, imageFilePaths: 1
+                thumbHeight: 1, thumbAspectRatio: 1, labelTextEnglish: 1, labelTextSpanish: 1, imageFilePaths: 1
             }
         }
     );
