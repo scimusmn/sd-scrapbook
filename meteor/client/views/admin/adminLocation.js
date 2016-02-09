@@ -22,6 +22,14 @@ Template.adminLocation.helpers({
                 'title',
                 'creationPlace',
                 'creditLine',
+                { key:'active', label: 'active', fn: function(value) {
+                    if (value === true) {
+                      return new Spacebars.SafeString('<i class="fa fa-check"></i>');
+                    } else {
+                      return new Spacebars.SafeString('');
+                    }
+                  },
+                },
                 { key:'_id', label: 'thumb', fn: function(value) {
                   var thumbPath = '/images/thumbnails/' + value + '.jpg';
                   var previewPath = thumbPath;

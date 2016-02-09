@@ -56,6 +56,7 @@ Meteor.publish('allLocations', function() {
         result = Images.find( {
             $and: [
                 { dsLocId: activeLocId },
+                { active: true },
                 { thumbAspectRatio: { $gt: 1 } }
             ]
         },
@@ -91,7 +92,7 @@ Meteor.publish('allLocations', function() {
         {
             fields: {
                 _id: 1, dsLocId: 1, thumbHeight: 1, thumbWidth: 1,
-                generalLocationDs: 1, imageFilePaths: 1
+                generalLocationDs: 1, imageFilePaths: 1, active: 1
             }
         }
     );
@@ -106,7 +107,7 @@ Meteor.publish('allLocations', function() {
 /**
  * Publish a single location
  */
-Meteor.publish('singleLocation', function(link) {
+Meteor.publish('singleLocation', function(link, filterInactive) {
 
     /**
      * Get current location so that we can filter images
@@ -115,14 +116,23 @@ Meteor.publish('singleLocation', function(link) {
     var currentLocation = Locations.find( { 'link': link });
     var currentLocationObject = currentLocation.fetch();
     var currentLocationTitle = currentLocationObject[0].title;
+    var filter;
+    if (filterInactive) {
+        // Only deliver active images.
+        filter = {generalLocationDs: currentLocationTitle, active: true };
+    } else {
+        // Deliver all images.
+        filter = {generalLocationDs: currentLocationTitle};
+    }
     var currentLocationImages = Images.find(
-        {generalLocationDs: currentLocationTitle},
+        filter,
         {
             fields: {
                 _id: 1, dsLocId: 1, title: 1, isoDate: 1, appDate: 1, generalLocationDs:1,
                 creationPlace: 1, creditLine: 1, expandedHeight: 1,
                 expandedWidth: 1, expandedAspectRatio: 1, thumbWidth: 1,
-                thumbHeight: 1, thumbAspectRatio: 1, labelTextEnglish: 1, labelTextSpanish: 1, imageFilePaths: 1
+                thumbHeight: 1, thumbAspectRatio: 1, labelTextEnglish: 1, labelTextSpanish: 1,
+                imageFilePaths: 1, active: 1
             }
         }
     );

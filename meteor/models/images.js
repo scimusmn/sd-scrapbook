@@ -22,7 +22,7 @@ Images.allow({
 });
 
 // Attach schema for autoforms
-Images.attachSchema(new SimpleSchema({
+var schema = Images.attachSchema(new SimpleSchema({
   dsLocId: {
     type: Number,
     optional: false,
@@ -44,11 +44,13 @@ Images.attachSchema(new SimpleSchema({
     max:10,
     min:10,
     optional: false,
+    custom: function() {
+      if (!this.value.match(/([0-9u]{4})-(\d{2})-(\d{2})/)) {
+        return 'isoDateInvalid';
+      }
+    },
   },
-
   imageFilePaths: {
-      // This package can also take type: [String],
-      // but in that case it will only save the src.
       type: [Object],
       label: 'Image File', // (optional, defaults to "Select")
       optional: true, // (optional)
@@ -86,6 +88,18 @@ Images.attachSchema(new SimpleSchema({
   'imageFilePaths.$.filename': { type: String },
   'imageFilePaths.$.src': { type: String },
   'imageFilePaths.$.directive': { type: String },
+
+  active: {
+    type: Boolean,
+    label: 'Active (Uncheck to hide in application)',
+    optional: false,
+    autoform: {
+      afFieldInput: {
+        type: 'boolean-checkbox',
+        defaultValue: true,
+      },
+    },
+  },
 
   title: {
     type: String,
@@ -169,4 +183,8 @@ Images.attachSchema(new SimpleSchema({
   },
 
 }));
+
+SimpleSchema.messages({
+  isoDateInvalid: 'Use format YYYY-MM-DD (1968-02-23). Zeros denote no data (1987-01-00 = January, 1987) Within year, "u"s denote uncertainty (19uu = 1900s)',
+});
 

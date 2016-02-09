@@ -1,8 +1,6 @@
 // ISO Date Utils
 var getDisplayDate = function(isoDate) {
 
-  console.log('getDisplayDate', isoDate);
-
   isoDate = clean(isoDate);
 
   var month = getDisplayMonth(isoDate);
@@ -11,10 +9,7 @@ var getDisplayDate = function(isoDate) {
 
   var str = '';
 
-  console.log(month);
   if (month === '') {
-    console.log('no month found. using year');
-    console.log(year);
     str = year;
   } else if (day === '') {
     str = month + ', ' + year;
@@ -30,6 +25,40 @@ var getDisplayYear = function(isoDate) {
 
   isoDate = clean(isoDate);
   var y = isoDate.substring(0, 4);
+
+  var uIndex = y.indexOf('u');
+  if (uIndex === 1) {
+    // 1000's
+    y = y.substring(0, 1) + '000\'s';
+  } else if (uIndex === 2) {
+    // 1900's
+    y = y.substring(0, 2) + '00\'s';
+  } else if (uIndex === 3) {
+    // 1980's
+    y = y.substring(0, 3) + '0\'s';
+  }
+
+  return y;
+
+};
+
+var getNumericYear = function(isoDate) {
+
+  isoDate = clean(isoDate);
+  var y = isoDate.substring(0, 4);
+
+  var uIndex = y.indexOf('u');
+  if (uIndex === 1) {
+    // 1500
+    y = y.substring(0, 1) + '500';
+  } else if (uIndex === 2) {
+    // 1950
+    y = y.substring(0, 2) + '50';
+  } else if (uIndex === 3) {
+    // 1955
+    y = y.substring(0, 3) + '5';
+  }
+
   return y;
 
 };
@@ -100,9 +129,23 @@ var getDisplayDay = function(isoDate) {
   var d = isoDate.substring(8, 10);
   if (d === '00') {
     d = '';
+  } else if (d.charAt(0) == '0') {
+    d = d.charAt(1);
   }
 
   return d;
+
+};
+
+var getSortDate = function(isoDate) {
+
+  var sortDate = clean(isoDate);
+
+  var year = getNumericYear(isoDate);
+
+  sortDate = year + isoDate.substring(4, 10);
+
+  return sortDate;
 
 };
 
@@ -122,4 +165,6 @@ DateUtils.getDisplayDate = getDisplayDate;
 DateUtils.getDisplayYear = getDisplayYear;
 DateUtils.getDisplayMonth = getDisplayMonth;
 DateUtils.getDisplayDay = getDisplayDay;
+DateUtils.getNumericYear = getNumericYear;
+DateUtils.getSortDate = getSortDate;
 

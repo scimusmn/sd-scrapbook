@@ -61,7 +61,7 @@ Template.location.rendered = function() {
 
         // Sort images by year
         images = _.sortBy(images, function(image) {
-            return image.isoDate;
+            return DateUtils.getSortDate(image.isoDate);
         });
 
         var imagesCount = imagesCursor.count();
@@ -157,9 +157,9 @@ function drawLocation(images) {
     /**
      * Draw year markers at the start and end of the timeline
      */
-     var firstYear = DateUtils.getDisplayYear(_.first(images).isoDate);
+     var firstYear = DateUtils.getNumericYear(_.first(images).isoDate);
     drawYearMarker(timelineBackgroundSVG, 0, 50, 50, 55, firstYear);
-    var lastYear = DateUtils.getDisplayYear(_.last(images).isoDate);
+    var lastYear = DateUtils.getNumericYear(_.last(images).isoDate);
     drawYearMarker(
         timelineBackgroundSVG,
         (Session.get('timelineBackgroundWidth') - 100),
@@ -418,6 +418,16 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
     translateX = calculateTimelineImageX(i, image, scaleFactor);
     bottomY = calculateTimelineImageY(image, scaleFactor);
 
+    // TODO : Eventually should remove non-standard way of pathing to thumb
+    var thumbSrc = '/images/thumbnails/' + image._id + '.jpg';
+    if (image.imageFilePaths && image.imageFilePaths[1]) {
+        thumbSrc = image.imageFilePaths[1].src;
+    }
+    var expandedSrc = '';
+    if (image.imageFilePaths && image.imageFilePaths[0]) {
+        expandedSrc = image.imageFilePaths[0].src;
+    }
+
     /**
      * Create a SVG group for all of the picture elements
      *
@@ -434,6 +444,7 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
         .attr('data-credit-line', image.creditLine)
         .attr('data-title', image.title)
         .attr('data-x', translateX)
+        .attr('data-expanded-src', expandedSrc)
         .attr('data-xh', image.expandedHeight)
         .attr('data-xw', image.expandedWidth)
         .attr('data-aspect', image.expandedAspectRatio)
@@ -469,7 +480,7 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
     pictureGroup.append('image')
         .attr('x', imageBorder)
         .attr('y', imageBorder)
-        .attr('xlink:href', '/images/thumbnails/' + image._id + '.jpg')
+        .attr('xlink:href', thumbSrc)
         .attr('data-id', image._id)
         .attr('data-location', image.generalLocationDs)
         .attr('width', image.thumbWidth)
@@ -768,7 +779,12 @@ function updateHighlightedImage(hlImg) {
      *
      * Only make changes when we need to.
      */
+
+     // TODO : Eventually should remove non-standard way of pathing to full image
     var imagePath = '/images/expanded/' + hlImgId + '.jpg';
+    if (hlImg.data('expanded-src') && hlImg.data('expanded-src') !== '') {
+        imagePath = hlImg.data('expanded-src');
+    }
     if ($('.image-fullsize-image').attr('src') != imagePath) {
         $('.image-fullsize-image').attr('src', imagePath).stop(true, true).hide().fadeIn(400);
         $('.image-fullsize-image').attr('width', (hlImgExWidth));
