@@ -1,27 +1,54 @@
-// Set up access for AWS S3 image file storage
-var imageFileStore = new FS.Store.S3('imageFiles', {
-  region: 'us-west-2', // Optional in most cases
-  accessKeyId: Meteor.settings.public.aws.accessKeyId, // Required if environment variables are not set
-  secretAccessKey: Meteor.settings.public.aws.secretAccessKey, // Required if environment variables are not set
-  bucket: 'sd-scrapbook', // Required
+Slingshot.fileRestrictions('originalImageDirective', {
+  allowedFileTypes: ['image/png', 'image/jpeg', 'image/gif'],
+  maxSize: 10 * 1024 * 1024, // 10 MB (use null for unlimited).
 });
 
-ImageFiles = new FS.Collection('imageFiles', {
-  stores: [imageFileStore],
+Slingshot.fileRestrictions('thumbImageDirective', {
+  allowedFileTypes: ['image/png', 'image/jpeg', 'image/gif'],
+  maxSize: 10 * 1024 * 1024, // 10 MB (use null for unlimited).
 });
 
-// Set rules and subscriptions
-ImageFiles.allow({
-  insert: function(userId, doc) {
-    return true;
-  },
+if (Meteor.isServer) {
 
-  update:  function(userId, doc, fieldNames, modifier) {
-    return true;
-  },
+  // Full size directive
+  Slingshot.createDirective('originalImageDirective', Slingshot.S3Storage, {
 
-  remove:  function(userId, doc) {
-    return true;
-  },
-});
+    bucket: 'sd-scrapbook',
+    region: 'us-west-2',
+    acl: 'public-read',
 
+    AWSAccessKeyId: Meteor.settings.public.aws.accessKeyId,
+    AWSSecretAccessKey: Meteor.settings.public.aws.secretAccessKey,
+
+    authorize: function() {
+      return true;
+    },
+
+    key: function(file) {
+      var filepath = 'originals/' + Meteor.uuid() + '-' + file.name;
+      return filepath;
+    },
+
+  });
+
+  // Thumbnail directive
+  Slingshot.createDirective('thumbImageDirective', Slingshot.S3Storage, {
+
+    bucket: 'sd-scrapbook',
+    region: 'us-west-2',
+    acl: 'public-read',
+
+    AWSAccessKeyId: Meteor.settings.public.aws.accessKeyId,
+    AWSSecretAccessKey: Meteor.settings.public.aws.secretAccessKey,
+
+    authorize: function() {
+      return true;
+    },
+
+    key: function(file) {
+      var filepath = 'thumbs/' + Meteor.uuid() + '-' + file.name;
+      return filepath;
+    },
+
+  });
+}

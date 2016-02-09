@@ -16,6 +16,7 @@
             "accessKeyId": "1234567890",
             "secretAccessKey": "1234567890"
         },
+        "adminName": "Abcd Efgh",
         "adminPassword": "1234567890"
     }
 }

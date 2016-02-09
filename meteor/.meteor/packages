@@ -18,5 +18,8 @@ aldeed:autoform
 aldeed:collection2
 aslagle:reactive-table
 fortawesome:fontawesome
-cfs:standard-packages
-cfs:s3
+edgee:slingshot
+thinksoftware:image-resize-client
+msavin:mongol
+ryanswrt:autoform-slingshot
+jabbslad:basic-auth

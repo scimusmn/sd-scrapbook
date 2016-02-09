@@ -194,6 +194,13 @@ Template.locations.rendered = function() {
         var boxWidth = image.thumbWidth + (imageBorder * 2);
         var boxHeight = image.thumbHeight + (imageBorder * 2) + 40;
 
+
+        // TODO : Eventually should remove non-standard way of pathing to thumb
+        var thumbSrc = '/images/thumbnails/' + image._id + '.jpg';
+        if (image.imageFilePaths && image.imageFilePaths[1]) {
+            thumbSrc = image.imageFilePaths[1].src;
+        }
+
         // Drop shadow rectangle
         pictureGroup.append('defs')
             .append('filter')
@@ -239,7 +246,7 @@ Template.locations.rendered = function() {
             .attr('width', image.thumbWidth)
             .attr('height', image.thumbHeight)
             .attr('opacity', '1')
-            .attr('xlink:href', '/images/thumbnails/' + image._id + '.jpg')
+            .attr('xlink:href', thumbSrc)
             .attr('data-id', image._id)
             .attr('data-locid', image.dsLocId)
             .attr('data-location', image.generalLocationDs);

@@ -390,9 +390,12 @@ svg.svg-canvas {
 .admin #tableThumbPreview {
   position:absolute;
   pointer-events:none;
+  z-index: 5;
 }
 
 .admin #tableThumbPreview img {
+  max-width: 480px;
+  max-height: 480px;
   background:rgba(255,255,255,.95);
   box-shadow: 4px 4px 12px rgba(0,0,0,0.1);
   padding:30px;
@@ -406,3 +409,4 @@ svg.svg-canvas {
   left:0px;
   color:#333;
 }
+

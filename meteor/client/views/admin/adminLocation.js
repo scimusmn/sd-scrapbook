@@ -10,10 +10,6 @@ Template.adminLocation.helpers({
 
   },
 
-  thumbPath: function() {
-    return '/images/thumbnails/' + this._id + '.jpg';
-  },
-
   tableSettings: function() {
     return {
       collection: Images.find({}, {sort:{isoDate: 1}}),
@@ -26,9 +22,26 @@ Template.adminLocation.helpers({
                 'title',
                 'creationPlace',
                 'creditLine',
+                { key:'active', label: 'active', fn: function(value) {
+                    if (value === true) {
+                      return new Spacebars.SafeString('<i class="fa fa-check"></i>');
+                    } else {
+                      return new Spacebars.SafeString('');
+                    }
+                  },
+                },
                 { key:'_id', label: 'thumb', fn: function(value) {
-                  var thmPath = '/images/thumbnails/' + value + '.jpg';
-                  return new Spacebars.SafeString('<img class="tableThumb" src="' + thmPath + '" height=25 />');
+                  var thumbPath = '/images/thumbnails/' + value + '.jpg';
+                  var previewPath = thumbPath;
+                  var imgDoc = Images.findOne({ _id: value });
+                  if (imgDoc) {
+                    if (imgDoc.imageFilePaths) {
+                      thumbPath = imgDoc.imageFilePaths[1].src;
+                      previewPath = imgDoc.imageFilePaths[0].src;
+                    }
+                  }
+
+                  return new Spacebars.SafeString('<img class="tableThumb" src="' + thumbPath + '" height=25 data-preview-src="' + previewPath + '" />');
                 },
               },
                 { key:'_id', label: 'action', fn: function(value) {
@@ -80,8 +93,6 @@ Template.adminLocation.events({
 
     var clickedId = $(e.currentTarget).attr('id');
 
-    console.log(clickedId);
-
     if (clickedId === 'addBtn') {
 
       Session.set('adminCurrentImageId', '');
@@ -90,9 +101,6 @@ Template.adminLocation.events({
     } else {
 
       Session.set('adminCurrentImageId', clickedId);
-
-      var imgDoc = Images.findOne({_id:Session.get('adminCurrentImageId')});
-
       $('#editModal').modal('show');
 
     }
@@ -116,67 +124,161 @@ Template.adminLocation.events({
   },
 
   'mouseenter table img.tableThumb':function(e) {
-    console.log('expand', $(e.currentTarget).attr('src'), e.clientY);
-    var expandSrc = $(e.currentTarget).attr('src');
-    $('#tableThumbPreview').show();
+
+    var expandSrc = $(e.currentTarget).attr('data-preview-src');
+    var preview = $('#tableThumbPreview');
     $('#tableThumbPreview img').attr('src', expandSrc);
-    $('#tableThumbPreview').css('top', e.clientY);
-    $('#tableThumbPreview').css('left', e.clientX);
+    preview.css('top', e.clientY - preview.outerHeight() / 2);
+    preview.css('right', $(document).width() - e.clientX + 17);
+    preview.delay(150).stop().fadeIn(70);
+
   },
 
   'mousemove table img.tableThumb':function(e) {
-    $('#tableThumbPreview').show();
-    $('#tableThumbPreview').css('top', e.clientY);
-    $('#tableThumbPreview').css('left', e.clientX);
+    var preview = $('#tableThumbPreview');
+    preview.css('top', e.clientY - preview.outerHeight() / 2);
+    preview.css('right', $(document).width() - e.clientX + 17);
   },
 
   'mouseleave table img.tableThumb':function(e) {
-    console.log('leave', $(e.currentTarget).attr('src'));
-    $('#tableThumbPreview').hide();
+    $('#tableThumbPreview').stop().hide();
   },
 
-});
+  'show.bs.modal':function(e) {
 
-Template.adminEditModal.events({
-
-  'change .myFileInput': function(event, template) {
-
-    FS.Utility.eachFile(event, function(file) {
-      Images.insert(file, function(err, fileObj) {
-        if (err) {
-          // Handle error
-          console.log('Image Upload Error:', err);
-        } else {
-          // Handle success depending what you need to do
-          console.log('Image upload success...');
-          console.log(fileObj);
+    // Hack to fix autoform bug.
+    // Clears image upload form when
+    // no imageFilePaths are found. -tn
+    setTimeout(function() {
+      var imgDoc = Images.findOne({ _id: Session.get('adminCurrentImageId') });
+      if (imgDoc) {
+        if (imgDoc.imageFilePaths) {
+          // Already has image. Allow to display.
+          return;
         }
-      });
-    });
+      }
+
+      $('#editModal .file-upload-clear').trigger('click');
+    }, 20);
 
   },
+
+  'shown.bs.modal':function(e) {
+
+  },
+
 });
+
+// ImageUtil
+function loadImgDimensions(doc, isUpdate, callback) {
+
+  var editDoc;
+  if (isUpdate) {
+    editDoc = doc.$set;
+  } else {
+    editDoc = doc;
+  }
+
+  if (editDoc.imageFilePaths == undefined || editDoc.imageFilePaths == 'undefined' || !editDoc.imageFilePaths) {
+    callback(doc);
+    return false;
+  }
+
+  var expandedSrc = editDoc.imageFilePaths[0].src;
+  var thumbSrc = editDoc.imageFilePaths[1].src;
+  var myImage = new Image();
+  var myThumbImage = new Image();
+
+  var expandedLoaded = false;
+  var thumbLoaded = false;
+
+  myImage.onload = function() {
+
+    console.log('\' Expanded is ' + this.width + ' by ' + this.height + ' pixels in size.');
+
+    editDoc.expandedWidth = this.width;
+    editDoc.expandedHeight = this.height;
+    editDoc.expandedAspectRatio = (this.width / this.height).toFixed(4);
+
+    expandedLoaded = true;
+    if (thumbLoaded && expandedLoaded) {
+      if (isUpdate) {
+        callback({$set:editDoc});
+        return true;
+      } else {
+        callback(editDoc);
+        return true;
+      }
+    }
+
+  };
+
+  myThumbImage.onload = function() {
+
+    console.log('\' Thumb is ' + this.width + ' by ' + this.height + ' pixels in size.');
+
+    editDoc.thumbWidth = this.width;
+    editDoc.thumbHeight = this.height;
+    editDoc.thumbAspectRatio = (this.width / this.height).toFixed(4);
+
+    thumbLoaded = true;
+    if (thumbLoaded && expandedLoaded) {
+      if (isUpdate) {
+        callback({$set:editDoc});
+        return true;
+      } else {
+        callback(editDoc);
+        return true;
+      }
+    }
+
+  };
+
+  myImage.onerror = function() {
+
+    console.log('\'' + this.name + '\' (expanded) failed to load.');
+    callback(doc);
+    return false;
+
+  };
+
+  myThumbImage.onerror = function() {
+
+    console.log('\'' + this.name + '\' (thumb) failed to load.');
+    callback(doc);
+    return false;
+
+  };
+
+  myImage.src = expandedSrc;
+  myThumbImage.src = thumbSrc;
+
+}
 
 /**
  * Hooks for autoform. Manipulate data before/after submission.
  */
 AutoForm.hooks({
 
-  form_imageEntry: {
+  formImageEntry: {
 
     before: {
 
       insert: function(doc) {
 
-        console.log('before date: ' + doc.isoDate);
-
         // Add location Id to create link to current location
-        var locationId = Locations.findOne().dsLocId;
-        var locationTitle = Locations.findOne().title;
-        doc.dsLocId = locationId;
-        doc.generalLocationDs = locationTitle;
+        doc.dsLocId = Locations.findOne().dsLocId;
+        doc.generalLocationDs = Locations.findOne().title;
 
-        this.result(doc);// (asynchronous)
+        // Add image meta data
+        loadImgDimensions(doc, false, this.result);
+
+      },
+
+      update: function(doc) {
+
+        // Add image meta data
+        loadImgDimensions(doc, true, this.result);
 
       },
 
@@ -184,9 +286,7 @@ AutoForm.hooks({
 
     docToForm: function(doc, ss) {
 
-      console.log('isoDate:\n' + doc.isoDate);
-
-      // Remove unneccessary iso prepend (cleaning old data)
+      // TODO - Remove unneccessary iso prepend (cleaning old data)
       if (doc.isoDate && doc.isoDate.indexOf('iso-') != -1) {
         doc.isoDate = doc.isoDate.replace('iso-', '');
       }
@@ -198,9 +298,14 @@ AutoForm.hooks({
     // Called when any submit operation succeeds
     onSuccess: function(formType, result) {
 
-      console.log('autoform success:', formType, result);
+      if (formType === 'insert') {
+        Session.set('adminCurrentImageId', result);
+      }
 
-      // // Hide modal
+      console.log('New doc:');
+      console.log(Images.findOne(Session.get('adminCurrentImageId')));
+
+      // Hide modal
       $('#editModal').modal('hide');
       $('#editModal form')[0].reset();
 
@@ -208,7 +313,8 @@ AutoForm.hooks({
 
     // Called when any submit operation fails
     onError: function(formType, error) {
-      console.log('autoform error:', formType, error);
+
+      console.log('Autoform error:', formType, error);
 
     },
 

@@ -38,7 +38,7 @@ Router.map(function() {
   this.route('location', {
     path: '/location/:link',
     waitOn: function () {
-      return Meteor.subscribe('singleLocation', this.params.link);
+      return Meteor.subscribe('singleLocation', this.params.link, true);
     },
     data: function () {
       return {
@@ -70,7 +70,8 @@ Router.map(function() {
   this.route('adminLocation', {
     path: 'admin/locations/:link',
     waitOn: function () {
-      return Meteor.subscribe('singleLocation', this.params.link);
+      Session.set('adminCurrentLocationLink', this.params.link);
+      return Meteor.subscribe('singleLocation', this.params.link, false);
     },
     data: function () {
       return {
