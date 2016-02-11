@@ -91,7 +91,7 @@ var schema = Images.attachSchema(new SimpleSchema({
 
   active: {
     type: Boolean,
-    label: 'Active (Uncheck to hide in application)',
+    label: 'Active (Uncheck to hide)',
     optional: false,
     autoform: {
       afFieldInput: {
