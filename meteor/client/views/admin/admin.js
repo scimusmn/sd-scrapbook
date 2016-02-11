@@ -21,3 +21,22 @@ Template.admin.helpers({
   },
 
 });
+
+Template.admin.events({
+
+  'click a.publish':function(e) {
+
+    var response = confirm('Are you sure? Floor kiosks will reflect your changes on their next restart.');
+
+    if (response == true) {
+      console.log('Publish confirmed');
+
+      // TODO: Publish database to S3?
+
+    } else {
+      console.log('Publish canceled.');
+    }
+
+  },
+
+});
