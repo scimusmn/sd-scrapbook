@@ -15,7 +15,7 @@ Router.configure({
 });
 
 // Routes
-Router.map(function() {
+Router.map(function () {
 
   // Locations
   this.route('locations', {
@@ -23,15 +23,17 @@ Router.map(function() {
     waitOn: function () {
       return Meteor.subscribe('allLocations');
     },
+
     data: function () {
       return {
         locations: Locations.find(),
-        images: Images.find()
+        images: Images.find(),
       };
     },
-    action: function() {
-        this.render();
-    }
+
+    action: function () {
+      this.render();
+    },
   });
 
   // Single Location
@@ -40,14 +42,16 @@ Router.map(function() {
     waitOn: function () {
       return Meteor.subscribe('singleLocation', this.params.link, true);
     },
+
     data: function () {
       return {
         location: Locations.findOne({ 'link': this.params.link })
       };
     },
-    action: function() {
-        this.render();
-    }
+
+    action: function () {
+      this.render();
+    },
   });
 
   // Admin/Editor
@@ -56,16 +60,19 @@ Router.map(function() {
     waitOn: function () {
       return Meteor.subscribe('allLocations');
     },
+
     data: function () {
       return {
         locations: Locations.find(),
-        images: Images.find()
+        images: Images.find(),
       };
     },
-    action: function() {
-        $('body').css('cursor', 'auto');
-        this.render();
-    }
+
+    action: function () {
+      $('body').css('cursor', 'auto');
+      this.render();
+    },
+
   });
   this.route('adminLocation', {
     path: 'admin/locations/:link',
@@ -73,17 +80,21 @@ Router.map(function() {
       Session.set('adminCurrentLocationLink', this.params.link);
       return Meteor.subscribe('singleLocation', this.params.link, false);
     },
+
     data: function () {
       return {
         location: Locations.findOne({ 'link': this.params.link }),
       };
     },
-    action: function() {
-      // Toggle cursor visibility
-        $('body').css('cursor', 'auto');
-        this.render();
-    }
-  });
 
+    action: function () {
+      // Toggle cursor visibility
+      $('body').css('cursor', 'auto');
+      this.render();
+    },
+
+  }
+
+);
 
 });
