@@ -45,7 +45,7 @@ Router.map(function () {
 
     data: function () {
       return {
-        location: Locations.findOne({ 'link': this.params.link })
+        location: Locations.findOne({ link: this.params.link }),
       };
     },
 
@@ -83,7 +83,7 @@ Router.map(function () {
 
     data: function () {
       return {
-        location: Locations.findOne({ 'link': this.params.link }),
+        location: Locations.findOne({ link: this.params.link }),
       };
     },
 
