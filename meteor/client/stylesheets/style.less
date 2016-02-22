@@ -4,6 +4,21 @@
 @import "_fonts.import.less";
 @import "_animate.import.less";
 
+@font-face {
+    font-family: FuturaTS-Light;
+    src: url(/fonts/FuturaTS-Light.woff);
+}
+
+@font-face {
+    font-family: FuturaTS-Medium;
+    src: url(/fonts/FuturaTS-Medium.woff);
+}
+
+@font-face {
+    font-family: FuturaTS-Demibold;
+    src: url(/fonts/FuturaTS-Demibold.woff);
+}
+
 body {
   background: @background-tan;
   background-image: url("/images/map-base-sepia-v05.jpg");
@@ -357,6 +372,12 @@ svg.svg-canvas {
   color: #222;
 }
 
+.alert {
+  position:fixed;
+  width:100%;
+  display:none;
+}
+
 /**
  * ----------------------------------------------------------------------------
  * Admin mode
@@ -366,7 +387,8 @@ svg.svg-canvas {
 .admin h2,
 .admin h3,
 .admin p,
-.admin span {
+.admin span,
+.admin label {
   color:#00A388;
 }
 
