@@ -443,3 +443,24 @@ svg.svg-canvas {
   color:#333;
 }
 
+.modal .tip {
+  color: #428bca;
+}
+
+.tooltip {
+  z-index: 5001;
+  pointer-events: none;
+  transition: opacity .5s ease-out;
+  opacity: 0;
+  color: #428bca;
+  background-color: #FFF;
+}
+
+.tooltip.hide {
+  opacity: 0;
+}
+
+.tooltip.show {
+  opacity: 1;
+}
+
