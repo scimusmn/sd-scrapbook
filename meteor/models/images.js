@@ -39,7 +39,10 @@ var schema = Images.attachSchema(new SimpleSchema({
   },
   isoDate: {
     type: String,
-    label: 'Date ( yyyy-mm-dd )',
+    label: function() {
+      return getToolTipLabel('Date ( yyyy-mm-dd )', 'Use <em><strong>0</strong></em> to mark no data (1987-01-00 --> January, 1987).  &nbsp;Use <em><strong>u</strong></em> to mark uncertainty (19uu --> 1900s).');
+    },
+
     defaultValue: '0000-00-00',
     max:10,
     min:10,
@@ -52,14 +55,26 @@ var schema = Images.attachSchema(new SimpleSchema({
   },
   imageFilePaths: {
       type: [Object],
-      label: 'Image File', // (optional, defaults to "Select")
+      label: function() {
+        return getToolTipLabel('Image File', 'Max filesize is 10mb. Allowed file-types are PNGs and JPGs.');
+      },
+
       optional: true, // (optional)
+      custom: function() {
+        var fileName = this.value[0].filename;
+        fileName = fileName.toLowerCase();
+        if (!fileName.match(/\.(jpg|jpeg|png|gif)$/)) {
+          return 'wrongImageType';
+        }
+      },
+
       autoform: {
         type: 'slingshotFileUpload', // (required)
         removeLabel: 'Remove', // (optional, defaults to "Remove")
         afFieldInput: {
           // Specify which slingshotdirective to present as thumbnail when  this picture is uploaded, you can use the "key" or "directive".
           thumbnail: 'original',
+          accept: ['image/png', 'image/jpeg', 'image/gif'],
           slingshotdirective: {
             original: {
               directive: 'originalImageDirective',
@@ -67,6 +82,7 @@ var schema = Images.attachSchema(new SimpleSchema({
             thumb: { // <-- This is the "key" for the "thumb" version.
               directive: 'thumbImageDirective',
               onBeforeUpload: function(file, callback) {
+
                 // Create a thumbnail 175x175 size version.
                 Resizer.resize(file, {width: 175, height: 175, cropSquare: false}, function(err, file) {
                   if (err) {
@@ -103,36 +119,56 @@ var schema = Images.attachSchema(new SimpleSchema({
 
   title: {
     type: String,
-    label: 'Title',
+    label: function() {
+      return getToolTipLabel('Title', 'Character limit: 30. Only displays if <em>Creation place</em> is left empty.');
+    },
+
     defaultValue: '',
+    max:30,
     optional: true,
   },
   creationPlace: {
     type: String,
-    label: 'Creation place',
+    label: function() {
+      return getToolTipLabel('Creation place', 'Character limit: 30.');
+    },
+
     defaultValue: '',
+    max:30,
     optional: true,
   },
   creditLine: {
     type: String,
-    label: 'Credit line',
+    label: function() {
+      return getToolTipLabel('Credit line', 'Character limit: 70.');
+    },
+
     defaultValue: '',
+    max:70,
     optional: true,
   },
   labelTextEnglish: {
     type: String,
-    label: 'English label',
+    label: function() {
+      return getToolTipLabel('English label', 'Character limit: 250.');
+    },
+
     defaultValue: '',
     optional: true,
+    max:250,
     autoform: {
       rows: 3,
     },
   },
   labelTextSpanish: {
     type: String,
-    label: 'Spanish label',
+    label: function() {
+      return getToolTipLabel('Spanish label', 'Character limit: 250.');
+    },
+
     defaultValue: '',
     optional: true,
+    max:250,
     autoform: {
       rows: 3,
     },
@@ -185,6 +221,11 @@ var schema = Images.attachSchema(new SimpleSchema({
 }));
 
 SimpleSchema.messages({
+  wrongImageType: 'Invalid file type. Please use .png, .jpg, or .jpeg.',
   isoDateInvalid: 'Use format YYYY-MM-DD (1968-02-23). Zeros denote no data (1987-01-00 = January, 1987) Within year, "u"s denote uncertainty (19uu = 1900s)',
 });
+
+function getToolTipLabel(labelTxt, tipTxt) {
+  return new Spacebars.SafeString(labelTxt + '&nbsp;<i class="fa fa-question-circle tip" data-tooltip-direction="e" data-tooltip="' + tipTxt + '"></i>');
+}
 

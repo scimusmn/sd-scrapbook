@@ -2,6 +2,7 @@
 
 <template name="adminLocation">
   <div class="container admin">
+    <a href="../../../admin/" class="anchored"><i class="fa fa-arrow-left"></i> &nbsp;All locations</a>
     <div class="container adminTable">
       <h1>{{location.title}}</h1>
       {{> reactiveTable settings=tableSettings}}
@@ -12,6 +13,9 @@
   </div>
 
   {{> adminEditModal}}
+
+<!-- Used for all tooltips within this template... -->
+  {{ > tooltips }}
 
 </template>
 
@@ -31,5 +35,4 @@
       </div>
     </div>
   </div>
-
 </template>
