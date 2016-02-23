@@ -54,12 +54,21 @@ var schema = Images.attachSchema(new SimpleSchema({
       type: [Object],
       label: 'Image File (10mb limit. PNGs and JPGs)', // (optional, defaults to "Select")
       optional: true, // (optional)
+      custom: function() {
+        var fileName = this.value[0].filename;
+        fileName = fileName.toLowerCase();
+        if (!fileName.match(/\.(jpg|jpeg|png|gif)$/)) {
+          return 'wrongImageType';
+        }
+      },
+
       autoform: {
         type: 'slingshotFileUpload', // (required)
         removeLabel: 'Remove', // (optional, defaults to "Remove")
         afFieldInput: {
           // Specify which slingshotdirective to present as thumbnail when  this picture is uploaded, you can use the "key" or "directive".
           thumbnail: 'original',
+          accept: ['image/png', 'image/jpeg', 'image/gif'],
           slingshotdirective: {
             original: {
               directive: 'originalImageDirective',
@@ -67,6 +76,7 @@ var schema = Images.attachSchema(new SimpleSchema({
             thumb: { // <-- This is the "key" for the "thumb" version.
               directive: 'thumbImageDirective',
               onBeforeUpload: function(file, callback) {
+
                 // Create a thumbnail 175x175 size version.
                 Resizer.resize(file, {width: 175, height: 175, cropSquare: false}, function(err, file) {
                   if (err) {
@@ -190,6 +200,7 @@ var schema = Images.attachSchema(new SimpleSchema({
 }));
 
 SimpleSchema.messages({
+  wrongImageType: 'Invalid file type. Please use .png, .jpg, or .jpeg.',
   isoDateInvalid: 'Use format YYYY-MM-DD (1968-02-23). Zeros denote no data (1987-01-00 = January, 1987) Within year, "u"s denote uncertainty (19uu = 1900s)',
 });
 
