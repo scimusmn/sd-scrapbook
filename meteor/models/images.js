@@ -119,7 +119,7 @@ var schema = Images.attachSchema(new SimpleSchema({
     type: String,
     label: 'Credit line',
     defaultValue: '',
-    max:75,
+    max:70,
     optional: true,
   },
   labelTextEnglish: {
