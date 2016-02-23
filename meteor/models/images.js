@@ -52,7 +52,7 @@ var schema = Images.attachSchema(new SimpleSchema({
   },
   imageFilePaths: {
       type: [Object],
-      label: 'Image File', // (optional, defaults to "Select")
+      label: 'Image File (10mb limit. PNGs and JPGs)', // (optional, defaults to "Select")
       optional: true, // (optional)
       autoform: {
         type: 'slingshotFileUpload', // (required)
@@ -105,18 +105,21 @@ var schema = Images.attachSchema(new SimpleSchema({
     type: String,
     label: 'Title',
     defaultValue: '',
+    max:30,
     optional: true,
   },
   creationPlace: {
     type: String,
     label: 'Creation place',
     defaultValue: '',
+    max:30,
     optional: true,
   },
   creditLine: {
     type: String,
     label: 'Credit line',
     defaultValue: '',
+    max:75,
     optional: true,
   },
   labelTextEnglish: {
@@ -124,6 +127,7 @@ var schema = Images.attachSchema(new SimpleSchema({
     label: 'English label',
     defaultValue: '',
     optional: true,
+    max:250,
     autoform: {
       rows: 3,
     },
@@ -133,6 +137,7 @@ var schema = Images.attachSchema(new SimpleSchema({
     label: 'Spanish label',
     defaultValue: '',
     optional: true,
+    max:250,
     autoform: {
       rows: 3,
     },
