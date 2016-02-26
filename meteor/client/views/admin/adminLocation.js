@@ -4,6 +4,7 @@
 
  // Helpers for adminLocation template
 Template.adminLocation.helpers({
+
   imageEntries: function() {
 
     return Images.find({}, {sort:{isoDate: 1}});
@@ -45,7 +46,9 @@ Template.adminLocation.helpers({
                 },
               },
                 { key:'_id', label: 'action', fn: function(value) {
-                  return new Spacebars.SafeString('<a id="' + value + '" href="#" class="edit"><i class="fa fa-pencil"></i> Edit</a> &nbsp; <a id="' + value + '" href="#" class="delete"><i class="fa fa-trash-o"></i> Delete</a>');
+                  var htmlString = '<a id="' + value + '" href="#" class="edit"><i class="fa fa-pencil"></i> Edit</a> &nbsp; <a id="' + value + '" href="#" class="delete"><i class="fa fa-trash-o"></i> Delete</a>';
+                  if (Images.findOne(value).active === true) htmlString += ('&nbsp; <a id="' + value + '" href="/admin/preview/" class="preview"><i class="fa fa-eye"></i> Preview</a>');
+                  return new Spacebars.SafeString(htmlString);
                 },
               },
             ],
@@ -120,6 +123,27 @@ Template.adminLocation.events({
     } else {
       console.log('Deletion canceled.');
     }
+
+  },
+
+  'click a.preview':function(e) {
+
+    var imgToPreviewId = $(e.currentTarget).attr('id');
+
+    // Example link to image...
+    // /riverside?image=ds20001
+
+    var currentLink = Locations.findOne().link;
+    var previewURL = 'http://' + window.location.host + '/location/' + currentLink + '';
+    if (imgToPreviewId) {
+      previewURL += '?image=' + imgToPreviewId;
+    }
+
+    Session.set('adminCurrentPreviewURL', previewURL);
+    Session.set('adminCurrentReturnURL', '/admin/locations/' + currentLink);
+    Session.set('adminCurrentReturnName', Locations.findOne().title);
+    console.log('teete');
+    // Router.go('/admin/preview');
 
   },
 

@@ -399,10 +399,15 @@ svg.svg-canvas {
   color:#00A388;
 }
 
-.admin .adminTable  {
+.admin .adminTable,
+.admin .adminPreview  {
   background:rgba(16,4,36,0.75);
   background:rgba(255,255,255,.9);
   padding:2% 10%;
+}
+
+.admin .adminPreview  {
+  padding:3% 2%;
 }
 
 .admin h1{
@@ -441,6 +446,27 @@ svg.svg-canvas {
   padding:30px;
   margin:10px;
   pointer-events:none;
+}
+
+.admin .iframe-container {
+  position: relative;
+  width:100%;
+  margin:0 auto;
+}
+
+.admin .iframe-container iframe {
+  position: absolute;
+  top:0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
+
+  -ms-transform-origin: 0% 0%; /* IE 9 */
+  -webkit-transform-origin: 0% 0%; /* Chrome, Safari, Opera */
+  transform-origin: 0% 0%;
+
+  -webkit-transform:scale(0.5);
+
 }
 
 .modal {

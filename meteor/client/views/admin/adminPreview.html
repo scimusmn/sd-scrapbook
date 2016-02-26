@@ -1,0 +1,15 @@
+<!-- Admin | Preview -->
+
+<template name="adminPreview">
+  <div class="container admin">
+    <a href="{{returnURL}}" class="anchored"><i class="fa fa-arrow-left"></i> &nbsp;Back to {{returnLocationName}}</a>
+    <div class="container adminPreview">
+      <div class="zoomBtns">
+        <span>PREVIEW </span> &nbsp;<a id="0.25" href="#">25%</a>&nbsp;<a id="0.50" href="#">50%</a>&nbsp;<a id="0.75" href="#">75%</a>&nbsp;<a id="1.0" href="#">100%</a>
+      </div>
+      <div class="iframe-container">
+        <iframe src="{{previewURL}}"></iframe>
+      </div>
+    </div>
+  </div>
+</template>

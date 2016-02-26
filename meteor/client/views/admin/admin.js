@@ -22,3 +22,14 @@ Template.admin.helpers({
 
 });
 
+Template.admin.events({
+
+  'click a.preview':function(e) {
+
+    Session.set('adminCurrentPreviewURL', '/');
+    Session.set('adminCurrentReturnURL', '/admin/');
+    Session.set('adminCurrentReturnName', 'All locations');
+
+  },
+
+});

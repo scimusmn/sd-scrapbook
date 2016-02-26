@@ -93,6 +93,25 @@ Router.map(function () {
       this.render();
     },
 
+  });
+  this.route('adminPreview', {
+    path: 'admin/preview/',
+    waitOn: function () {
+      return Meteor.subscribe('allLocations');
+    },
+
+    data: function () {
+      return {
+        locations: Locations.find(),
+        images: Images.find(),
+      };
+    },
+
+    action: function () {
+      $('body').css('cursor', 'auto');
+      this.render();
+    },
+
   }
 
 );
