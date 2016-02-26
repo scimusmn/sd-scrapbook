@@ -120,42 +120,42 @@ var schema = Images.attachSchema(new SimpleSchema({
   title: {
     type: String,
     label: function() {
-      return getToolTipLabel('Title', 'Character limit: 30. Only displays if <em>Creation place</em> is left empty.');
+      return getToolTipLabel('Title', 'Character limit: 150. Only displays if <em>Creation place</em> is left empty.');
     },
 
     defaultValue: '',
-    max:30,
+    max:150,
     optional: true,
   },
   creationPlace: {
     type: String,
     label: function() {
-      return getToolTipLabel('Creation place', 'Character limit: 30.');
+      return getToolTipLabel('Creation place', 'Character limit: 60.');
     },
 
     defaultValue: '',
-    max:30,
+    max:60,
     optional: true,
   },
   creditLine: {
     type: String,
     label: function() {
-      return getToolTipLabel('Credit line', 'Character limit: 70.');
+      return getToolTipLabel('Credit line', 'Character limit: 130.');
     },
 
     defaultValue: '',
-    max:70,
+    max:130,
     optional: true,
   },
   labelTextEnglish: {
     type: String,
     label: function() {
-      return getToolTipLabel('English label', 'Character limit: 250.');
+      return getToolTipLabel('English label', 'Character limit: 275.');
     },
 
     defaultValue: '',
     optional: true,
-    max:250,
+    max:275,
     autoform: {
       rows: 3,
     },
@@ -163,12 +163,12 @@ var schema = Images.attachSchema(new SimpleSchema({
   labelTextSpanish: {
     type: String,
     label: function() {
-      return getToolTipLabel('Spanish label', 'Character limit: 250.');
+      return getToolTipLabel('Spanish label', 'Character limit: 340.');
     },
 
     defaultValue: '',
     optional: true,
-    max:250,
+    max:340,
     autoform: {
       rows: 3,
     },
