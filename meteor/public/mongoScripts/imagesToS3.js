@@ -50,6 +50,11 @@ while (allImagesCursor.hasNext()) {
 
   db.images.update({ _id: myId }, {$set: {imageFilePaths:myImageFilePaths}}, {});
 
+  // Remove 'iso-' string from images when found
+  var myIsoDate = myImage.isoDate;
+  myIsoDate = myIsoDate.replace('iso-', '');
+  db.images.update({ _id: myId }, {$set: {isoDate:myIsoDate}}, {});
+
 }
 
 print('Done.');
