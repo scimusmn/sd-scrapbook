@@ -1,8 +1,8 @@
 /**
- * Template helpers
- */
+* Template helpers
+*/
 
- // Helpers for adminLocation template
+// Helpers for adminLocation template
 Template.adminLocation.helpers({
 
   imageEntries: function () {
@@ -19,39 +19,51 @@ Template.adminLocation.helpers({
       showNavigationRowsPerPage: true,
       showFilter: true,
       rowsPerPage: 10,
-      fields: ['isoDate',
-                'title',
-                'creationPlace',
-                'creditLine',
-                { key:'active', label: 'active', fn: function (value) {
-                    if (value === true) {
-                      return new Spacebars.SafeString('<i class="fa fa-check"></i>');
-                    } else {
-                      return new Spacebars.SafeString('');
-                    }
-                  },
-                },
-                { key:'_id', label: 'thumb', fn: function (value) {
-                  var thumbPath = '/images/thumbnails/' + value + '.jpg';
-                  var previewPath = thumbPath;
-                  var imgDoc = Images.findOne({ _id: value });
-                  if (imgDoc) {
-                    if (imgDoc.imageFilePaths) {
-                      thumbPath = imgDoc.imageFilePaths[1].src;
-                      previewPath = imgDoc.imageFilePaths[0].src;
-                    }
-                  }
+      fields: [
+        'isoDate',
+        'title',
+        'creationPlace',
+        'creditLine',
+        {
+          key:'active', label: 'active', fn: function (value) {
+            if (value === true) {
+              return new Spacebars.SafeString('<i class="fa fa-check"></i>');
+            } else {
+              return new Spacebars.SafeString('');
+            }
+          },
+        },
+        { key:'_id', label: 'thumb', fn: function (value) {
+          var thumbPath = '/images/thumbnails/' + value + '.jpg';
+          var previewPath = thumbPath;
+          var imgDoc = Images.findOne({ _id: value });
+          if (imgDoc) {
+            if (imgDoc.imageFilePaths) {
+              thumbPath = imgDoc.imageFilePaths[1].src;
+              previewPath = imgDoc.imageFilePaths[0].src;
+            }
+          }
 
-                  return new Spacebars.SafeString('<img class="tableThumb" src="' + thumbPath + '" height=25 data-preview-src="' + previewPath + '" />');
-                },
-              },
-                { key:'_id', label: 'action', fn: function (value) {
-                  var htmlString = '<a id="' + value + '" href="#" class="edit"><i class="fa fa-pencil"></i> Edit</a> &nbsp; <a id="' + value + '" href="#" class="delete"><i class="fa fa-trash-o"></i> Delete</a>';
-                  if (Images.findOne(value).active === true) htmlString += ('&nbsp; <a id="' + value + '" href="/admin/preview/" class="preview"><i class="fa fa-eye"></i> Preview</a>');
-                  return new Spacebars.SafeString(htmlString);
-                },
-              },
-            ],
+          return new Spacebars.SafeString(
+            '<img class="tableThumb" src="' + thumbPath +
+            '" height=25 data-preview-src="' + previewPath +
+            '" />'
+          );
+        },
+      },
+      {
+        key:'_id', label: 'action', fn: function (value) {
+          var htmlString = '<a id="' + value +
+          '" href="#" class="edit"><i class="fa fa-pencil"></i> Edit</a> &nbsp; <a id="' +
+          value + '" href="#" class="delete"><i class="fa fa-trash-o"></i> Delete</a>';
+          if (Images.findOne(value).active === true) htmlString += (
+            '&nbsp; <a id="' + value +
+            '" href="/admin/preview/" class="preview"><i class="fa fa-eye"></i> Preview</a>'
+          );
+          return new Spacebars.SafeString(htmlString);
+        },
+      },
+    ],
     };
   },
 
@@ -90,8 +102,8 @@ Template.adminEditModal.helpers({
 
 Template.adminLocation.events({
   /**
-   * Entry click
-   */
+  * Entry click
+  */
   'click a.edit, click .btn.add':function (e) {
 
     var clickedId = $(e.currentTarget).attr('id');
@@ -151,18 +163,18 @@ Template.adminLocation.events({
   'mouseenter table img.tableThumb':function (e) {
 
     var expandSrc = $(e.currentTarget).attr('data-preview-src');
-    var preview = $('#tableThumbPreview');
+    var $preview = $('#tableThumbPreview');
     $('#tableThumbPreview img').attr('src', expandSrc);
-    preview.css('top', e.clientY - preview.outerHeight() / 2);
-    preview.css('right', $(document).width() - e.clientX + 17);
-    preview.delay(150).stop().fadeIn(70);
+    $preview.css('top', e.clientY - $preview.outerHeight() / 2);
+    $preview.css('right', $(document).width() - e.clientX + 17);
+    $preview.delay(150).stop().fadeIn(70);
 
   },
 
   'mousemove table img.tableThumb':function (e) {
-    var preview = $('#tableThumbPreview');
-    preview.css('top', e.clientY - preview.outerHeight() / 2);
-    preview.css('right', $(document).width() - e.clientX + 17);
+    var $preview = $('#tableThumbPreview');
+    $preview.css('top', e.clientY - $preview.outerHeight() / 2);
+    $preview.css('right', $(document).width() - e.clientX + 17);
   },
 
   'mouseleave table img.tableThumb':function (e) {
@@ -204,7 +216,11 @@ function loadImgDimensions(doc, isUpdate, callback) {
     editDoc = doc;
   }
 
-  if (editDoc.imageFilePaths == undefined || editDoc.imageFilePaths == 'undefined' || !editDoc.imageFilePaths) {
+  if (
+    editDoc.imageFilePaths == undefined ||
+    editDoc.imageFilePaths == 'undefined' ||
+    !editDoc.imageFilePaths
+  ) {
     callback(doc);
     return false;
   }
@@ -281,8 +297,8 @@ function loadImgDimensions(doc, isUpdate, callback) {
 }
 
 /**
- * Hooks for autoform. Manipulate data before/after submission.
- */
+* Hooks for autoform. Manipulate data before/after submission.
+*/
 AutoForm.hooks({
 
   formImageEntry: {
