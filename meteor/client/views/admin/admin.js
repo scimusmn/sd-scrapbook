@@ -19,7 +19,9 @@ Template.admin.helpers({
           label: 'action',
           fn: function (value) {
             var hrefLink = 'http://' + window.location.host + '/admin/locations/' + value + '/';
-            return new Spacebars.SafeString('<a href="' + hrefLink + '"><i class="fa fa-pencil"></i> Edit</a>');
+            return new Spacebars.SafeString(
+              '<a href="' + hrefLink + '"><i class="fa fa-pencil"></i> Edit</a>'
+            );
           },
         },
       ],
