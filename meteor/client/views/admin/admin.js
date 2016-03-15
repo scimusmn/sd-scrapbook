@@ -11,12 +11,18 @@ Template.admin.helpers({
       showNavigationRowsPerPage: false,
       showFilter: false,
       rowsPerPage:30,
-      fields: ['title',
-                'link',
-                { key:'link', label: 'action', fn: function (value) {
-                  var hrefLink = 'http://' + window.location.host + '/admin/locations/' + value + '/';
-                  return new Spacebars.SafeString('<a href="' + hrefLink + '"><i class="fa fa-pencil"></i> Edit</a>');
-                }, }, ],
+      fields: [
+        'title',
+        'link',
+        {
+          key:'link',
+          label: 'action',
+          fn: function (value) {
+            var hrefLink = 'http://' + window.location.host + '/admin/locations/' + value + '/';
+            return new Spacebars.SafeString('<a href="' + hrefLink + '"><i class="fa fa-pencil"></i> Edit</a>');
+          },
+        },
+      ],
     };
   },
 
