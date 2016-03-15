@@ -3,9 +3,9 @@
  */
 Template.admin.helpers({
 
-  tableSettings: function() {
+  tableSettings: function () {
     return {
-      collection: Locations.find({}, {sort:{title:1}}),
+      collection: Locations.find({}, { sort:{ title:1 } }),
 
       showNavigation: 'auto',
       showNavigationRowsPerPage: false,
@@ -13,10 +13,10 @@ Template.admin.helpers({
       rowsPerPage:30,
       fields: ['title',
                 'link',
-                { key:'link',label: 'action', fn: function(value) {
+                { key:'link', label: 'action', fn: function (value) {
                   var hrefLink = 'http://' + window.location.host + '/admin/locations/' + value + '/';
                   return new Spacebars.SafeString('<a href="' + hrefLink + '"><i class="fa fa-pencil"></i> Edit</a>');
-                },},],
+                }, }, ],
     };
   },
 
@@ -24,7 +24,7 @@ Template.admin.helpers({
 
 Template.admin.events({
 
-  'click a.preview':function(e) {
+  'click a.preview':function (e) {
 
     Session.set('adminCurrentPreviewURL', '/');
     Session.set('adminCurrentReturnURL', '/admin/');
