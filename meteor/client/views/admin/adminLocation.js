@@ -5,15 +5,15 @@
  // Helpers for adminLocation template
 Template.adminLocation.helpers({
 
-  imageEntries: function() {
+  imageEntries: function () {
 
-    return Images.find({}, {sort:{isoDate: 1}});
+    return Images.find({}, { sort:{ isoDate: 1 } });
 
   },
 
-  tableSettings: function() {
+  tableSettings: function () {
     return {
-      collection: Images.find({}, {sort:{isoDate: 1}}),
+      collection: Images.find({}, { sort:{ isoDate: 1 } }),
 
       showNavigation: 'auto',
       showNavigationRowsPerPage: true,
@@ -23,7 +23,7 @@ Template.adminLocation.helpers({
                 'title',
                 'creationPlace',
                 'creditLine',
-                { key:'active', label: 'active', fn: function(value) {
+                { key:'active', label: 'active', fn: function (value) {
                     if (value === true) {
                       return new Spacebars.SafeString('<i class="fa fa-check"></i>');
                     } else {
@@ -31,7 +31,7 @@ Template.adminLocation.helpers({
                     }
                   },
                 },
-                { key:'_id', label: 'thumb', fn: function(value) {
+                { key:'_id', label: 'thumb', fn: function (value) {
                   var thumbPath = '/images/thumbnails/' + value + '.jpg';
                   var previewPath = thumbPath;
                   var imgDoc = Images.findOne({ _id: value });
@@ -45,7 +45,7 @@ Template.adminLocation.helpers({
                   return new Spacebars.SafeString('<img class="tableThumb" src="' + thumbPath + '" height=25 data-preview-src="' + previewPath + '" />');
                 },
               },
-                { key:'_id', label: 'action', fn: function(value) {
+                { key:'_id', label: 'action', fn: function (value) {
                   var htmlString = '<a id="' + value + '" href="#" class="edit"><i class="fa fa-pencil"></i> Edit</a> &nbsp; <a id="' + value + '" href="#" class="delete"><i class="fa fa-trash-o"></i> Delete</a>';
                   if (Images.findOne(value).active === true) htmlString += ('&nbsp; <a id="' + value + '" href="/admin/preview/" class="preview"><i class="fa fa-eye"></i> Preview</a>');
                   return new Spacebars.SafeString(htmlString);
@@ -60,13 +60,13 @@ Template.adminLocation.helpers({
 // Helpers for adminEditModal template
 Template.adminEditModal.helpers({
 
-  editImage: function() {
+  editImage: function () {
 
     return Images.findOne({ _id: Session.get('adminCurrentImageId') });
 
   },
 
-  updateOrInsertMode: function() {
+  updateOrInsertMode: function () {
 
     if (Session.get('adminCurrentImageId') && Session.get('adminCurrentImageId') !== '') {
       return 'update';
@@ -76,7 +76,7 @@ Template.adminEditModal.helpers({
 
   },
 
-  modalHeader: function() {
+  modalHeader: function () {
 
     if (Session.get('adminCurrentImageId') && Session.get('adminCurrentImageId') !== '') {
       return 'EDIT IMAGE';
@@ -92,7 +92,7 @@ Template.adminLocation.events({
   /**
    * Entry click
    */
-  'click a.edit, click .btn.add':function(e) {
+  'click a.edit, click .btn.add':function (e) {
 
     var clickedId = $(e.currentTarget).attr('id');
 
@@ -110,7 +110,7 @@ Template.adminLocation.events({
 
   },
 
-  'click a.delete':function(e) {
+  'click a.delete':function (e) {
 
     var imgToDeleteId = $(e.currentTarget).attr('id');
 
@@ -126,7 +126,7 @@ Template.adminLocation.events({
 
   },
 
-  'click a.preview':function(e) {
+  'click a.preview':function (e) {
 
     var imgToPreviewId = $(e.currentTarget).attr('id');
 
@@ -143,11 +143,12 @@ Template.adminLocation.events({
     Session.set('adminCurrentReturnURL', '/admin/locations/' + currentLink);
     Session.set('adminCurrentReturnName', Locations.findOne().title);
     console.log('teete');
+
     // Router.go('/admin/preview');
 
   },
 
-  'mouseenter table img.tableThumb':function(e) {
+  'mouseenter table img.tableThumb':function (e) {
 
     var expandSrc = $(e.currentTarget).attr('data-preview-src');
     var preview = $('#tableThumbPreview');
@@ -158,22 +159,22 @@ Template.adminLocation.events({
 
   },
 
-  'mousemove table img.tableThumb':function(e) {
+  'mousemove table img.tableThumb':function (e) {
     var preview = $('#tableThumbPreview');
     preview.css('top', e.clientY - preview.outerHeight() / 2);
     preview.css('right', $(document).width() - e.clientX + 17);
   },
 
-  'mouseleave table img.tableThumb':function(e) {
+  'mouseleave table img.tableThumb':function (e) {
     $('#tableThumbPreview').stop().hide();
   },
 
-  'show.bs.modal':function(e) {
+  'show.bs.modal':function (e) {
 
     // Hack to fix autoform bug.
     // Clears image upload form when
     // no imageFilePaths are found. -tn
-    setTimeout(function() {
+    setTimeout(function () {
       var imgDoc = Images.findOne({ _id: Session.get('adminCurrentImageId') });
       if (imgDoc) {
         if (imgDoc.imageFilePaths) {
@@ -187,7 +188,7 @@ Template.adminLocation.events({
 
   },
 
-  'shown.bs.modal':function(e) {
+  'shown.bs.modal':function (e) {
 
   },
 
@@ -216,7 +217,7 @@ function loadImgDimensions(doc, isUpdate, callback) {
   var expandedLoaded = false;
   var thumbLoaded = false;
 
-  myImage.onload = function() {
+  myImage.onload = function () {
 
     console.log('\' Expanded is ' + this.width + ' by ' + this.height + ' pixels in size.');
 
@@ -227,7 +228,7 @@ function loadImgDimensions(doc, isUpdate, callback) {
     expandedLoaded = true;
     if (thumbLoaded && expandedLoaded) {
       if (isUpdate) {
-        callback({$set:editDoc});
+        callback({ $set:editDoc });
         return true;
       } else {
         callback(editDoc);
@@ -237,7 +238,7 @@ function loadImgDimensions(doc, isUpdate, callback) {
 
   };
 
-  myThumbImage.onload = function() {
+  myThumbImage.onload = function () {
 
     console.log('\' Thumb is ' + this.width + ' by ' + this.height + ' pixels in size.');
 
@@ -248,7 +249,7 @@ function loadImgDimensions(doc, isUpdate, callback) {
     thumbLoaded = true;
     if (thumbLoaded && expandedLoaded) {
       if (isUpdate) {
-        callback({$set:editDoc});
+        callback({ $set:editDoc });
         return true;
       } else {
         callback(editDoc);
@@ -258,7 +259,7 @@ function loadImgDimensions(doc, isUpdate, callback) {
 
   };
 
-  myImage.onerror = function() {
+  myImage.onerror = function () {
 
     console.log('\'' + this.name + '\' (expanded) failed to load.');
     callback(doc);
@@ -266,7 +267,7 @@ function loadImgDimensions(doc, isUpdate, callback) {
 
   };
 
-  myThumbImage.onerror = function() {
+  myThumbImage.onerror = function () {
 
     console.log('\'' + this.name + '\' (thumb) failed to load.');
     callback(doc);
@@ -288,7 +289,7 @@ AutoForm.hooks({
 
     before: {
 
-      insert: function(doc) {
+      insert: function (doc) {
 
         // Add location Id to create link to current location
         doc.dsLocId = Locations.findOne().dsLocId;
@@ -299,7 +300,7 @@ AutoForm.hooks({
 
       },
 
-      update: function(doc) {
+      update: function (doc) {
 
         // Add image meta data
         loadImgDimensions(doc, true, this.result);
@@ -308,7 +309,7 @@ AutoForm.hooks({
 
     },
 
-    docToForm: function(doc, ss) {
+    docToForm: function (doc, ss) {
 
       // TODO - Remove unneccessary iso prepend (cleaning old data)
       if (doc.isoDate && doc.isoDate.indexOf('iso-') != -1) {
@@ -320,7 +321,7 @@ AutoForm.hooks({
     },
 
     // Called when any submit operation succeeds
-    onSuccess: function(formType, result) {
+    onSuccess: function (formType, result) {
 
       if (formType === 'insert') {
         Session.set('adminCurrentImageId', result);
@@ -336,7 +337,7 @@ AutoForm.hooks({
     },
 
     // Called when any submit operation fails
-    onError: function(formType, error) {
+    onError: function (formType, error) {
 
       console.log('Autoform error:', formType, error);
 
