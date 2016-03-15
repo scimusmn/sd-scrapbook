@@ -41,3 +41,7 @@ Template.admin.events({
   },
 
 });
+
+Template.admin.onRendered(function () {
+  $('body').addClass('admin');
+});
