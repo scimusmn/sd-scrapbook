@@ -2,17 +2,26 @@
  * Hide or show cursor based on settings file
  */
 if (Meteor.isClient) {
-  if (Meteor.settings &&
+
+  /**
+   * Kiosk mode
+   * Set a body class for kiosk mode.
+   * This controls the display of the cursor and the screensaver.
+   * In kiosk mode, the cursor is hidden and the screensaver is enabled.
+   * In admin mode, the cursor is visible and the screensaver is disenabled.
+   */
+  if (
+    Meteor.settings &&
     Meteor.settings.public &&
-    Meteor.settings.public.cursor) {
+    Meteor.settings.public.kiosk == 'true'
+  ) {
     Meteor.startup(function () {
-      console.log('body - ', $('body'));
-      $('body').addClass('show-cursor');
-    });
+       $('body').addClass('kiosk-mode');
+     });
   } else {
     Meteor.startup(function () {
-      console.log('body - ', $('body'));
-      $('body').addClass('hide-cursor');
-    });
+       $('body').addClass('admin-mode');
+     });
   }
+
 }

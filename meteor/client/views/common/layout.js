@@ -1,31 +1,34 @@
 Template.layout.rendered = function () {
-  /**
-   * Define without the var to make this accessible across the events
-   *
-   * 3 minute screen saver
-   */
-  var sSaver;
-  sSaverTimeout = 180000;
+  if ($('body').hasClass('kiosk-mode')) {
+    /**
+     * Define without the var to make this accessible across the events
+     *
+     * 3 minute screen saver
+     */
+    var sSaver;
 
-  // Dev timeout
-  //sSaverTimeout = 5000;
+    // sSaverTimeout = 180000;
 
-  clearTimeout(sSaver);
-  saveScreen(sSaverTimeout);
+    // Dev timeout
+    sSaverTimeout = 5000;
+
+    clearTimeout(sSaver);
+    saveScreen(sSaverTimeout);
+  }
 };
 
 /**
  * Reset the screensaver everytime we get a mouse (touch) event
  */
 Template.layout.events({
-  // Any mouse up or mousemove event keeps the screensaver away
-  mousemove: function (event, template) {
+
+  'mousemove .kiosk-mode': function (event, template) {
     // Reset the screensaver timer
     clearTimeout(sSaver);
     saveScreen(sSaverTimeout);
   },
 
-  mouseup: function (event, template) {
+  'mouseup .kiosk-mode': function (event, template) {
     // Reset the screensaver timer
     clearTimeout(sSaver);
     saveScreen(sSaverTimeout);
