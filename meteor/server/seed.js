@@ -1,6 +1,6 @@
 /* ---------------------------------------------------- +/
 
-## Fixtures ##
+// Fixtures ##
 
 Fill in the app with dummy data if database is empty.
 
@@ -18,7 +18,7 @@ if (Locations.find().count() === 0) {
     description: 'Anza-Borrego Desert State Park (ABDSP) is a state park located within the Colorado Desert of southern California, United States.',
     latitude: '33.100595',
     longitude: '-116.151306',
-    dsLocId: '1'
+    dsLocId: '1',
   });
 
   var clevelandNationalForest = Locations.insert({
@@ -27,7 +27,7 @@ if (Locations.find().count() === 0) {
     description: 'Cleveland National Forest encompasses 460,000 acres (720 sq mi (1,900 km2)), mostly of chaparral, with a few riparian areas.',
     latitude: '32.758856',
     longitude: '-116.674749',
-    dsLocId: '2'
+    dsLocId: '2',
   });
 
   var coloradoRiver = Locations.insert({
@@ -36,7 +36,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '33.410193',
     longitude: '-114.693563',
-    dsLocId: '3'
+    dsLocId: '3',
   });
 
   var imperialValley = Locations.insert({
@@ -45,7 +45,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '32.793580',
     longitude: '-114.973715',
-    dsLocId: '4'
+    dsLocId: '4',
   });
 
   var joshuaTree = Locations.insert({
@@ -54,7 +54,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '33.795570',
     longitude: '-115.621892',
-    dsLocId: '5'
+    dsLocId: '5',
   });
 
   var sdNorthCoast = Locations.insert({
@@ -63,7 +63,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '32.968837',
     longitude: '-117.254309',
-    dsLocId: '6'
+    dsLocId: '6',
   });
 
   // This isn't visible because of the map cropping
@@ -73,7 +73,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '34.336705',
     longitude: '-115.899297',
-    dsLocId: '7'
+    dsLocId: '7',
   });
 
   var northSDCounty = Locations.insert({
@@ -82,7 +82,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '33.366311',
     longitude: '-117.214997',
-    dsLocId: '8'
+    dsLocId: '8',
   });
 
   var orangeCounty = Locations.insert({
@@ -91,7 +91,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '33.810516',
     longitude: '-117.820227',
-    dsLocId: '9'
+    dsLocId: '9',
   });
 
   var palomarMountain = Locations.insert({
@@ -100,7 +100,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '33.398098',
     longitude: '-116.781367',
-    dsLocId: '10'
+    dsLocId: '10',
   });
 
   var saltonSea = Locations.insert({
@@ -109,7 +109,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '33.287301',
     longitude: '-115.529622',
-    dsLocId: '11'
+    dsLocId: '11',
   });
 
   var sanBerardino = Locations.insert({
@@ -118,7 +118,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '34.131438',
     longitude: '-116.538973',
-    dsLocId: '12'
+    dsLocId: '12',
   });
 
   var sanDiegoCoast = Locations.insert({
@@ -127,7 +127,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '32.694081',
     longitude: '-117.232840',
-    dsLocId: '13'
+    dsLocId: '13',
   });
 
   var sanDiegoInland = Locations.insert({
@@ -136,7 +136,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '32.832099',
     longitude: '-117.097372',
-    dsLocId: '14'
+    dsLocId: '14',
   });
 
   var sanGabriel = Locations.insert({
@@ -145,7 +145,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '34.3288927',
     longitude: '-118.04672',
-    dsLocId: '15'
+    dsLocId: '15',
   });
 
   var sanJacinto = Locations.insert({
@@ -154,7 +154,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '33.8418194',
     longitude: '-116.9809458',
-    dsLocId: '16'
+    dsLocId: '16',
   });
 
   var santaMonica = Locations.insert({
@@ -163,7 +163,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '33.923742',
     longitude: '-118.816882',
-    dsLocId: '17'
+    dsLocId: '17',
   });
 
   var southSDCounty = Locations.insert({
@@ -172,7 +172,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '32.536355',
     longitude: '-116.301214',
-    dsLocId: '18'
+    dsLocId: '18',
   });
 
   var losAngeles = Locations.insert({
@@ -181,7 +181,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '33.663533',
     longitude: '-118.293658',
-    dsLocId: '19'
+    dsLocId: '19',
   });
 
   var riverside = Locations.insert({
@@ -190,7 +190,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '33.894096',
     longitude: '-117.357879',
-    dsLocId: '20'
+    dsLocId: '20',
   });
 
   var channelIslands = Locations.insert({
@@ -199,7 +199,7 @@ if (Locations.find().count() === 0) {
     description: '',
     latitude: '33.823736',
     longitude: '-119.687298',
-    dsLocId: '21'
+    dsLocId: '21',
   });
 
 }
@@ -207,6 +207,7 @@ if (Locations.find().count() === 0) {
 /**
  * Images
  */
+
 //
 // Removing images from the import for now.
 //
