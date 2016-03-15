@@ -7,10 +7,7 @@ Template.layout.rendered = function () {
      */
     var sSaver;
 
-    // sSaverTimeout = 180000;
-
-    // Dev timeout
-    sSaverTimeout = 5000;
+    sSaverTimeout = 180000;
 
     clearTimeout(sSaver);
     saveScreen(sSaverTimeout);
