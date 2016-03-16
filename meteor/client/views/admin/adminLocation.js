@@ -20,6 +20,7 @@ Template.adminLocation.helpers({
       showFilter: true,
       rowsPerPage: 10,
       fields: [
+        'dsNumber',
         'isoDate',
         'title',
         'creationPlace',

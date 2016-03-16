@@ -116,7 +116,6 @@ Meteor.publish('singleLocation', function(link, filterInactive) {
     var currentLocation = Locations.find( { 'link': link });
     var currentLocationObject = currentLocation.fetch();
     var currentLocId = parseInt(currentLocationObject[0].dsLocId);
-    console.log('currentLocId', currentLocId);
     var filter;
     if (filterInactive) {
         // Only deliver active images.
