@@ -40,7 +40,7 @@ var schema = Images.attachSchema(new SimpleSchema({
   isoDate: {
     type: String,
     label: function() {
-      return getToolTipLabel('Date ( yyyy-mm-dd )', 'Use <em><strong>0</strong></em> to mark no data (1987-01-00 --> January, 1987).  &nbsp;Use <em><strong>u</strong></em> to mark uncertainty (19uu --> 1900s).');
+      return getToolTipLabel('Date ( yyyy-mm-dd )', 'Use <em><strong>0</strong></em> to mark no data (1987-01-00 = January, 1987)  &nbsp;Use <em><strong>u</strong></em> to mark uncertainty (19uu = 1900s)');
     },
 
     defaultValue: '0000-00-00',
@@ -52,6 +52,16 @@ var schema = Images.attachSchema(new SimpleSchema({
         return 'isoDateInvalid';
       }
     },
+  },
+  dsNumber: {
+    type: String,
+    label: function() {
+      return getToolTipLabel('DS Number', 'Character limit: 15. (e.g. ds0123456)');
+    },
+
+    defaultValue: '',
+    max:15,
+    optional: true,
   },
   imageFilePaths: {
       type: [Object],

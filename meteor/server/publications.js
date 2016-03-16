@@ -115,14 +115,15 @@ Meteor.publish('singleLocation', function(link, filterInactive) {
      */
     var currentLocation = Locations.find( { 'link': link });
     var currentLocationObject = currentLocation.fetch();
-    var currentLocationTitle = currentLocationObject[0].title;
+    var currentLocId = parseInt(currentLocationObject[0].dsLocId);
+    console.log('currentLocId', currentLocId);
     var filter;
     if (filterInactive) {
         // Only deliver active images.
-        filter = {generalLocationDs: currentLocationTitle, active: true };
+        filter = {dsLocId: currentLocId, active: true };
     } else {
         // Deliver all images.
-        filter = {generalLocationDs: currentLocationTitle};
+        filter = {dsLocId: currentLocId};
     }
     var currentLocationImages = Images.find(
         filter,
@@ -132,7 +133,7 @@ Meteor.publish('singleLocation', function(link, filterInactive) {
                 creationPlace: 1, creditLine: 1, expandedHeight: 1,
                 expandedWidth: 1, expandedAspectRatio: 1, thumbWidth: 1,
                 thumbHeight: 1, thumbAspectRatio: 1, labelTextEnglish: 1, labelTextSpanish: 1,
-                imageFilePaths: 1, active: 1
+                imageFilePaths: 1, active: 1, dsNumber: 1,
             }
         }
     );
