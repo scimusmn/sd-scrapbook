@@ -21,8 +21,9 @@ Template.adminLocation.helpers({
 
       showNavigation: 'auto',
       showNavigationRowsPerPage: true,
+      class: 'table table-striped col-sm-12 reactive-table',
       showFilter: true,
-      rowsPerPage: 10,
+      rowsPerPage: 100,
       fields: [
         { key: 'dsNumber', label: 'DS Number' },
         { key: 'isoDate', label: 'Date' },
@@ -32,10 +33,13 @@ Template.adminLocation.helpers({
 
         {
           key:'active',
-          label: 'active',
+          label: 'Active',
+          headerClass: 'something-else',
+          cellClass: 'something-else',
           fn: function (value) {
             if (value === true) {
-              return new Spacebars.SafeString('<i class="fa fa-check"></i>');
+              return new Spacebars.SafeString('<div class="text-center">' +
+                '<i class="fa fa-check"></i></div>');
             } else {
               return new Spacebars.SafeString('');
             }
@@ -59,7 +63,7 @@ Template.adminLocation.helpers({
 
             return new Spacebars.SafeString(
               '<img class="tableThumb" src="' + thumbPath +
-              '" height=25 data-preview-src="' + previewPath +
+              '" height=50 data-preview-src="' + previewPath +
               '" />'
             );
           },

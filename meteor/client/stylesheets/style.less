@@ -19,8 +19,36 @@
     src: url(/fonts/FuturaTS-Demibold.woff);
 }
 
+.btn-primary-greener {
+  color: lighten(@torrey-pines-buttons, 80%);
+  background-color: lighten(@torrey-pines-buttons, 10%);
+  border-color: lighten(@torrey-pines-buttons, 20%);
+}
+
+.btn-primary {
+  color: lighten(@torrey-pines-buttons, 0%);
+  background-color: lighten(@torrey-pines-buttons, 40%);
+  border-color: lighten(@torrey-pines-buttons, 30%);
+}
+
+.btn-info {
+  color: lighten(@wetlands-blue, 0%);
+  background-color: lighten(@wetlands-blue, 40%);
+  border-color: lighten(@wetlands-blue, 30%);
+}
+
+.btn-danger {
+  color: lighten(@attic-maroon, 0%);
+  background-color: lighten(@attic-maroon, 40%);
+  border-color: lighten(@attic-maroon, 30%);
+}
+
+#addBtn {
+  vertical-align: bottom;
+}
+
 body {
-  background: @background-tan;
+  background: lighten(@background-tan, 10%);
   background-image: url("/images/map-base-sepia-v05.jpg");
   color: @background-tan;
   margin: 0;
@@ -37,7 +65,7 @@ body {
 
 body.admin {
   overflow: auto;
-  background: white;
+  background: lighten(@background-tan, 10%);
 }
 
 body.admin-mode {
@@ -401,13 +429,11 @@ svg.svg-canvas {
 .admin p,
 .admin span,
 .admin label {
-  color:#00A388;
+  color: @torrey-pines-buttons;
 }
 
 .admin .adminTable,
 .admin .adminPreview  {
-  background:rgba(16,4,36,0.75);
-  background:rgba(255,255,255,.9);
   padding:2% 10%;
 }
 
@@ -422,8 +448,12 @@ svg.svg-canvas {
 }
 
 .admin .table  {
-  background:#efefef;
+  background:lighten(@background-tan, 12%);
   color:#222;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color:lighten(@background-tan, 13%);
 }
 
 .admin #tableThumbPreview {
@@ -479,6 +509,10 @@ svg.svg-canvas {
   top:0px;
   left:0px;
   color:#333;
+}
+
+.modal-content {
+  background: lighten(@background-tan, 10%);
 }
 
 .modal .tip {
