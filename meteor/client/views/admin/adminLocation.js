@@ -2,6 +2,10 @@
 * Template helpers
 */
 
+Template.adminLocation.onRendered(function () {
+  $('body').addClass('admin');
+});
+
 // Helpers for adminLocation template
 Template.adminLocation.helpers({
 
