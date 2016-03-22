@@ -29,6 +29,7 @@ Template.adminLocation.helpers({
         { key: 'title', label: 'Title' },
         { key: 'creationPlace', label: 'Creation place' },
         { key: 'creditLine', label: 'Credit line' },
+
         {
           key:'active',
           label: 'active',
@@ -40,9 +41,11 @@ Template.adminLocation.helpers({
             }
           },
         },
+
         {
           key:'_id',
           label: 'Thumbnail',
+          sortable: false,
           fn: function (value) {
             var thumbPath = '/images/thumbnails/' + value + '.jpg';
             var previewPath = thumbPath;
@@ -61,9 +64,11 @@ Template.adminLocation.helpers({
             );
           },
         },
+
         {
           key:'_id',
           label: 'Actions',
+          sortable: false,
           fn: function (value) {
             var htmlString = '<a id="' + value +
             '" href="#" class="edit"><i class="fa fa-pencil"></i> Edit</a> &nbsp; <a id="' +
