@@ -24,11 +24,11 @@ Template.adminLocation.helpers({
       showFilter: true,
       rowsPerPage: 10,
       fields: [
-        'dsNumber',
-        'isoDate',
-        'title',
-        'creationPlace',
-        'creditLine',
+        { key: 'dsNumber', label: 'DS Number' },
+        { key: 'isoDate', label: 'Date' },
+        { key: 'title', label: 'Title' },
+        { key: 'creationPlace', label: 'Creation place' },
+        { key: 'creditLine', label: 'Credit line' },
         {
           key:'active', label: 'active', fn: function (value) {
             if (value === true) {
@@ -38,7 +38,7 @@ Template.adminLocation.helpers({
             }
           },
         },
-        { key:'_id', label: 'thumb', fn: function (value) {
+        { key:'_id', label: 'Thumbnail', fn: function (value) {
           var thumbPath = '/images/thumbnails/' + value + '.jpg';
           var previewPath = thumbPath;
           var imgDoc = Images.findOne({ _id: value });
@@ -57,7 +57,7 @@ Template.adminLocation.helpers({
         },
       },
       {
-        key:'_id', label: 'action', fn: function (value) {
+        key:'_id', label: 'Actions', fn: function (value) {
           var htmlString = '<a id="' + value +
           '" href="#" class="edit"><i class="fa fa-pencil"></i> Edit</a> &nbsp; <a id="' +
           value + '" href="#" class="delete"><i class="fa fa-trash-o"></i> Delete</a>';
