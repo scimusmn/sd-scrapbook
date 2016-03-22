@@ -30,7 +30,9 @@ Template.adminLocation.helpers({
         { key: 'creationPlace', label: 'Creation place' },
         { key: 'creditLine', label: 'Credit line' },
         {
-          key:'active', label: 'active', fn: function (value) {
+          key:'active',
+          label: 'active',
+          fn: function (value) {
             if (value === true) {
               return new Spacebars.SafeString('<i class="fa fa-check"></i>');
             } else {
@@ -38,37 +40,42 @@ Template.adminLocation.helpers({
             }
           },
         },
-        { key:'_id', label: 'Thumbnail', fn: function (value) {
-          var thumbPath = '/images/thumbnails/' + value + '.jpg';
-          var previewPath = thumbPath;
-          var imgDoc = Images.findOne({ _id: value });
-          if (imgDoc) {
-            if (imgDoc.imageFilePaths) {
-              thumbPath = imgDoc.imageFilePaths[1].src;
-              previewPath = imgDoc.imageFilePaths[0].src;
+        {
+          key:'_id',
+          label: 'Thumbnail',
+          fn: function (value) {
+            var thumbPath = '/images/thumbnails/' + value + '.jpg';
+            var previewPath = thumbPath;
+            var imgDoc = Images.findOne({ _id: value });
+            if (imgDoc) {
+              if (imgDoc.imageFilePaths) {
+                thumbPath = imgDoc.imageFilePaths[1].src;
+                previewPath = imgDoc.imageFilePaths[0].src;
+              }
             }
-          }
 
-          return new Spacebars.SafeString(
-            '<img class="tableThumb" src="' + thumbPath +
-            '" height=25 data-preview-src="' + previewPath +
-            '" />'
-          );
+            return new Spacebars.SafeString(
+              '<img class="tableThumb" src="' + thumbPath +
+              '" height=25 data-preview-src="' + previewPath +
+              '" />'
+            );
+          },
         },
-      },
-      {
-        key:'_id', label: 'Actions', fn: function (value) {
-          var htmlString = '<a id="' + value +
-          '" href="#" class="edit"><i class="fa fa-pencil"></i> Edit</a> &nbsp; <a id="' +
-          value + '" href="#" class="delete"><i class="fa fa-trash-o"></i> Delete</a>';
-          if (Images.findOne(value).active === true) htmlString += (
-            '&nbsp; <a id="' + value +
-            '" href="/admin/preview/" class="preview"><i class="fa fa-eye"></i> Preview</a>'
-          );
-          return new Spacebars.SafeString(htmlString);
+        {
+          key:'_id',
+          label: 'Actions',
+          fn: function (value) {
+            var htmlString = '<a id="' + value +
+            '" href="#" class="edit"><i class="fa fa-pencil"></i> Edit</a> &nbsp; <a id="' +
+            value + '" href="#" class="delete"><i class="fa fa-trash-o"></i> Delete</a>';
+            if (Images.findOne(value).active === true) htmlString += (
+              '&nbsp; <a id="' + value +
+              '" href="/admin/preview/" class="preview"><i class="fa fa-eye"></i> Preview</a>'
+            );
+            return new Spacebars.SafeString(htmlString);
+          },
         },
-      },
-    ],
+      ],
     };
   },
 
