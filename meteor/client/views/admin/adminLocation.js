@@ -65,21 +65,48 @@ Template.adminLocation.helpers({
           },
         },
 
+        /* Edit */
         {
           key:'_id',
           label: 'Actions',
           sortable: false,
           fn: function (value) {
-            var htmlString = '<a id="' + value +
-            '" href="#" class="edit"><i class="fa fa-pencil"></i> Edit</a> &nbsp; <a id="' +
-            value + '" href="#" class="delete"><i class="fa fa-trash-o"></i> Delete</a>';
+            var htmlString = '<div class="text-center"><a id="' + value +
+              '" href="#" class="btn btn-primary edit">' +
+              '<i class="fa fa-pencil"></i><br>Edit</a></div>';
+            return new Spacebars.SafeString(htmlString);
+          },
+        },
+
+        /* Delete */
+        {
+          key:'_id',
+          label: '',
+          sortable: false,
+          fn: function (value) {
+            var htmlstring = '<div class="text-center"><a id="' + value +
+              '" href="#" class="btn btn-danger delete">' +
+              '<i class="fa fa-trash-o"></i><br>Delete</a></div>';
+            return new Spacebars.SafeString(htmlstring);
+          },
+        },
+
+        /* Preview */
+        {
+          key:'_id',
+          label: '',
+          sortable: false,
+          fn: function (value) {
+            var htmlString = '';
             if (Images.findOne(value).active === true) htmlString += (
-              '&nbsp; <a id="' + value +
-              '" href="/admin/preview/" class="preview"><i class="fa fa-eye"></i> Preview</a>'
+              '<div class="text-center"><a id="' + value +
+              '" href="/admin/preview/" class="btn btn-info preview">' +
+              '<i class="fa fa-eye"></i><br>Preview</a></div>'
             );
             return new Spacebars.SafeString(htmlString);
           },
         },
+
       ],
     };
   },
