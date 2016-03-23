@@ -7,8 +7,7 @@ Template.admin.helpers({
   },
 
   thumb: function () {
-    var image =  Images.findOne({ generalLocationDs: this.title });
-    console.log('image: ', image);
+    var image =  Images.findOne({ dsLocId: parseInt(this.dsLocId) });
     var thumb = _.find(image.imageFilePaths, function (item) {
       return item.key == 'thumb';
     });
