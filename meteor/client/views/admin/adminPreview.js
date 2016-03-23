@@ -46,9 +46,13 @@ Template.adminPreview.events({
         '-moz-transform': 'scale(' + scaleVal + ')',
         '-ms-transform': 'scale(' + scaleVal + ')',
         '-o-transform': 'scale(' + scaleVal + ')',
-        'transform': 'scale(' + scaleVal + ')',
+        transform: 'scale(' + scaleVal + ')',
       });
 
   },
 
+});
+
+Template.adminPreview.onRendered(function () {
+  $('body').addClass('admin');
 });
