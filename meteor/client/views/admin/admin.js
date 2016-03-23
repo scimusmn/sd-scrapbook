@@ -2,30 +2,32 @@
  * Template helpers
  */
 Template.admin.helpers({
+  locations: function () {
+    return Locations.find({}, { sort: { title: 1 } });
+  },
 
-  tableSettings: function () {
-    return {
-      collection: Locations.find({}, { sort:{ title:1 } }),
+  locationCount: function () {
+    var count =  Images.find({ generalLocationDs: this.title }).count();
+    console.log('count: ', count);
+  },
 
-      showNavigation: 'auto',
-      showNavigationRowsPerPage: false,
-      showFilter: false,
-      rowsPerPage:30,
-      fields: [
-        'title',
-        'link',
-        {
-          key:'link',
-          label: 'action',
-          fn: function (value) {
-            var hrefLink = 'http://' + window.location.host + '/admin/locations/' + value + '/';
-            return new Spacebars.SafeString(
-              '<a href="' + hrefLink + '"><i class="fa fa-pencil"></i> Edit</a>'
-            );
-          },
-        },
-      ],
-    };
+  thumb: function () {
+    var image =  Images.findOne({ generalLocationDs: this.title });
+    var thumb = _.find(image.imageFilePaths, function (item) {
+      return item.key == 'thumb';
+    });
+
+    return thumb;
+  },
+
+  link: function () {
+    var hrefLink = 'http://' + window.location.host + '/admin/locations/' + this.link + '/';
+    return hrefLink;
+
+    // return new Spacebars.SafeString(
+    //   '<a href="' + hrefLink + '">' + this.title + '</a>'
+    // );
+
   },
 
 });

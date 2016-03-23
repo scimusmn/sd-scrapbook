@@ -3,10 +3,31 @@
 <template name="admin">
   <div class="admin">
     <div class="adminTable">
-      <h1>Admin - All locations</h1>
-      {{> reactiveTable settings=tableSettings}}
-      <a href="/admin/preview/" id="previewBtn" class="preview btn btn-default btn-lg">Preview &nbsp;<i class="fa fa-eye"></i></a>
+      <div class="row">
+        <div class="col-lg-3">
+          <a href="/admin/preview/" id="previewBtn" class="preview btn btn-default">Preview &nbsp;<i class="fa fa-eye"></i></a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <h1>Admin - All locations</h1>
+        </div>
+      </div>
+      <div class="row locations">
+        <div class="col-lg-12">
+          <ul class="list">
+            {{#each locations}}
+            <li class="list__item">
+              <a class="btn btn-default btn-block" href="{{link}}">
+                <h2>{{title}} <i class="fa fa-pencil"></i></h2>
+                <img src="{{thumb.src}}"><br>
+                {{locationCount}}
+              </a>
+            </li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
     </div>
-
   </div>
 </template>

@@ -2,14 +2,23 @@
 
 <template name="adminLocation">
   <div class="admin">
-    <a href="../../../admin/" class="anchored"><i class="fa fa-arrow-left"></i> &nbsp;All locations</a>
     <div class="adminTable">
       <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-3">
+          <a href="../../../admin/" class="btn btn-default"><i class="fa fa-arrow-left"></i> &nbsp;All locations</a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
           <h1>{{location.title}}</h1>
         </div>
-        <div class="col-lg-6 text-right">
-          <a href="#" id="addBtn" class="add btn btn-primary-greener btn-lg">New Entry&nbsp;<i class="fa fa-plus-circle"></i></a>
+      </div>
+      <div class="row table-tools">
+        <div class="col-lg-9">
+          {{> reactiveTableFilter id="myFilter" label="Filter" }}
+        </div>
+        <div class="col-lg-3">
+          <a href="#" id="addBtn" class="pull-right add btn btn-primary-greener">New Entry&nbsp;<i class="fa fa-plus-circle"></i></a>
         </div>
       </div>
       <div class="row">

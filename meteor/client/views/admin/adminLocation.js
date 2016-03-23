@@ -22,7 +22,8 @@ Template.adminLocation.helpers({
       showNavigation: 'auto',
       showNavigationRowsPerPage: true,
       class: 'table table-striped col-sm-12 reactive-table',
-      showFilter: true,
+      filters: ['myFilter'],
+      showFilter: false,
       rowsPerPage: 100,
       fields: [
         { key: 'dsNumber', label: 'DS Number' },

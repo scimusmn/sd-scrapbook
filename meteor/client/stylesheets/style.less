@@ -471,8 +471,48 @@ svg.svg-canvas {
   color:#222;
 }
 
-.table-striped > tbody > tr:nth-of-type(odd) {
-  background-color:lighten(@background-tan, 13%);
+.list {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.list__item {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 0 1% 0 1%;
+}
+
+.list__item .fa {
+  color: darken(@background-tan, 10%);
+}
+
+.list__item h2 {
+  margin-top: 3px;
+  margin-bottom: 8px;
+  font-size: 20px;
+}
+
+.locations .btn {
+  margin-bottom: 10px;
+  white-space: normal;
+}
+
+.table-tools {
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+.admin .table thead {
+  background:lighten(@background-tan, 5%);
 }
 
 .admin #tableThumbPreview {
