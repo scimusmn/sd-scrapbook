@@ -1,6 +1,6 @@
 # San Diego Scrapbook
 
-Then and Now Touchscreen photo scrapbook for the San Diego Natural History Museum's [Coast to 
+Then and Now Touchscreen photo scrapbook for the San Diego Natural History Museum's [Coast to
 Cactus exhibit](http://www.sdnhm.org/exhibitions/current-exhibitions/coast-to-cactus-in-southern-california/).
 
 ## Disclaimer
@@ -14,4 +14,8 @@ The scrapbook is a [Meteor](https://www.meteor.com/) application using [D3](http
     cd meteor
     meteor reset
     meteor
+
+### TODO
+Update this old import script, it is no longer valid
+
     mongoimport -h 127.0.0.1:3001 --db meteor --collection images --type csv --headerline --upsert --file ../data/piction.csv
