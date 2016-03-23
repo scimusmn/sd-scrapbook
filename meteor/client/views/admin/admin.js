@@ -6,13 +6,9 @@ Template.admin.helpers({
     return Locations.find({}, { sort: { title: 1 } });
   },
 
-  locationCount: function () {
-    var count =  Images.find({ generalLocationDs: this.title }).count();
-    console.log('count: ', count);
-  },
-
   thumb: function () {
     var image =  Images.findOne({ generalLocationDs: this.title });
+    console.log('image: ', image);
     var thumb = _.find(image.imageFilePaths, function (item) {
       return item.key == 'thumb';
     });
