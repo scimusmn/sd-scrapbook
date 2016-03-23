@@ -26,9 +26,14 @@
 }
 
 .btn-primary {
-  color: lighten(@torrey-pines-buttons, 0%);
+  color: @torrey-pines-buttons;
   background-color: lighten(@torrey-pines-buttons, 40%);
   border-color: lighten(@torrey-pines-buttons, 30%);
+}
+.btn-primary:hover {
+  color: darken(@torrey-pines-buttons, 10%);
+  background-color: lighten(@torrey-pines-buttons, 30%);
+  border-color: lighten(@torrey-pines-buttons, 10%);
 }
 
 .btn-info {
@@ -37,14 +42,22 @@
   border-color: lighten(@wetlands-blue, 30%);
 }
 
+.btn-info:hover {
+  color: darken(@wetlands-blue, 10%);
+  background-color: lighten(@wetlands-blue, 30%);
+  border-color: lighten(@wetlands-blue, 10%);
+}
+
 .btn-danger {
-  color: lighten(@attic-maroon, 0%);
+  color: @attic-maroon;
   background-color: lighten(@attic-maroon, 40%);
   border-color: lighten(@attic-maroon, 30%);
 }
 
-#addBtn {
-  vertical-align: bottom;
+.btn-danger:hover {
+  color: darken(@attic-maroon, 10%);
+  background-color: lighten(@attic-maroon, 30%);
+  border-color: lighten(@attic-maroon, 10%);
 }
 
 body {
