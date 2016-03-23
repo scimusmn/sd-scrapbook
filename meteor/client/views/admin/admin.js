@@ -24,10 +24,6 @@ Template.admin.helpers({
     var hrefLink = 'http://' + window.location.host + '/admin/locations/' + this.link + '/';
     return hrefLink;
 
-    // return new Spacebars.SafeString(
-    //   '<a href="' + hrefLink + '">' + this.title + '</a>'
-    // );
-
   },
 
 });
