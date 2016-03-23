@@ -1,6 +1,6 @@
 Template.adminPreview.helpers({
 
-  previewURL: function() {
+  previewURL: function () {
 
     if (!Session.get('adminCurrentPreviewURL')) {
       Session.set('adminCurrentPreviewURL', '/');
@@ -10,7 +10,7 @@ Template.adminPreview.helpers({
 
   },
 
-  returnURL: function() {
+  returnURL: function () {
 
     if (!Session.get('adminCurrentReturnURL')) {
       Session.set('adminCurrentReturnURL', '/admin/');
@@ -20,7 +20,7 @@ Template.adminPreview.helpers({
 
   },
 
-  returnLocationName: function() {
+  returnLocationName: function () {
 
     if (!Session.get('adminCurrentReturnName')) {
       Session.set('adminCurrentReturnName', 'Admin');
@@ -33,7 +33,7 @@ Template.adminPreview.helpers({
 
 Template.adminPreview.events({
 
-  'click .zoomBtns a': function(e) {
+  'click .zoomBtns a': function (e) {
 
     var clickedId = $(e.currentTarget).attr('id');
 
@@ -46,9 +46,13 @@ Template.adminPreview.events({
         '-moz-transform': 'scale(' + scaleVal + ')',
         '-ms-transform': 'scale(' + scaleVal + ')',
         '-o-transform': 'scale(' + scaleVal + ')',
-        'transform': 'scale(' + scaleVal + ')',
+        transform: 'scale(' + scaleVal + ')',
       });
 
   },
 
+});
+
+Template.adminPreview.onRendered(function () {
+  $('body').addClass('admin');
 });

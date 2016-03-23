@@ -6,13 +6,8 @@ Template.admin.helpers({
     return Locations.find({}, { sort: { title: 1 } });
   },
 
-  locationCount: function () {
-    var count =  Images.find({ generalLocationDs: this.title }).count();
-    console.log('count: ', count);
-  },
-
   thumb: function () {
-    var image =  Images.findOne({ generalLocationDs: this.title });
+    var image =  Images.findOne({ dsLocId: parseInt(this.dsLocId) });
     var thumb = _.find(image.imageFilePaths, function (item) {
       return item.key == 'thumb';
     });
@@ -23,10 +18,6 @@ Template.admin.helpers({
   link: function () {
     var hrefLink = 'http://' + window.location.host + '/admin/locations/' + this.link + '/';
     return hrefLink;
-
-    // return new Spacebars.SafeString(
-    //   '<a href="' + hrefLink + '">' + this.title + '</a>'
-    // );
 
   },
 

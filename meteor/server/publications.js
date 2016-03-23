@@ -46,7 +46,7 @@ Meteor.publish('allLocations', function () {
   /**
   * Currently a hack
   *
-  * Sometimes this will return and empoty result.
+  * Sometimes this will return an empty result.
   *
   * I need to pull the random numbers from a specific list of horizontal images.
   * But for now this returns enough images to work for some of the other issues.
