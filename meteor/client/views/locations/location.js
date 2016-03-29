@@ -321,10 +321,16 @@ function getScaleFactor(images) {
     totalImagesWidth = (parseInt(totalImagesWidth, 10) + parseInt(image.thumbWidth, 10));
   });
 
-  if (totalImagesWidth <= Session.get('timelineBackgroundWidth')) {
+  if (totalImagesWidth <= Session.get('$timelineBackgroundWidth')) {
     scaleFactor = 1;
   } else {
-    scaleFactor = ((Session.get('timelineBackgroundWidth') / (parseInt(totalImagesWidth, 10) + (Session.get('imagesCount') * 20))) * fudgeFactor);
+    scaleFactor = (
+      (
+        Session.get('$timelineBackgroundWidth') /
+        (parseInt(totalImagesWidth, 10) +
+        (Session.get('imagesCount') * 20))
+      ) * fudgeFactor
+    );
   }
 
   // Store scaleFactor for overlap checking in transformations
