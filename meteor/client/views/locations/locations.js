@@ -13,591 +13,570 @@ var enableDevLocIds = false;
  * Send a keen.io event
  */
 function sendKeenEvent(eventProperties) {
-    var collectionEvent  = {};
-    var eventType = 'location';
+  var collectionEvent  = {};
+  var eventType = 'location';
 
-    // Send click position and location name
-    collectionEvent = {
-        event: eventType,
-        clickX: eventProperties.x,
-        clickY: eventProperties.y,
-        clickedLocation: eventProperties.clickedLocation
-    };
+  // Send click position and location name
+  collectionEvent = {
+    event: eventType,
+    clickX: eventProperties.x,
+    clickY: eventProperties.y,
+    clickedLocation: eventProperties.clickedLocation,
+  };
 
-    // Send data, with some basic error reporting
-    keenClient.addEvent(eventType, collectionEvent, function(err, res) {
-        if (err) {
-            console.log('Keen - ' + collectionEvent.event + ' submission failed');
-        }
-        else {
-            console.log('Keen - ' + collectionEvent.event + ' event sent successfully');
-        }
-    });
+  // Send data, with some basic error reporting
+  keenClient.addEvent(eventType, collectionEvent, function (err, res) {
+    if (err) {
+      console.log('Keen - ' + collectionEvent.event + ' submission failed');
+    }    else {
+      console.log('Keen - ' + collectionEvent.event + ' event sent successfully');
+    }
+  });
 }
-
 
 /**
  * Code executed once the page is loaded and rendered
  */
-Template.locations.rendered = function() {
+Template.locations.rendered = function () {
 
-    /**
-     * Set the map projection to a Southern California focus
-     *
-     * This will need to be reprojected if the background map raster changes
-     */
-    var projection = d3.geo.mercator()
-        .scale(19225)
-        .center([-118.616, 34.048])
-        .precision(0.1);
+  /**
+   * Set the map projection to a Southern California focus
+   *
+   * This will need to be reprojected if the background map raster changes
+   */
+  var projection = d3.geo.mercator()
+      .scale(19225)
+      .center([-118.616, 34.048])
+      .precision(0.1);
 
-    /**
-     * Dev map features
-     *
-     * These are a set of lines and points that are useful for setting the
-     * projection values if the map scale or pan changes.
-     *
-     * These are disabled in prodcution.
-     */
-    if (enableDevMap) {
-        devMapFeatures(d3, projection);
+  /**
+   * Dev map features
+   *
+   * These are a set of lines and points that are useful for setting the
+   * projection values if the map scale or pan changes.
+   *
+   * These are disabled in prodcution.
+   */
+  if (enableDevMap) {
+    devMapFeatures(d3, projection);
+  }
+
+  /**
+   * Initiate the SVG object for drawing all the location markers
+   */
+
+  // TODO: read this in from the LESS
+  var width = 1920;
+  var height = 1080;
+  var svg = d3.select('.container')
+      .append('svg')
+      .attr('class', 'svg-canvas')
+      .attr('width', width)
+      .attr('height', height);
+
+  /**
+   * Wait for Meteor to finish loading server data
+   */
+
+  /**
+   * Locations
+   *
+   * Loop through each location, drawing pins and defining
+   * the positional details which we'll use for the images
+   */
+  var locations = Locations.find().fetch();
+  var positions = drawLocations(projection, svg, locations);
+
+  /**
+   * Images
+   *
+   * Draw all the images, one for each location.
+   */
+  window.setTimeout(function () {
+    var images = Images.find().fetch();
+    drawImages(projection, svg, positions, images);
+  }, 300);
+
+  /**
+   * Draw all locations
+   *
+   * Returns and object of the Location IDs with pixel equivelemtns
+   * of their lat, long coordinates
+   */
+  function drawLocations(projection, svg, locations) {
+    var positions = [];
+    _.each(locations, function (location) {
+
+      // Define the position
+      var position = projection([location.longitude, location.latitude]);
+
+      positions[location.dsLocId] = {
+        latitude: location.latitude,
+        longitude: location.longitude,
+      };
+
+      /**
+       * Dev location IDs
+       *
+       * This prints the location ID near each location marker for development work.
+       *
+       * This is disabled in production.
+       */
+      if (enableDevLocIds) {
+        svg.append('text')
+        .attr('x', position[0] - 5)
+        .attr('y', position[1] - 2)
+        .text(location.dsLocId)
+        .attr('font-family', 'Courier')
+        .attr('font-size', '20px')
+        .attr('fill', 'white')
+        .attr('stroke-width', 1.5)
+        .attr('stroke', '#000');
+      }
+
+    });
+
+    return positions;
+  }
+
+  /**
+   * Draw all images
+   */
+  function drawImages(projection, svg, positions, images) {
+
+    _.each(images, function (image, i) {
+
+      // Location marker position
+      var latitude = positions[image.dsLocId].latitude;
+      var longitude = positions[image.dsLocId].longitude;
+      var markerPosition = projection([longitude, latitude]);
+
+      // Image position
+      var offsets = defineImageOffsets(image.dsLocId);
+      var xOffset = offsets[0];
+      var yOffset = offsets[1];
+      var imagePosition = projection([
+          (parseFloat(longitude) + xOffset),
+          (parseFloat(latitude) + yOffset),
+      ]);
+
+      // Draw the individual image
+      drawImage(projection, svg, markerPosition, imagePosition, image, i);
+
+      /**
+       * Draw the line connecting the marker pin and the image pin
+       */
+      drawString(projection, svg, markerPosition, imagePosition, xOffset, yOffset, image);
+
+    });
+  }
+
+  /**
+   * Draw one image
+   */
+  function drawImage(projection, svg, markerPosition, imagePosition, image, i) {
+
+    // Old skool border width
+    var imageBorder = 5;
+
+    // Max character length in location name
+    var locationLength = 20;
+
+    var centerX = imagePosition[0];
+    var centerY = imagePosition[1];
+
+    // Group for all the picture elements
+    var pictureGroup = svg.append('g');
+
+    var boxWidth = image.thumbWidth + (imageBorder * 2);
+    var boxHeight = image.thumbHeight + (imageBorder * 2) + 40;
+
+    var thumbSrc = '/images/thumbnails/' + image._id + '.jpg';
+    if (image.imageFilePaths && image.imageFilePaths[1]) {
+      thumbSrc = image.imageFilePaths[1].src;
+      if (Meteor.settings.public.kiosk == 'true') {
+        var thumbFile = thumbSrc.split('/');
+        var fileName = thumbFile[thumbFile.length - 1];
+        var fileFolder = thumbFile[thumbFile.length - 2];
+        thumbSrc = '/images/s3/' + fileFolder + '/' + fileName;
+      }
     }
 
-    /**
-     * Initiate the SVG object for drawing all the location markers
-     */
-    // TODO: read this in from the LESS
-    var width = 1920;
-    var height = 1080;
-    var svg = d3.select('.container')
-        .append('svg')
-        .attr('class', 'svg-canvas')
-        .attr('width', width)
-        .attr('height', height);
+    // Drop shadow rectangle
+    pictureGroup.append('defs')
+        .append('filter')
+        .attr('id', 'blur')
+        .append('feGaussianBlur')
+        .attr('stdDeviation', 5);
+    pictureGroup.append('rect')
+        .attr('width', boxWidth)
+        .attr('height', boxHeight)
+        .attr('opacity', '1')
+        .attr('x', 3)
+        .attr('y', 3)
+        .style('fill', '#000')
+        .attr('filter', 'url(#blur)');
 
-    /**
-     * Wait for Meteor to finish loading server data
-     */
+    // White border rectangle
+    pictureGroup.append('rect')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', boxWidth)
+        .attr('height', boxHeight)
+        .attr('opacity', '1')
+        .attr('class', 'location-matte');
 
-    /**
-     * Locations
-     *
-     * Loop through each location, drawing pins and defining
-     * the positional details which we'll use for the images
-     */
-    var locations = Locations.find().fetch();
-    var positions = drawLocations(projection, svg, locations);
-
-    /**
-     * Images
-     *
-     * Draw all the images, one for each location.
-     */
-    window.setTimeout(function() {
-        var images = Images.find().fetch();
-        drawImages(projection, svg, positions, images);
-    }, 300);
-
-
-
-    /**
-     * Draw all locations
-     *
-     * Returns and object of the Location IDs with pixel equivelemtns
-     * of their lat, long coordinates
-     */
-    function drawLocations(projection, svg, locations) {
-        var positions = [];
-        _.each(locations, function(location) {
-
-            // Define the position
-            var position = projection([location.longitude, location.latitude]);
-
-            positions[location.dsLocId] = {
-                latitude: location.latitude,
-                longitude: location.longitude
-            };
-
-            /**
-             * Dev location IDs
-             *
-             * This prints the location ID near each location marker for development work.
-             *
-             * This is disabled in production.
-             */
-            if (enableDevLocIds) {
-                svg.append('text')
-                .attr('x', position[0] - 5)
-                .attr('y', position[1] - 2)
-                .text(location.dsLocId)
-                .attr('font-family', 'Courier')
-                .attr('font-size', '20px')
-                .attr('fill', 'white')
-                .attr('stroke-width', 1.5)
-                .attr('stroke', '#000');
-            }
-
-        });
-
-        return positions;
+    // Write a short version of the locaiton name
+    var imageName = image.generalLocationDs;
+    if (imageName.length > locationLength) {
+      imageName = imageName.substring(0, locationLength) + '...';
     }
 
-    /**
-     * Draw all images
-     */
-    function drawImages(projection, svg, positions, images) {
+    pictureGroup.append('text')
+        .attr('x', 10)
+        .attr('y', image.thumbHeight + 37)
+        .text(imageName)
+        .attr('font-family', 'Amatic SC')
+        .attr('font-size', '26px')
+        .attr('fill', '#663233');
 
-        _.each(images, function(image, i) {
+    // Image
+    pictureGroup.append('image')
+        .attr('x', imageBorder)
+        .attr('y', imageBorder)
+        .attr('width', image.thumbWidth)
+        .attr('height', image.thumbHeight)
+        .attr('opacity', '1')
+        .attr('xlink:href', thumbSrc)
+        .attr('data-id', image._id)
+        .attr('data-locid', image.dsLocId)
+        .attr('data-location', image.generalLocationDs);
 
-            // Location marker position
-            var latitude = positions[image.dsLocId].latitude;
-            var longitude = positions[image.dsLocId].longitude;
-            var markerPosition = projection([longitude, latitude]);
-
-            // Image position
-            var offsets = defineImageOffsets(image.dsLocId);
-            var xOffset = offsets[0];
-            var yOffset = offsets[1];
-            var imagePosition = projection([
-                (parseFloat(longitude) + xOffset),
-                (parseFloat(latitude) + yOffset)
-            ]);
-
-            // Draw the individual image
-            drawImage(projection, svg, markerPosition, imagePosition, image, i);
-
-            /**
-             * Draw the line connecting the marker pin and the image pin
-             */
-            drawString(projection, svg, markerPosition, imagePosition, xOffset, yOffset, image);
-
-        });
-    }
-
-    /**
-     * Draw one image
-     */
-    function drawImage(projection, svg, markerPosition, imagePosition, image, i) {
-
-        // Old skool border width
-        var imageBorder = 5;
-
-        // Max character length in location name
-        var locationLength = 20;
-
-        var centerX = imagePosition[0];
-        var centerY = imagePosition[1];
-
-        // Group for all the picture elements
-        var pictureGroup = svg.append('g');
-
-        var boxWidth = image.thumbWidth + (imageBorder * 2);
-        var boxHeight = image.thumbHeight + (imageBorder * 2) + 40;
-
-
-        // TODO : Eventually should remove non-standard way of pathing to thumb
-        var thumbSrc = '/images/thumbnails/' + image._id + '.jpg';
-        if (image.imageFilePaths && image.imageFilePaths[1]) {
-            thumbSrc = image.imageFilePaths[1].src;
-        }
-
-        // Drop shadow rectangle
-        pictureGroup.append('defs')
-            .append('filter')
-            .attr('id', 'blur')
-            .append('feGaussianBlur')
-            .attr('stdDeviation', 5);
-        pictureGroup.append('rect')
-            .attr('width', boxWidth)
-            .attr('height', boxHeight)
-            .attr('opacity', '1')
-            .attr('x', 3)
-            .attr('y', 3)
-            .style('fill', '#000')
-            .attr('filter', 'url(#blur)');
-
-        // White border rectangle
-        pictureGroup.append('rect')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('width', boxWidth)
-            .attr('height', boxHeight)
-            .attr('opacity', '1')
-            .attr('class', 'location-matte');
-
-        // Write a short version of the locaiton name
-        var imageName = image.generalLocationDs;
-        if (imageName.length > locationLength) {
-            imageName = imageName.substring(0, locationLength) + '...';
-        }
-
-        pictureGroup.append('text')
-            .attr('x', 10)
-            .attr('y', image.thumbHeight + 37)
-            .text(imageName)
-            .attr('font-family', 'Amatic SC')
-            .attr('font-size', '26px')
-            .attr('fill', '#663233');
-
-        // Image
-        pictureGroup.append('image')
-            .attr('x', imageBorder)
-            .attr('y', imageBorder)
-            .attr('width', image.thumbWidth)
-            .attr('height', image.thumbHeight)
-            .attr('opacity', '1')
-            .attr('xlink:href', thumbSrc)
-            .attr('data-id', image._id)
-            .attr('data-locid', image.dsLocId)
-            .attr('data-location', image.generalLocationDs);
-
-        // Starting state for picture group
-        pictureGroup
-            .attr('opacity', '0')
-            .attr('class', 'picture-group')
-            .attr('data-locid', image.dsLocId)
-            .attr('transform', function() {
-                return 'scale(.1), translate(' + (centerX / 0.1) + ', ' + (centerY / 0.1) + ')';
+    // Starting state for picture group
+    pictureGroup
+        .attr('opacity', '0')
+        .attr('class', 'picture-group')
+        .attr('data-locid', image.dsLocId)
+            .attr('transform', function () {
+              return 'scale(.1), translate(' + (centerX / 0.1) + ', ' + (centerY / 0.1) + ')';
             });
 
-        imagePosition = [imagePosition[0], ((imagePosition[1] - (image.thumbHeight / 2) - 5) + 15)];
-        Meteor.svgRecipes.drawPin(svg, imagePosition);
+    imagePosition = [imagePosition[0], ((imagePosition[1] - (image.thumbHeight / 2) - 5) + 15)];
+    Meteor.svgRecipes.drawPin(svg, imagePosition);
 
-        // Animate picture group to full size
-        pictureGroup
-            .transition()
-            .attr('opacity', '1')
-            .attr('transform', function() {
-                var transform =
-                    'rotate(' + _.random(-2, 2) + ', ' +
-                        (centerX - (image.thumbWidth / 2)) + ', ' +
-                        (centerY - (image.thumbHeight / 2)) +
-                    '),' +
-                    'scale(1),' +
-                    'translate(' +
-                        (centerX - (image.thumbWidth / 2)) + ', ' +
-                        (centerY - (image.thumbHeight / 2)) +
-                    ')';
-                return transform;
+    // Animate picture group to full size
+    pictureGroup
+        .transition()
+        .attr('opacity', '1')
+            .attr('transform', function () {
+              var transform =
+                  'rotate(' + _.random(-2, 2) + ', ' +
+                      (centerX - (image.thumbWidth / 2)) + ', ' +
+                      (centerY - (image.thumbHeight / 2)) +
+                  '),' +
+                  'scale(1),' +
+                  'translate(' +
+                      (centerX - (image.thumbWidth / 2)) + ', ' +
+                      (centerY - (image.thumbHeight / 2)) +
+                  ')';
+              return transform;
             })
             .duration(300)
             .delay(i * 30); // Stagger the markers animating in
+  }
+
+  function drawString(projection, svg, markerPosition, imagePosition, xOffset, yOffset, image) {
+    var markerX = parseFloat(markerPosition[0]);
+    var markerY = parseFloat(markerPosition[1]);
+
+    var imagePinX = imagePosition[0];
+    var imagePinY = (imagePosition[1] - (2 * (image.thumbHeight / 5)));
+
+    // Check to see if the image is above or below the marker
+    var lineMidX;
+    var lineMidY;
+    var lineStroke = '#DDDFE0';
+
+    // Image is SW of the marker
+    if ((markerX > imagePinX) && (markerY < imagePinY)) {
+      lineMidX = imagePinX + ((markerX - imagePinX) / 2) + 20;
+      lineMidY = markerY - (markerY - imagePinY) / 2;
+      lineStroke = 'white';
     }
 
-    function drawString(projection, svg, markerPosition, imagePosition, xOffset, yOffset, image) {
-        var markerX = parseFloat(markerPosition[0]);
-        var markerY = parseFloat(markerPosition[1]);
+    // Image is NW of marker
+    else if ((markerX > imagePinX) && (markerY > imagePinY)) {
+      lineMidX = imagePinX + ((markerX - imagePinX) / 2) - 20;
+      lineMidY = markerY - (markerY - imagePinY) / 2;
+      lineStroke = 'white';
+    }
 
-        var imagePinX = imagePosition[0];
-        var imagePinY = (imagePosition[1] - (2 * (image.thumbHeight / 5)));
+    // Image is NE of marker
+    else if ((markerX < imagePinX) && (markerY > imagePinY)) {
+      lineMidX = markerX + ((imagePinX - markerX) / 2) + 20;
+      lineMidY = markerY - (markerY - imagePinY) / 2;
+    }
 
-        // Check to see if the image is above or below the marker
-        var lineMidX;
-        var lineMidY;
-        var lineStroke = '#DDDFE0';
+    // Image is SE of marker
+    else {
+      lineMidX = markerX + ((imagePinX - markerX) / 2);
+      lineMidY = markerY + ((imagePinY - markerY) / 2) + 10;
+      lineStroke = 'white';
+    }
 
-        // Image is SW of the marker
-        if ((markerX > imagePinX) && (markerY < imagePinY)) {
-            lineMidX = imagePinX + ((markerX - imagePinX) / 2) + 20;
-            lineMidY = markerY - (markerY - imagePinY) / 2;
-            lineStroke = 'white';
-        }
+    var lineData = [
+        { x: markerX, y: markerY + 16.5 - 15 },
+        { x: lineMidX, y: lineMidY },
+        { x: imagePosition[0], y: imagePinY },
+    ];
 
-        // Image is NW of marker
-        else if ((markerX > imagePinX) && (markerY > imagePinY)) {
-            lineMidX = imagePinX + ((markerX - imagePinX) / 2) - 20;
-            lineMidY = markerY - (markerY - imagePinY) / 2;
-            lineStroke = 'white';
-        }
+    // Curve type
+    // https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate
 
-        // Image is NE of marker
-        else if ((markerX < imagePinX) && (markerY > imagePinY)) {
-            lineMidX = markerX + ((imagePinX - markerX) / 2) + 20;
-            lineMidY = markerY - (markerY - imagePinY) / 2;
-        }
+    var lineFunction = d3.svg.line()
+        .x(function (d) { return d.x; })
+        .y(function (d) { return d.y; })
+        .interpolate('basis');
 
-        // Image is SE of marker
-        else {
-            lineMidX = markerX + ((imagePinX - markerX) / 2);
-            lineMidY = markerY + ((imagePinY - markerY) / 2) + 10;
-            lineStroke = 'white';
-        }
+    /**
+     * Only display pin lines if the offset isn't 0
+     */
+    if (xOffset !== 0 && yOffset !== 0) {
+      // Draw a pin at the location position
+      Meteor.svgRecipes.drawPin(svg, [markerX, markerY]);
 
-        var lineData = [
-            { x: markerX, y: markerY + 16.5 - 15},
-            { x: lineMidX, y: lineMidY},
+      var stringGroup = svg.append('g');
 
-            // { 'x': (imagePosition[0] + 50), 'y': (imagePosition[1] + ((markerPosition[1] - imagePosition[1]) / 2))},
+      stringGroup.append('path')
+          .attr('d', lineFunction(lineData))
+          .attr('stroke-width', 1.2)
+          .attr('fill', 'none')
+          .attr('stroke', lineStroke);
 
-            { x: imagePosition[0], y: imagePinY}
-        ];
-
-
-
-        // Curve type
-        // https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate
-
-        var lineFunction = d3.svg.line()
-            .x(function(d) { return d.x; })
-            .y(function(d) { return d.y; })
-            .interpolate('basis');
-
-        /**
-         * Only display pin lines if the offset isn't 0
-         */
-        if (xOffset !== 0 && yOffset !== 0) {
-            // Draw a pin at the location position
-            Meteor.svgRecipes.drawPin(svg, [markerX, markerY]);
-
-            var stringGroup = svg.append('g');
-
-            stringGroup.append('path')
-                .attr('d', lineFunction(lineData))
-                .attr('stroke-width', 1.2)
-                .attr('fill', 'none')
-                .attr('stroke', lineStroke);
-
-            stringGroup.append('defs')
-                .append('filter')
-                .attr('id', 'line-blur')
-                .append('feGaussianBlur')
-                .attr('stdDeviation', 4);
-            stringGroup.append('path')
-                .attr('d', lineFunction(lineData))
-                .attr('stroke-width', 1.6)
-                .attr('fill', 'none')
-                .attr('stroke', 'black')
-                .attr('transform', function() {
-                    var transform = 'translate(0,2)';
-                    return transform;
+      stringGroup.append('defs')
+          .append('filter')
+          .attr('id', 'line-blur')
+          .append('feGaussianBlur')
+          .attr('stdDeviation', 4);
+      stringGroup.append('path')
+          .attr('d', lineFunction(lineData))
+          .attr('stroke-width', 1.6)
+          .attr('fill', 'none')
+          .attr('stroke', 'black')
+                .attr('transform', function () {
+                  var transform = 'translate(0,2)';
+                  return transform;
                 })
                 .attr('filter', 'url(#line-blur)');
 
-            stringGroup
-                .attr('class', 'string-group');
+      stringGroup
+          .attr('class', 'string-group');
 
-        }
+    }
+  }
+
+  /**
+   * Define manual offsets for each specific location
+   */
+  function defineImageOffsets(locId) {
+    var xOffset;
+    var yOffset;
+    if (locId == '1') {
+      xOffset = 0;
+      yOffset = 0;
+    } else if (locId == '2') {
+      xOffset = 0;
+      yOffset = 0;
+    } else if (locId == '3') {
+      xOffset = 0;
+      yOffset = 0;
+    }    else if (locId == '4') {
+      xOffset = 0;
+      yOffset = 0;
+    }    else if (locId == '5') {
+      xOffset = 0;
+      yOffset = 0;
+    }    else if (locId == '6') {
+      xOffset = -0.45;
+      yOffset = 0.2;
+    }    else if (locId == '7') {
+      xOffset = 0;
+      yOffset = 0;
+    }    else if (locId == '8') {
+      xOffset = 0;
+      yOffset = 0;
+    }    else if (locId == '9') {
+      xOffset = 0;
+      yOffset = 0;
+    }    else if (locId == '10') {
+      xOffset = 0;
+      yOffset = 0;
+    }    else if (locId == '11') {
+      xOffset = 0;
+      yOffset = 0;
+    }    else if (locId == '12') {
+      xOffset = 0;
+      yOffset = 0;
+    }    else if (locId == '13') {
+      xOffset = -0.15;
+      yOffset = -0.4;
+    }    else if (locId == '14') {
+      xOffset = -0.5;
+      yOffset = -0.1;
+    }    else if (locId == '15') {
+      xOffset = 0;
+      yOffset = 0;
+    }    else if (locId == '17') {
+      xOffset = 0;
+      yOffset = 0;
+    }    else if (locId == '18') {
+      xOffset = 0;
+      yOffset = 0;
+    }    else if (locId == '19') {
+      xOffset = 0;
+      yOffset = 0;
+    }    else if (locId == '20') {
+      xOffset = 0;
+      yOffset = 0;
+    }    else if (locId == '21') {
+      xOffset = 0;
+      yOffset = 0;
+    }    else {
+      xOffset = 0;
+      yOffset = 0;
     }
 
+    var offsets = [xOffset, yOffset];
+    return offsets;
+  }
+
+  function devMapFeatures(d3, projection) {
+    /**
+     * Test map data to position the map projection
+     *
+     * These don't need to be shown in the final map, but keep them here.
+     * If the background raster map changes, we will need this data to
+     * reproject the D3 map so that the location markers are correct.
+     */
+
+    var path = d3.geo.path()
+    .projection(projection);
+
+    d3.json('/data/salton.json', function (error, salton) {
+      svg.append('path')
+          .datum(topojson.feature(salton, salton.objects.salton))
+          .attr('d', path)
+          .attr('class', 'water');
+    });
+
+    d3.json('/data/i15.json', function (error, i15) {
+      svg.append('path')
+          .datum(topojson.feature(i15, i15.objects.i15))
+          .attr('d', path)
+          .attr('class', 'road');
+    });
 
     /**
-     * Define manual offsets for each specific location
+     * Solid state polygon.
+     * Only really useful for positioning the wiggly part of the Colorado
+     * River in Mexico.
      */
-    function defineImageOffsets(locId) {
-        var xOffset;
-        var yOffset;
-        if (locId == '1') {
-            xOffset = 0;
-            yOffset = 0;
-        } else if (locId == '2') {
-            xOffset = 0;
-            yOffset = 0;
-        } else if (locId == '3') {
-            xOffset = 0;
-            yOffset = 0;
-        }
-        else if (locId == '4') {
-            xOffset = 0;
-            yOffset = 0;
-        }
-        else if (locId == '5') {
-            xOffset = 0;
-            yOffset = 0;
-        }
-        else if (locId == '6') {
-            xOffset = -0.45;
-            yOffset = 0.2;
-        }
-        else if (locId == '7') {
-            xOffset = 0;
-            yOffset = 0;
-        }
-        else if (locId == '8') {
-            xOffset = 0;
-            yOffset = 0;
-        }
-        else if (locId == '9') {
-            xOffset = 0;
-            yOffset = 0;
-        }
-        else if (locId == '10') {
-            xOffset = 0;
-            yOffset = 0;
-        }
-        else if (locId == '11') {
-            xOffset = 0;
-            yOffset = 0;
-        }
-        else if (locId == '12') {
-            xOffset = 0;
-            yOffset = 0;
-        }
-        else if (locId == '13') {
-            xOffset = -0.15;
-            yOffset = -0.4;
-        }
-        else if (locId == '14') {
-            xOffset = -0.5;
-            yOffset = -0.1;
-        }
-        else if (locId == '15') {
-            xOffset = 0;
-            yOffset = 0;
-        }
-        else if (locId == '17') {
-            xOffset = 0;
-            yOffset = 0;
-        }
-        else if (locId == '18') {
-            xOffset = 0;
-            yOffset = 0;
-        }
-        else if (locId == '19') {
-            xOffset = 0;
-            yOffset = 0;
-        }
-        else if (locId == '20') {
-            xOffset = 0;
-            yOffset = 0;
-        }
-        else if (locId == '21') {
-            xOffset = 0;
-            yOffset = 0;
-        }
-        else {
-            xOffset = 0;
-            yOffset = 0;
-        }
+    d3.json('/data/states.json', function (error, states) {
+      svg.append('path')
+      .datum(topojson.feature(states, states.objects.states))
+      .attr('d', path)
+      .attr('class', 'states');
+    });
 
-        var offsets = [xOffset, yOffset];
-        return offsets;
-    }
+    /**
+     * Cities markers
+     */
+    d3.json('/data/cities.json', function (error, cities) {
+      svg.append('path')
+      .datum(topojson.feature(cities, cities.objects.cities))
+      .attr('d', path)
+      .attr('class', 'cities');
+    });
 
-    function devMapFeatures(d3, projection) {
-        /**
-         * Test map data to position the map projection
-         *
-         * These don't need to be shown in the final map, but keep them here.
-         * If the background raster map changes, we will need this data to
-         * reproject the D3 map so that the location markers are correct.
-         */
-
-        var path = d3.geo.path()
-        .projection(projection);
-
-        d3.json('/data/salton.json', function(error, salton) {
-            svg.append('path')
-                .datum(topojson.feature(salton, salton.objects.salton))
-                .attr('d', path)
-                .attr('class', 'water');
-        });
-
-        d3.json('/data/i15.json', function(error, i15) {
-            svg.append('path')
-                .datum(topojson.feature(i15, i15.objects.i15))
-                .attr('d', path)
-                .attr('class', 'road');
-        });
-
-        /**
-         * Solid state polygon.
-         * Only really useful for positioning the wiggly part of the Colorado
-         * River in Mexico.
-         */
-        d3.json('/data/states.json', function(error, states) {
-            svg.append('path')
-            .datum(topojson.feature(states, states.objects.states))
-            .attr('d', path)
-            .attr('class', 'states');
-        });
-
-        /**
-         * Cities markers
-         */
-        d3.json('/data/cities.json', function(error, cities) {
-            svg.append('path')
-            .datum(topojson.feature(cities, cities.objects.cities))
-            .attr('d', path)
-            .attr('class', 'cities');
-        });
-
-    }
+  }
 
 };
 
 Template.locations.events({
-    /**
-     * Image click
-     */
-    'click g.picture-group':function(e) {
+  /**
+   * Image click
+   */
+  'click g.picture-group':function (e) {
 
-        var animateContentOut = function() {
+    var animateContentOut = function () {
 
-            var width, height, t;
-            d3.selectAll('image').each(function(d, i) {
+      var width;
+      var height;
+      var t;
+      d3.selectAll('image').each(function (d, i) {
 
-                // Get the image dimensions
-                width = Number(d3.select(this).attr('width'));
-                height = Number(d3.select(this).attr('height'));
+        // Get the image dimensions
+        width = Number(d3.select(this).attr('width'));
+        height = Number(d3.select(this).attr('height'));
 
-                // Get the current transform object
-                t = d3.transform(d3.select(this.parentNode).attr('transform'));
+        // Get the current transform object
+        t = d3.transform(d3.select(this.parentNode).attr('transform'));
 
-                // Scale to zero from the center
-                t.scale = [0, 0];
-                t.translate[0] = t.translate[0] + (width / 2);
-                t.translate[1] = t.translate[1] + (height / 2);
-                var transformString = t.toString();
+        // Scale to zero from the center
+        t.scale = [0, 0];
+        t.translate[0] = t.translate[0] + (width / 2);
+        t.translate[1] = t.translate[1] + (height / 2);
+        var transformString = t.toString();
 
-                // Only this one has problems
-                d3.selectAll('.string-group')
-                    .transition()
-                    .delay(i * 20)
-                    .attr('opacity', '0')
-                    .duration(400);
-                d3.selectAll('.pin-group')
-                    .transition()
-                    .delay(i * 20)
-                    .attr('opacity', '0')
-                    .attr('transform', transformString)
-                    .duration(400);
-                d3.select(this.parentNode)
-                    .transition()
-                    .delay(i * 20)
-                    .attr('opacity', '0')
-                    .attr('transform', transformString)
-                    .duration(400);
-            });
-        };
-        animateContentOut();
+        // Only this one has problems
+        d3.selectAll('.string-group')
+            .transition()
+            .delay(i * 20)
+            .attr('opacity', '0')
+            .duration(400);
+        d3.selectAll('.pin-group')
+            .transition()
+            .delay(i * 20)
+            .attr('opacity', '0')
+            .attr('transform', transformString)
+            .duration(400);
+        d3.select(this.parentNode)
+            .transition()
+            .delay(i * 20)
+            .attr('opacity', '0')
+            .attr('transform', transformString)
+            .duration(400);
+      });
+    };
 
-        window.setTimeout(function() {
-            goDestination();
-        }, 600);
+    animateContentOut();
 
-        function goDestination() {
-            // Get the clicked location string from the COM data-location attribute
-            var imageLocation = String($(e.currentTarget).data('locid'));
-            var clickedImage = $('image[data-locid="' + imageLocation + '"]').data('id');
+    window.setTimeout(function () {
+      goDestination();
+    }, 600);
 
-            // Query Mongo for a location with a matching title
-            var clickedLocation = Locations.findOne({dsLocId: imageLocation });
+    function goDestination() {
+      // Get the clicked location string from the COM data-location attribute
+      var imageLocation = String($(e.currentTarget).data('locid'));
+      var clickedImage = $('image[data-locid="' + imageLocation + '"]').data('id');
 
-            // Send location seclection event
-            var eventProperties = {};
-            eventProperties.x = e.clientX;
-            eventProperties.y = e.clientY;
-            eventProperties.clickedLocation = clickedLocation.link;
-            sendKeenEvent(eventProperties);
+      // Query Mongo for a location with a matching title
+      var clickedLocation = Locations.findOne({ dsLocId: imageLocation });
 
-            // Navigate to the Location with the matching _id
-            Router.go(
-                'location',
-                {link: clickedLocation.link},
-                {query: {image: clickedImage}}
-           );
-        }
+      // Send location seclection event
+      var eventProperties = {};
+      eventProperties.x = e.clientX;
+      eventProperties.y = e.clientY;
+      eventProperties.clickedLocation = clickedLocation.link;
+      sendKeenEvent(eventProperties);
 
+      // Navigate to the Location with the matching _id
+      Router.go(
+          'location',
+          { link: clickedLocation.link },
+          { query: { image: clickedImage } }
+     );
     }
-});
 
+  },
+});
