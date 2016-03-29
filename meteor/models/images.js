@@ -8,15 +8,15 @@ Images = new Meteor.Collection('images');
 
 // Allow/Deny
 Images.allow({
-  insert: function(userId, doc) {
+  insert: function (userId, doc) {
     return true;
   },
 
-  update:  function(userId, doc, fieldNames, modifier) {
+  update:  function (userId, doc, fieldNames, modifier) {
     return true;
   },
 
-  remove:  function(userId, doc) {
+  remove:  function (userId, doc) {
     return true;
   },
 });
@@ -39,7 +39,7 @@ var schema = Images.attachSchema(new SimpleSchema({
   },
   isoDate: {
     type: String,
-    label: function() {
+    label: function () {
       return getToolTipLabel('Date ( yyyy-mm-dd )', 'Use <em><strong>0</strong></em> to mark no data (1987-01-00 = January, 1987)  &nbsp;Use <em><strong>u</strong></em> to mark uncertainty (19uu = 1900s)');
     },
 
@@ -47,7 +47,7 @@ var schema = Images.attachSchema(new SimpleSchema({
     max:10,
     min:10,
     optional: false,
-    custom: function() {
+    custom: function () {
       if (!this.value.match(/([0-9u]{4})-(\d{2})-(\d{2})/)) {
         return 'isoDateInvalid';
       }
@@ -55,7 +55,7 @@ var schema = Images.attachSchema(new SimpleSchema({
   },
   dsNumber: {
     type: String,
-    label: function() {
+    label: function () {
       return getToolTipLabel('DS Number', 'Character limit: 15. (e.g. ds0123456)');
     },
 
@@ -65,12 +65,12 @@ var schema = Images.attachSchema(new SimpleSchema({
   },
   imageFilePaths: {
       type: [Object],
-      label: function() {
+      label: function () {
         return getToolTipLabel('Image File', 'Max filesize is 10mb. Allowed file-types are PNGs and JPGs.');
       },
 
       optional: true, // (optional)
-      custom: function() {
+      custom: function () {
         var fileName = this.value[0].filename;
         fileName = fileName.toLowerCase();
         if (!fileName.match(/\.(jpg|jpeg|png|gif)$/)) {
@@ -91,10 +91,10 @@ var schema = Images.attachSchema(new SimpleSchema({
             },
             thumb: { // <-- This is the "key" for the "thumb" version.
               directive: 'thumbImageDirective',
-              onBeforeUpload: function(file, callback) {
+              onBeforeUpload: function (file, callback) {
 
                 // Create a thumbnail 175x175 size version.
-                Resizer.resize(file, {width: 175, height: 175, cropSquare: false}, function(err, file) {
+                Resizer.resize(file, { width: 175, height: 175, cropSquare: false }, function (err, file) {
                   if (err) {
                     console.error(err);
                   }
@@ -129,7 +129,7 @@ var schema = Images.attachSchema(new SimpleSchema({
 
   title: {
     type: String,
-    label: function() {
+    label: function () {
       return getToolTipLabel('Title', 'Character limit: 150. Only displays if <em>Creation place</em> is left empty.');
     },
 
@@ -139,7 +139,7 @@ var schema = Images.attachSchema(new SimpleSchema({
   },
   creationPlace: {
     type: String,
-    label: function() {
+    label: function () {
       return getToolTipLabel('Creation place', 'Character limit: 60.');
     },
 
@@ -149,7 +149,7 @@ var schema = Images.attachSchema(new SimpleSchema({
   },
   creditLine: {
     type: String,
-    label: function() {
+    label: function () {
       return getToolTipLabel('Credit line', 'Character limit: 130.');
     },
 
@@ -159,7 +159,7 @@ var schema = Images.attachSchema(new SimpleSchema({
   },
   labelTextEnglish: {
     type: String,
-    label: function() {
+    label: function () {
       return getToolTipLabel('English label', 'Character limit: 275.');
     },
 
@@ -172,7 +172,7 @@ var schema = Images.attachSchema(new SimpleSchema({
   },
   labelTextSpanish: {
     type: String,
-    label: function() {
+    label: function () {
       return getToolTipLabel('Spanish label', 'Character limit: 340.');
     },
 
@@ -238,4 +238,3 @@ SimpleSchema.messages({
 function getToolTipLabel(labelTxt, tipTxt) {
   return new Spacebars.SafeString(labelTxt + '&nbsp;<i class="fa fa-question-circle tip" data-tooltip-direction="e" data-tooltip="' + tipTxt + '"></i>');
 }
-
