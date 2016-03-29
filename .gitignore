@@ -3,6 +3,7 @@ meteor/.meteor/.id
 meteor/public/fonts
 meteor/public/video
 meteor/public/images/source-photos
+meteor/public/images/s3
 data/photos/*/*.jpg
 data/photos/*/*.JPG
 data/photos/*/*.tif

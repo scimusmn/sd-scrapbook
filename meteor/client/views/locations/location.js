@@ -435,15 +435,26 @@ function drawTimelineImage(timelineSVG, image, i, scaleFactor) {
   translateX = calculateTimelineImageX(i, image, scaleFactor);
   bottomY = calculateTimelineImageY(image, scaleFactor);
 
-  // TODO : Eventually should remove non-standard way of pathing to thumb
   var thumbSrc = '/images/thumbnails/' + image._id + '.jpg';
   if (image.imageFilePaths && image.imageFilePaths[1]) {
     thumbSrc = image.imageFilePaths[1].src;
+    if (Meteor.settings.public.kiosk == 'true') {
+      var thumbFile = thumbSrc.split('/');
+      var fileName = thumbFile[thumbFile.length - 1];
+      var fileFolder = thumbFile[thumbFile.length - 2];
+      thumbSrc = '/images/s3/' + fileFolder + '/' + fileName;
+    }
   }
 
   var expandedSrc = '';
   if (image.imageFilePaths && image.imageFilePaths[0]) {
     expandedSrc = image.imageFilePaths[0].src;
+    if (Meteor.settings.public.kiosk == 'true') {
+      var expandedFile = expandedSrc.split('/');
+      var expandedFileName = expandedFile[expandedFile.length - 1];
+      var expandedFileFolder = expandedFile[expandedFile.length - 2];
+      expandedSrc = '/images/s3/' + expandedFileFolder + '/' + expandedFileName;
+    }
   }
 
   /**

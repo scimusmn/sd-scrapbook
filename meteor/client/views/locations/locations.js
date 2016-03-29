@@ -191,10 +191,15 @@ Template.locations.rendered = function () {
     var boxWidth = image.thumbWidth + (imageBorder * 2);
     var boxHeight = image.thumbHeight + (imageBorder * 2) + 40;
 
-    // TODO : Eventually should remove non-standard way of pathing to thumb
     var thumbSrc = '/images/thumbnails/' + image._id + '.jpg';
     if (image.imageFilePaths && image.imageFilePaths[1]) {
       thumbSrc = image.imageFilePaths[1].src;
+      if (Meteor.settings.public.kiosk == 'true') {
+        var thumbFile = thumbSrc.split('/');
+        var fileName = thumbFile[thumbFile.length - 1];
+        var fileFolder = thumbFile[thumbFile.length - 2];
+        thumbSrc = '/images/s3/' + fileFolder + '/' + fileName;
+      }
     }
 
     // Drop shadow rectangle
