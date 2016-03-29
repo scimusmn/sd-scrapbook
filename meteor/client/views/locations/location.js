@@ -81,28 +81,39 @@ Template.location.rendered = function () {
 /**
  * Template Events
  */
-Template.location.events({
+Template.location.events(defineEvents());
+
+function defineEvents() {
+  var events = {
+    /**
+     * Highlight images when you press on the bottom part of the screen
+     *
+     * We only highlight the images on the bottom part of the screen
+     */
+    'mousemove .container': function (e) {
+      if (e.pageY >= 840) {
+        highlightImageByPointer(e.pageX);
+      }
+    },
+  };
+
   /**
-   * Highlight images when you press on the bottom part of the screen
-   *
-   * We only highlight the images on the bottom part of the screen
+   * Buttons for next and previous image
    */
-  'mousemove .container': function (e) {
-    if (e.pageY >= 840) {
-      highlightImageByPointer(e.pageX);
-    }
-  },
-
-  // Highlight the previous image
-  'click .prev-next-buttons circle.button-left, click .prev-next-buttons polygon.button-left': function () {
+  const imgNextButton = 'click .prev-next-buttons circle.button-left, ' +
+    'click .prev-next-buttons polygon.button-left';
+  events[imgNextButton] = function () {
     highlightImageByIndex(parseInt(Session.get('highlightedIndex'), 10) - 1);
-  },
+  };
 
-  // Highlight the next image
-  'click .prev-next-buttons circle.button-right, click .prev-next-buttons polygon.button-right': function () {
+  const imgPrevButton = 'click .prev-next-buttons circle.button-right, ' +
+    'click .prev-next-buttons polygon.button-right';
+  events[imgPrevButton] = function () {
     highlightImageByIndex(parseInt(Session.get('highlightedIndex'), 10) + 1);
-  },
-});
+  };
+
+  return events;
+}
 
 /**
  * Get the index of the image based on an array of edges
