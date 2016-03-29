@@ -322,9 +322,6 @@ Template.locations.rendered = function () {
     var lineData = [
         { x: markerX, y: markerY + 16.5 - 15 },
         { x: lineMidX, y: lineMidY },
-
-        // { 'x': (imagePosition[0] + 50), 'y': (imagePosition[1] + ((markerPosition[1] - imagePosition[1]) / 2))},
-
         { x: imagePosition[0], y: imagePinY },
     ];
 
@@ -508,7 +505,9 @@ Template.locations.events({
 
     var animateContentOut = function () {
 
-      var width, height, t;
+      var width;
+      var height;
+      var t;
       d3.selectAll('image').each(function (d, i) {
 
         // Get the image dimensions
