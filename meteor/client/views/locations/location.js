@@ -149,37 +149,37 @@ function drawLocation(images) {
    *
    * The location element contains all the main content on this page.
    */
-  var locationContainer = $('.location');
-  locationContainer.css('opacity', 0);
-  locationContainer.addClass('animated fadeIn');
+  var $locationContainer = $('.location');
+  $locationContainer.css('opacity', 0);
+  $locationContainer.addClass('animated fadeIn');
 
   /**
    * Setup the timeline
    */
-  var timelineBackground = $('.timeline-background');
-  Session.set('timelineBackgroundWidth', timelineBackground.width());
-  Session.set('timelineBackgroundHeight', timelineBackground.height());
-  var timelineBackgroundSVG  = d3.select('.timeline-background')
+  var $timelineBackground = $('.timeline-background');
+  Session.set('$timelineBackgroundWidth', $timelineBackground.width());
+  Session.set('$timelineBackgroundHeight', $timelineBackground.height());
+  var $timelineBackgroundSVG  = d3.select('.timeline-background')
       .append('svg')
       .attr('class', 'timeline-background-svg')
-      .attr('width', Session.get('timelineBackgroundWidth'))
-      .attr('height', Session.get('timelineBackgroundHeight'));
+      .attr('width', Session.get('$timelineBackgroundWidth'))
+      .attr('height', Session.get('$timelineBackgroundHeight'));
 
   /**
    * Draw year markers at the start and end of the timeline
    */
   var firstYear = DateUtils.getNumericYear(_.first(images).isoDate);
-  drawYearMarker(timelineBackgroundSVG, 0, 50, 50, 55, firstYear);
+  drawYearMarker($timelineBackgroundSVG, 0, 50, 50, 55, firstYear);
   var lastYear = DateUtils.getNumericYear(_.last(images).isoDate);
   drawYearMarker(
-      timelineBackgroundSVG,
-      (Session.get('timelineBackgroundWidth') - 100),
+      $timelineBackgroundSVG,
+      (Session.get('$timelineBackgroundWidth') - 100),
       50,
-      (Session.get('timelineBackgroundWidth') - 55), 55, lastYear
+      (Session.get('$timelineBackgroundWidth') - 55), 55, lastYear
   );
 
   // Draw selection handle
-  drawTimelineHandle(timelineBackgroundSVG);
+  drawTimelineHandle($timelineBackgroundSVG);
 
   // Draw timeline images
   drawTimelineImages(images);
@@ -200,17 +200,17 @@ function drawLocation(images) {
   highlightImageByIndex(dIndex);
 
   // Save timeline offset for future transformation operations
-  var timeline = $('.timeline-images-svg');
-  var timelineOffset = timeline.parent().offset();
+  var $timeline = $('.timeline-images-svg');
+  var timelineOffset = $timeline.parent().offset();
   Session.set('timelineOffset', timelineOffset);
 
   // Draw prev/next buttons
-  var locationContainerHeight = locationContainer.height();
+  var $locationContainerHeight = $locationContainer.height();
   var locationSVG  = d3.select('.location')
       .append('svg')
       .attr('class', 'prev-next-buttons')
       .attr('width', 1920)
-      .attr('height', locationContainerHeight);
+      .attr('height', $locationContainerHeight);
   drawNavButton(locationSVG, 50, 400, 30, 'left');
   drawNavButton(locationSVG, 1860, 400, 30, 'right');
 
