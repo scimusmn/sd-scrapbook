@@ -633,9 +633,9 @@ function highlightImageByPointer(pointerX) {
   updatePrevNextButtons(closestEdgeIndex);
 
   // Update highlighted image: text and big image
-  var hlImg = $('g[data-index=' + closestEdgeIndex + ']');
-  updateHighlightedImageText(hlImg);
-  updateHighlightedImage(hlImg);
+  var $hlImg = $('g[data-index=' + closestEdgeIndex + ']');
+  updateHighlightedImageText($hlImg);
+  updateHighlightedImage($hlImg);
 
 }
 
@@ -650,7 +650,7 @@ function highlightImageByIndex(index) {
   }
 
   // Get the highlighted image
-  var hlImg = $('g[data-index=' + index + ']');
+  var $hlImg = $('g[data-index=' + index + ']');
 
   Session.set('highlightedIndex', index);
 
@@ -661,8 +661,8 @@ function highlightImageByIndex(index) {
   updateHighlightedImageHandle(index);
 
   // Update highlighted image: text and big image
-  updateHighlightedImageText(hlImg);
-  updateHighlightedImage(hlImg);
+  updateHighlightedImageText($hlImg);
+  updateHighlightedImage($hlImg);
 
   return true;
 
@@ -673,19 +673,21 @@ function highlightImageByIndex(index) {
  */
 function updatePrevNextButtons(index) {
 
-  var nextBtn = $('.prev-next-buttons circle.button-right, .prev-next-buttons polygon.button-right');
-  var prevBtn = $('.prev-next-buttons circle.button-left, .prev-next-buttons polygon.button-left');
+  var $nextBtn = $('.prev-next-buttons circle.button-right, ' +
+    '.prev-next-buttons polygon.button-right');
+  var $prevBtn = $('.prev-next-buttons circle.button-left, ' +
+    '.prev-next-buttons polygon.button-left');
 
   if (index <= 0) {
-    prevBtn.css('opacity', '0.35');
+    $prevBtn.css('opacity', '0.35');
   } else {
-    prevBtn.css('opacity', '1.0');
+    $prevBtn.css('opacity', '1.0');
   }
 
   if (index >= (Session.get('imagesCount') - 1)) {
-    nextBtn.css('opacity', '0.35');
+    $nextBtn.css('opacity', '0.35');
   } else {
-    nextBtn.css('opacity', '1.0');
+    $nextBtn.css('opacity', '1.0');
   }
 
 }
@@ -695,7 +697,7 @@ function updatePrevNextButtons(index) {
  */
 function updateHighlightedImageHandle(index) {
   var posX;
-  var hlImg = $('g[data-index=' + index + ']');
+  var $hlImg = $('g[data-index=' + index + ']');
 
   /**
    * Find appropriate handle location
@@ -707,8 +709,8 @@ function updateHighlightedImageHandle(index) {
     var timelineRightEdge = Session.get('timelineImagesWidth') -
         (yearMarkerWidth / 2);
     posX = (
-            hlImg.data('x') +
-            ((timelineRightEdge - hlImg.data('x')) / 2)
+            $hlImg.data('x') +
+            ((timelineRightEdge - $hlImg.data('x')) / 2)
            );
 
   } else {
@@ -719,16 +721,16 @@ function updateHighlightedImageHandle(index) {
        * If images are overlapping position the handle in between the
        * two image X positions
        */
-      var nextImg = $('g[data-index=' + (parseInt(index, 10) + 1) + ']');
-      posX = hlImg.data('x') + ((nextImg.data('x') - hlImg.data('x')) / 2);
+      var $nextImg = $('g[data-index=' + (parseInt(index, 10) + 1) + ']');
+      posX = $hlImg.data('x') + (($nextImg.data('x') - $hlImg.data('x')) / 2);
     } else {
       /**
        * If images aren't overlapping, place the handle in the middle
        * of the image
        */
-      var thumbRect = $('g[data-index=' + (parseInt(index, 10)) + '] rect');
-      var thumbRectWidth = thumbRect.attr('width');
-      posX = hlImg.data('x') + (thumbRectWidth / 2);
+      var $thumbRect = $('g[data-index=' + (parseInt(index, 10)) + '] rect');
+      var $thumbRectWidth = $thumbRect.attr('width');
+      posX = $hlImg.data('x') + ($thumbRectWidth / 2);
     }
   }
 
@@ -741,15 +743,15 @@ function updateHighlightedImageHandle(index) {
  * Pull data from timeline images and store it in the Session.
  * The session variables are linked to template elements.
  */
-function updateHighlightedImageText(hlImg) {
-  Session.set('highlightedImageLocation', hlImg.data('location'));
-  Session.set('highlightedImageDate', hlImg.data('display-date'));
-  Session.set('highlightedImageDescription', hlImg.data('description'));
-  Session.set('highlightedImageDescriptionEs', hlImg.data('description-es'));
+function updateHighlightedImageText($hlImg) {
+  Session.set('highlightedImageLocation', $hlImg.data('location'));
+  Session.set('highlightedImageDate', $hlImg.data('display-date'));
+  Session.set('highlightedImageDescription', $hlImg.data('description'));
+  Session.set('highlightedImageDescriptionEs', $hlImg.data('description-es'));
 
   var highlightedImageCredit;
-  if ((hlImg.data('credit-line')).length) {
-    $('.image-detail div.image-credit-line').text('Courtesy of ' + hlImg.data('credit-line'));
+  if (($hlImg.data('credit-line')).length) {
+    $('.image-detail div.image-credit-line').text('Courtesy of ' + $hlImg.data('credit-line'));
   } else {
     $('.image-detail div.image-credit-line').text('');
   }
@@ -760,11 +762,11 @@ function updateHighlightedImageText(hlImg) {
 /**
  * Update the big highlighted image
  */
-function updateHighlightedImage(hlImg) {
-  var hlImgId = hlImg.data('id');
-  var hlImgExHeight = parseFloat(hlImg.data('xh'));
-  var hlImgExWidth = parseFloat(hlImg.data('xw'));
-  var hlImgAspect = parseFloat(hlImg.data('aspect'));
+function updateHighlightedImage($hlImg) {
+  var $hlImgId = $hlImg.data('id');
+  var $hlImgExHeight = parseFloat($hlImg.data('xh'));
+  var $hlImgExWidth = parseFloat($hlImg.data('xw'));
+  var $hlImgAspect = parseFloat($hlImg.data('aspect'));
   var aspectR;
 
   /**
@@ -772,23 +774,23 @@ function updateHighlightedImage(hlImg) {
    *
    * For portrait images, that are taller than narrow, limit the height.
    */
-  if (hlImgAspect < 1) {
-    if (hlImgExHeight > 800) {
-      hlImgExHeight = 800;
+  if ($hlImgAspect < 1) {
+    if ($hlImgExHeight > 800) {
+      $hlImgExHeight = 800;
     }
 
-    hlImgExWidth = hlImgExHeight * hlImgAspect;
-    aspectR = hlImgAspect;
+    $hlImgExWidth = $hlImgExHeight * $hlImgAspect;
+    aspectR = $hlImgAspect;
   } else {
     /**
      * Landscape - wider than tall. Limit the width to 1000px
      */
-    if (hlImgExWidth > 1000) {
-      hlImgExWidth = 1000;
+    if ($hlImgExWidth > 1000) {
+      $hlImgExWidth = 1000;
     }
 
-    hlImgExHeight = hlImgExWidth / hlImgAspect;
-    aspectR = hlImgAspect;
+    $hlImgExHeight = $hlImgExWidth / $hlImgAspect;
+    aspectR = $hlImgAspect;
   }
 
   /**
@@ -798,15 +800,15 @@ function updateHighlightedImage(hlImg) {
    */
 
   // TODO : Eventually should remove non-standard way of pathing to full image
-  var imagePath = '/images/expanded/' + hlImgId + '.jpg';
-  if (hlImg.data('expanded-src') && hlImg.data('expanded-src') !== '') {
-    imagePath = hlImg.data('expanded-src');
+  var imagePath = '/images/expanded/' + $hlImgId + '.jpg';
+  if ($hlImg.data('expanded-src') && $hlImg.data('expanded-src') !== '') {
+    imagePath = $hlImg.data('expanded-src');
   }
 
   if ($('.image-fullsize-image').attr('src') != imagePath) {
     $('.image-fullsize-image').attr('src', imagePath).stop(true, true).hide().fadeIn(400);
-    $('.image-fullsize-image').attr('width', (hlImgExWidth));
-    $('.image-fullsize-image').attr('height', (hlImgExHeight));
+    $('.image-fullsize-image').attr('width', ($hlImgExWidth));
+    $('.image-fullsize-image').attr('height', ($hlImgExHeight));
     $('.image-fullsize-image').attr('aspect', aspectR);
   }
 }
