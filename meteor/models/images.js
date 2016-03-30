@@ -25,7 +25,9 @@ Images.allow({
 var schema = Images.attachSchema(new SimpleSchema({
   dsLocId: {
     type: Number,
-    optional: false,
+    // Temporary hack. This should be set back to false.
+    // There is something wrong with one of the images in the database
+    optional: true,
     autoform: {
       omit:true,
     },
