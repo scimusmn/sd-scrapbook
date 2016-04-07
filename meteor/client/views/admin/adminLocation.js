@@ -15,6 +15,19 @@ Template.adminLocation.helpers({
 
   },
 
+  showAddButton: function () {
+
+    // Do not show add button when
+    // looking at images of more than
+    // one location.
+    if (Locations.find().count() > 1) {
+      return false;
+    } else {
+      return true;
+    }
+
+  },
+
   tableSettings: function () {
     return {
       collection: Images.find({}, { sort:{ isoDate: 1 } }),
@@ -200,23 +213,23 @@ Template.adminLocation.events({
 
   'click a.preview':function (e) {
 
-    var imgToPreviewId = $(e.currentTarget).attr('id');
-
-    // Example link to image...
+    // Example link to preview image...
     // /riverside?image=ds20001
 
-    var currentLink = Locations.findOne().link;
-    var previewURL = 'http://' + window.location.host + '/location/' + currentLink + '';
-    if (imgToPreviewId) {
-      previewURL += '?image=' + imgToPreviewId;
+    var imgToPreviewId = $(e.currentTarget).attr('id');
+
+    var previewLocation = Locations.findOne({ dsLocId: ('' + Images.findOne(imgToPreviewId).dsLocId) });
+
+    var previewURL = 'http://' + window.location.host + '/location/' + previewLocation.link + '?image=' + imgToPreviewId;
+
+    var backTitle = previewLocation.title;
+    if (Locations.find().count() > 1) {
+      backTitle = 'All Images';
     }
 
     Session.set('adminCurrentPreviewURL', previewURL);
-    Session.set('adminCurrentReturnURL', '/admin/locations/' + currentLink);
-    Session.set('adminCurrentReturnName', Locations.findOne().title);
-    console.log('teete');
-
-    // Router.go('/admin/preview');
+    Session.set('adminCurrentReturnURL', window.location.href );
+    Session.set('adminCurrentReturnName', backTitle);
 
   },
 

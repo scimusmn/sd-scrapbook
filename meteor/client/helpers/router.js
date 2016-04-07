@@ -74,11 +74,19 @@ Router.map(function () {
     },
 
   });
+
   this.route('adminLocation', {
     path: 'admin/locations/:link',
     waitOn: function () {
+
       Session.set('adminCurrentLocationLink', this.params.link);
-      return Meteor.subscribe('singleLocation', this.params.link, false);
+
+      if (this.params.link == 'listAll') {
+        return Meteor.subscribe('listAllImages');
+      } else {
+        return Meteor.subscribe('singleLocation', this.params.link, false);
+      }
+
     },
 
     data: function () {
@@ -94,6 +102,7 @@ Router.map(function () {
     },
 
   });
+
   this.route('adminPreview', {
     path: 'admin/preview/',
     waitOn: function () {
