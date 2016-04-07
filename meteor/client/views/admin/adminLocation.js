@@ -376,11 +376,6 @@ AutoForm.hooks({
 
     docToForm: function (doc, ss) {
 
-      // TODO - Remove unneccessary iso prepend (cleaning old data)
-      if (doc.isoDate && doc.isoDate.indexOf('iso-') != -1) {
-        doc.isoDate = doc.isoDate.replace('iso-', '');
-      }
-
       return doc;
 
     },
