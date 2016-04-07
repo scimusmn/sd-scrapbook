@@ -33,6 +33,17 @@ Template.adminLocation.helpers({
         { key: 'creditLine', label: 'Credit line' },
 
         {
+          key:'dateModified',
+          label: 'Modified',
+          headerClass: 'something-else',
+          cellClass: 'something-else',
+          fn: function (value) {
+            var date = new Date(value);
+            return ((date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear());
+          },
+        },
+
+        {
           key:'active',
           label: 'Active',
           headerClass: 'something-else',
@@ -284,7 +295,7 @@ function loadImgDimensions(doc, isUpdate, callback) {
 
   myImage.onload = function () {
 
-    console.log('\' Expanded is ' + this.width + ' by ' + this.height + ' pixels in size.');
+    // console.log('\' Expanded is ' + this.width + ' by ' + this.height + ' pixels in size.');
 
     editDoc.expandedWidth = this.width;
     editDoc.expandedHeight = this.height;
@@ -305,7 +316,7 @@ function loadImgDimensions(doc, isUpdate, callback) {
 
   myThumbImage.onload = function () {
 
-    console.log('\' Thumb is ' + this.width + ' by ' + this.height + ' pixels in size.');
+    // console.log('\' Thumb is ' + this.width + ' by ' + this.height + ' pixels in size.');
 
     editDoc.thumbWidth = this.width;
     editDoc.thumbHeight = this.height;
@@ -360,6 +371,11 @@ AutoForm.hooks({
         doc.dsLocId = Locations.findOne().dsLocId;
         doc.generalLocationDs = Locations.findOne().title;
 
+        // Set dateCreated/Modified
+        var nowDate = new Date();
+        doc.dateCreated = nowDate;
+        doc.dateModified = nowDate;
+
         // Add image meta data
         loadImgDimensions(doc, false, this.result);
 
@@ -367,21 +383,14 @@ AutoForm.hooks({
 
       update: function (doc) {
 
+        // Update dateModified (access $set obj for updates)
+        var nowDate = new Date();
+        doc.$set.dateModified = nowDate;
+
         // Add image meta data
         loadImgDimensions(doc, true, this.result);
 
       },
-
-    },
-
-    docToForm: function (doc, ss) {
-
-      // TODO - Remove unneccessary iso prepend (cleaning old data)
-      if (doc.isoDate && doc.isoDate.indexOf('iso-') != -1) {
-        doc.isoDate = doc.isoDate.replace('iso-', '');
-      }
-
-      return doc;
 
     },
 
