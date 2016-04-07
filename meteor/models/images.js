@@ -227,6 +227,20 @@ var schema = Images.attachSchema(new SimpleSchema({
       omit:true,
     },
   },
+  dateCreated: {
+    type: String,
+    optional: true,
+    autoform: {
+      omit:true,
+    },
+  },
+  dateModified: {
+    type: String,
+    optional: true,
+    autoform: {
+      omit:true,
+    },
+  },
 
 }));
 
