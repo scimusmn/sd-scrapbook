@@ -374,12 +374,6 @@ AutoForm.hooks({
 
     },
 
-    docToForm: function (doc, ss) {
-
-      return doc;
-
-    },
-
     // Called when any submit operation succeeds
     onSuccess: function (formType, result) {
 
