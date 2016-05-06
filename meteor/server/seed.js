@@ -36,7 +36,10 @@ if (Meteor.isServer) {
           if (error) {
             throw new Meteor.Error('error...');
           } else {
-            console.log('Sync originals done');
+            console.log('Downloading images.json');
+
+            // Import the database once the file is pulled down from S3
+            importImages();
           }
         }
       )
@@ -274,24 +277,24 @@ if (Meteor.isServer) {
 
     }
 
-    /**
-    * If the images collection has been reset, reload the latest data from a local
-    * JSON file.
-    *
-    * This process is used in the kiosk update from the remote version of the
-    * tool. When the kiosk starts up each morning we reset the database and
-    * then load the latest data from the online database if it has changed.
-    *
-    * The download process for this file is not handled within this application.
-    */
-    if (Images.find().count() === 0) {
-      console.log('Importing private/images.json to db');
-      var data = JSON.parse(Assets.getText('images.json'));
-
-      data.forEach(function (item, index, array) {
-        Images.insert(item);
-      });
-    }
-
+  }
+}
+/**
+* If the images collection has been reset, reload the latest data from a local
+* JSON file.
+*
+* This process is used in the kiosk update from the remote version of the
+* tool. When the kiosk starts up each morning we reset the database and
+* then load the latest data from the online database if it has changed.
+*
+* The download process for this file is not handled within this application.
+*/
+function importImages() {
+  if (Images.find().count() === 0) {
+    console.log('Importing private/images.json to db');
+    var data = JSON.parse(Assets.getText('images.json'));
+    data.forEach(function (item, index, array) {
+      Images.insert(item);
+    });
   }
 }
