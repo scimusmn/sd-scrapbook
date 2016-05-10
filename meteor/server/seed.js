@@ -1,3 +1,77 @@
+Meteor.methods({
+  getLatestImageThumbs: function () {
+    // Customizable path for the application. Allows us to download the images
+    // from S3 to any defined path.
+    cmd = loadExec();
+    var resultCmd = cmd(
+      'aws s3 sync s3://sd-scrapbook/thumbs ' +
+      Meteor.settings.public.installPath +
+      '/meteor/public/images/s3/thumbs', {}
+    );
+    return resultCmd;
+  },
+
+  getLatestImageOriginals: function () {
+    // Customizable path for the application. Allows us to download the images
+    // from S3 to any defined path.
+    cmd = loadExec();
+    var resultCmd = cmd(
+      'aws s3 sync s3://sd-scrapbook/originals ' +
+      Meteor.settings.public.installPath +
+      '/meteor/public/images/s3/originals', {}
+    );
+    return resultCmd;
+  },
+
+  getLatestImageData: function () {
+    // Sync down the images.json database file from S3. A server process
+    // saves this file there. We use it to repopulate the database after
+    // Meteor reset. This way, the local kiosk application always gets the
+    // latest data from the server each time the application starts up.
+    cmd = loadExec();
+    var resultCmd = cmd(
+      'aws s3 sync s3://sd-scrapbook/db ' +
+      Meteor.settings.public.installPath +
+      '/meteor/private', {}
+    );
+    return resultCmd;
+  },
+
+});
+
+/**
+ * Load modules for executing external commands
+ *
+ * Sets up a function (cmd) that allows us to call exec calls on the server
+ * side, so that we can set up file assets before modifying the database.
+ */
+function loadExec() {
+  fs = Npm.require('fs');
+  exec = Npm.require('child_process').exec;
+  cmd = Meteor.wrapAsync(exec);
+  return cmd;
+}
+
+/**
+* If the images collection has been reset, reload the latest data from a local
+* JSON file.
+*
+* This process is used in the kiosk update from the remote version of the
+* tool. When the kiosk starts up each morning we reset the database and
+* then load the latest data from the online database if it has changed.
+*
+* The download process for this file is not handled within this application.
+*/
+function importImages() {
+  if (Images.find().count() === 0) {
+    console.log('Importing private/images.json to db');
+    var data = JSON.parse(Assets.getText('images.json'));
+    data.forEach(function (item, index, array) {
+      Images.insert(item);
+    });
+  }
+}
+
 /**
 * Sync images and the images table from the online database before
 * launching the Meteor application
@@ -16,68 +90,34 @@ if (Meteor.isServer) {
     Meteor.settings.public.kiosk == 'true'
   ) {
 
-    // Load modules for executing external commands
-    fs = Npm.require('fs');
-    exec = Npm.require('child_process').exec;
-    cmd = Meteor.wrapAsync(exec);
+    Meteor.call('getLatestImageThumbs', function (error, response) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(response);
+      }
+    });
 
-    // Customizable path for the application. Allows us to download the images
-    // from S3 to any defined path.
-    var installPath = Meteor.settings.public.installPath;
+    Meteor.call('getLatestImageOriginals', function (error, response) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(response);
+      }
+    });
 
-    // Sync down the images.json database file from S3. A server process
-    // saves this file there. We use it to repopulate the database after
-    // Meteor reset. This way, the local kiosk application always gets the
-    // latest data from the server each time the application starts up.
-    cmd(
-      'aws s3 sync s3://sd-scrapbook/db ' + installPath + '/meteor/private',
-      Meteor.bindEnvironment(
-        function (error, stdout, stderr) {
-          if (error) {
-            throw new Meteor.Error('error...');
-          } else {
-            console.log('Downloading images.json');
-
-            // Import the database once the file is pulled down from S3
-            importImages();
-          }
-        }
-      )
-    );
-
-    // Sync down the image thumbanils
-    cmd(
-      'aws s3 sync s3://sd-scrapbook/thumbs ' + installPath + '/meteor/public/images/s3/thumbs',
-      Meteor.bindEnvironment(
-        function (error, stdout, stderr) {
-          if (error) {
-            throw new Meteor.Error('error...');
-          } else {
-            console.log('Sync thumbnails done');
-          }
-        }
-      )
-    );
-
-    // Sync down the full sized images
-    cmd(
-      'aws s3 sync s3://sd-scrapbook/originals ' +
-      installPath + '/meteor/public/images/s3/originals',
-
-      Meteor.bindEnvironment(
-        function (error, stdout, stderr) {
-          if (error) {
-            throw new Meteor.Error('error...');
-          } else {
-            console.log('Sync originals done');
-          }
-        }
-      )
-    );
+    Meteor.call('getLatestImageData', function (error, response) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(response);
+      }
+    });
 
     /**
-    * Load data into the local database if none is present
-    **
+     * Load data into the local database if none is present
+     */
+    importImages();
 
     /**
     * Locations
@@ -88,7 +128,8 @@ if (Meteor.isServer) {
       var anzaBorrego = Locations.insert({
         title: 'Anza Borrego',
         link: 'anza-borrego',
-        description: 'Anza-Borrego Desert State Park (ABDSP) is a state park located within the Colorado Desert of southern California, United States.',
+        description: 'Anza-Borrego Desert State Park (ABDSP) is a state park ' +
+          'located within the Colorado Desert of southern California, United States.',
         latitude: '33.100595',
         longitude: '-116.151306',
         dsLocId: '1',
@@ -97,7 +138,8 @@ if (Meteor.isServer) {
       var clevelandNationalForest = Locations.insert({
         title: 'Cleveland National Forest',
         link: 'cleveland-nat',
-        description: 'Cleveland National Forest encompasses 460,000 acres (720 sq mi (1,900 km2)), mostly of chaparral, with a few riparian areas.',
+        description: 'Cleveland National Forest encompasses 460,000 acres ' +
+          '(720 sq mi (1,900 km2)), mostly of chaparral, with a few riparian areas.',
         latitude: '32.758856',
         longitude: '-116.674749',
         dsLocId: '2',
@@ -277,24 +319,5 @@ if (Meteor.isServer) {
 
     }
 
-  }
-}
-/**
-* If the images collection has been reset, reload the latest data from a local
-* JSON file.
-*
-* This process is used in the kiosk update from the remote version of the
-* tool. When the kiosk starts up each morning we reset the database and
-* then load the latest data from the online database if it has changed.
-*
-* The download process for this file is not handled within this application.
-*/
-function importImages() {
-  if (Images.find().count() === 0) {
-    console.log('Importing private/images.json to db');
-    var data = JSON.parse(Assets.getText('images.json'));
-    data.forEach(function (item, index, array) {
-      Images.insert(item);
-    });
   }
 }
