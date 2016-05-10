@@ -2,6 +2,7 @@ Meteor.methods({
   getLatestImageThumbs: function () {
     // Customizable path for the application. Allows us to download the images
     // from S3 to any defined path.
+    console.log('Syncing thumbnails');
     cmd = loadExec();
     var resultCmd = cmd(
       'aws s3 sync s3://sd-scrapbook/thumbs ' +
@@ -14,6 +15,7 @@ Meteor.methods({
   getLatestImageOriginals: function () {
     // Customizable path for the application. Allows us to download the images
     // from S3 to any defined path.
+    console.log('Syncing originals');
     cmd = loadExec();
     var resultCmd = cmd(
       'aws s3 sync s3://sd-scrapbook/originals ' +
@@ -28,8 +30,10 @@ Meteor.methods({
     // saves this file there. We use it to repopulate the database after
     // Meteor reset. This way, the local kiosk application always gets the
     // latest data from the server each time the application starts up.
+    console.log('Syncing image data');
     cmd = loadExec();
     var resultCmd = cmd(
+      'rm -rf ' + Meteor.settings.public.install + '/meteor/private/images.json' + ';' +
       'aws s3 sync s3://sd-scrapbook/db ' +
       Meteor.settings.public.installPath +
       '/meteor/private', {}
