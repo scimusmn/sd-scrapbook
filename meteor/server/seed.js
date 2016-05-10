@@ -1,3 +1,4 @@
+awsPath = '/opt/boxen/pyenv/shims/aws';
 Meteor.methods({
   getLatestImageThumbs: function () {
     // Customizable path for the application. Allows us to download the images
@@ -5,7 +6,7 @@ Meteor.methods({
     console.log('Syncing thumbnails');
     cmd = loadExec();
     var resultCmd = cmd(
-      'aws s3 sync s3://sd-scrapbook/thumbs ' +
+      awsPath + ' s3 sync s3://sd-scrapbook/thumbs ' +
       Meteor.settings.public.installPath +
       '/meteor/public/images/s3/thumbs', {}
     );
@@ -18,7 +19,7 @@ Meteor.methods({
     console.log('Syncing originals');
     cmd = loadExec();
     var resultCmd = cmd(
-      'aws s3 sync s3://sd-scrapbook/originals ' +
+      awsPath + ' s3 sync s3://sd-scrapbook/originals ' +
       Meteor.settings.public.installPath +
       '/meteor/public/images/s3/originals', {}
     );
@@ -33,8 +34,8 @@ Meteor.methods({
     console.log('Syncing image data');
     cmd = loadExec();
     var resultCmd = cmd(
-      'rm -rf ' + Meteor.settings.public.install + '/meteor/private/images.json' + ';' +
-      'aws s3 sync s3://sd-scrapbook/db ' +
+      '/bin/rm -rf ' + Meteor.settings.public.install + '/meteor/private/images.json' + ';' +
+      awsPath + ' s3 sync s3://sd-scrapbook/db ' +
       Meteor.settings.public.installPath +
       '/meteor/private', {}
     );
