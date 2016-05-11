@@ -506,7 +506,7 @@ Template.locations.events({
   /**
    * Image click
    */
-  'click g.picture-group':function (e) {
+  'click g.picture-group': function (e) {
 
     var animateContentOut = function () {
 
